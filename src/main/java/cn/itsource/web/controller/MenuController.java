@@ -56,7 +56,7 @@ public class MenuController {
     @ResponseBody
     public List<Menu> findOne() {
         List<Menu> menusList = new LinkedList();
-        Long[] ids = {39l, 61l, 40l, 42l, 45l, 46l, 52l, 54l, 55l, 56l};
+        Long[] ids = {-1l, 6l, 7l, 15l, 17l, 24l, 26l, 29l, 27l, 32l, 41l, 42l};
         for (Long id : ids) {
             Menu menu = menuService.findOne(id);
             menusList.add(menu);
@@ -115,7 +115,7 @@ public class MenuController {
     @ResponseBody
     public List<String> update(Menu menu) {
         menuService.update(menu);/*修改后返回其父菜单，用于打开父菜单*/
-         /*如果直接返回null的话，ajax的success方法不会执行*/
+        /*如果直接返回null的话，ajax的success方法不会执行*/
         List<String> allParentName = menuService.findAllParent(menu.getParent());/*list中只添加了名字，可以自行添加整个菜单*/
         return allParentName;
     }
