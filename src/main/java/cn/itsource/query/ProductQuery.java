@@ -14,7 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
  * (Product)Query实体类
  *
  * @author 申林
- * @since 2020-04-23 20:36:44
+ * @since 2020-04-23 21:39:48
  */
 public class ProductQuery extends BaseQuery<Product>{
     private String name;

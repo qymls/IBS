@@ -5,7 +5,7 @@ import javax.persistence.*;
  * (Product)实体类
  *
  * @author 申林
- * @since 2020-04-23 20:36:44
+ * @since 2020-04-23 21:39:47
  */
 @Entity
 public class Product extends BaseDomain{
@@ -21,11 +21,12 @@ public class Product extends BaseDomain{
     private BigDecimal costprice;
     
     private BigDecimal saleprice;
-    
+
+    @Column(name = "types_id")
     private Long typesId;
-    
+    @Column(name = "unit_id")
     private Long unitId;
-    
+    @Column(name = "brand_id")
     private Long brandId;
 
         

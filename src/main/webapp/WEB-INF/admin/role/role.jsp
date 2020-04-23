@@ -96,7 +96,7 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="添加信息" v-model="updateModel" class-name="vertical-center-modal" footer-hide>
+            <Modal title="添加信息" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable>
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <Form-Item prop="id">
                         <input type="hidden" v-model="formValidate.id"/>

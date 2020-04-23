@@ -4,7 +4,7 @@ import javax.persistence.*;
  * (Role)实体类
  *
  * @author 申林
- * @since 2020-04-23 20:36:41
+ * @since 2020-04-23 21:39:52
  */
 @Entity
 public class Role extends BaseDomain{

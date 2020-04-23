@@ -1,6 +1,15 @@
-package cn.itsource.query;
+##引入宏定义
+$!define
 
-import cn.itsource.domain.Role;
+##使用宏定义设置回调（保存位置与文件后缀）
+#save("/main/java/cn/itsource/query", "Query.java")
+
+##使用宏定义设置包后缀
+#setPackageSuffix("query")
+
+##使用全局变量实现默认包导入
+$!autoImport
+import cn.itsource.domain.$!{tableInfo.name};
 import com.github.wenhao.jpa.PredicateBuilder;
 import com.github.wenhao.jpa.Specifications;
 import org.apache.commons.lang3.StringUtils;
@@ -8,18 +17,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+##使用宏定义实现类注释信息
 
-/**
- * (Role)Query实体类
- *
- * @author 申林
- * @since 2020-04-23 21:39:52
- */
-public class RoleQuery extends BaseQuery<Role>{
+#tableComment("Query实体类")
+public class $!{tableInfo.name}Query extends BaseQuery<$!{tableInfo.name}>{
     private String name;
     @Override
     public Specification getSpecification() {
-        Specification<Role> specification = Specifications.<Role>and()
+        Specification<$!{tableInfo.name}> specification = Specifications.<$!{tableInfo.name}>and()
         .like(StringUtils.isNoneBlank(name), "name", "%" + name + "%")
         .build();
         return specification;

@@ -51,8 +51,9 @@ new Vue({
             this.formValidate = data;
         },
         handleSubmitUpdate: function (name) {//提交方法
-          this.$refs['formValidate'].validate'((valid)=>{
-            if (valid) {
+         var refs = this.$refs;
+         refs['formValidate'].validate((valid)=>{
+           if (valid) {
             var $page = this;
             var param = this.formValidate;
             var url;
@@ -124,7 +125,6 @@ new Vue({
         newAdd: function () {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
             this.updateModel = true;
-            this.getAllDepartment();/*获取所有部门*/
         },
         deleteRows: function (selection) {
             this.rows = [];
@@ -135,6 +135,7 @@ new Vue({
 
         deleteDepartment() {
             var $page = this;
+            var notice = this.$Notice;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
@@ -145,7 +146,7 @@ new Vue({
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
                     $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
-                    $page.$Notice.success'({
+                     notice.success({
                      title: "通知提醒",
                      desc: "删除成功",
                         });

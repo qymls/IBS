@@ -1,0 +1,20 @@
+##定义初始变量
+#set($tableName = $tool.append("I",$tableInfo.name, "Service"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/java/cn/itsource/service"))
+
+
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service;
+
+import $!{tableInfo.savePackageName}.domain.$!{tableInfo.name};
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表Service层接口
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+public interface $!{tableName} extends IBaseService<$!{tableInfo.name},Long>{
+
+}

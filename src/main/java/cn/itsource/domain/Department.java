@@ -4,7 +4,7 @@ import javax.persistence.*;
  * (Department)实体类
  *
  * @author 申林
- * @since 2020-04-23 20:36:45
+ * @since 2020-04-23 21:39:56
  */
 @Entity
 public class Department extends BaseDomain{

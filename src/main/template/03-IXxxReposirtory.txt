@@ -1,0 +1,20 @@
+##定义初始变量
+#set($tableName = $tool.append("I",$tableInfo.name, "Repository"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/java/cn/itsource/repository"))
+
+
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}repository;
+
+import $!{tableInfo.savePackageName}.domain.$!{tableInfo.name};
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表数据库访问层
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+public interface $!{tableName} extends IBaseRepository<$!{tableInfo.name},Long>{
+
+}

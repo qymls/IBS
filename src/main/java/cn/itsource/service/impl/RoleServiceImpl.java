@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * (Role)表Service层接口
  *
  * @author 申林
- * @since 2020-04-23 20:36:41
+ * @since 2020-04-23 21:39:54
  */
  @Service
 public class RoleServiceImpl extends BaseServiceImpl<Role,Long> implements IRoleService{

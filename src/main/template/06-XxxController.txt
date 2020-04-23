@@ -1,0 +1,95 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "Controller"))
+#set($tablefirstLowerCase = $tool.firstLowerCase($tableInfo.name))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/java/cn/itsource/web/controller"))
+
+
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}web.controller;
+
+import $!{tableInfo.savePackageName}.domain.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.query.$!{tableInfo.name}Query;
+import $!{tableInfo.savePackageName}.service.I$!{tableInfo.name}Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.HashMap;
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表Controller
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Controller
+@RequestMapping("Admin/$!{tableInfo.name}")
+public class $!{tableInfo.name}Controller {
+    private I$!{tableInfo.name}Service $!{tablefirstLowerCase}Service;
+
+    @Autowired
+    public void set$!{tableInfo.name}Service(I$!{tableInfo.name}Service $!{tablefirstLowerCase}Service) {
+        this.$!{tablefirstLowerCase}Service = $!{tablefirstLowerCase}Service;
+    }
+
+    @RequestMapping("/findAll")
+    @ResponseBody
+    public Page<$!{tableInfo.name}> findAll($!{tableInfo.name}Query $!{tablefirstLowerCase}Query) {
+        Page<$!{tableInfo.name}> pageUtil = $!{tablefirstLowerCase}Service.findPageByQuery($!{tablefirstLowerCase}Query);
+        return pageUtil;
+    }
+
+    @RequestMapping("/delete")
+    @ResponseBody
+    public HashMap<Object, Object> delete(long[] ids) {
+        HashMap<Object, Object> map = null;
+        if (ids.length > 0) {
+            for (long id : ids) {
+                $!{tablefirstLowerCase}Service.delete(id);
+            }
+            map = new HashMap<>();
+            map.put("success", true);
+            map.put("msg", "操作做成功");
+        }
+        return map;
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public HashMap<Object, Object> save($!{tableInfo.name} $!{tablefirstLowerCase}) {
+        $!{tablefirstLowerCase}Service.save($!{tablefirstLowerCase});
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("success", true);
+        map.put("msg", "操作做成功");
+        return map;
+    }
+
+    @ModelAttribute("update")/*所有方法执行前都要执行*/
+    public $!{tableInfo.name} findOneBeforeUpdate(String action, Long id) {
+        $!{tableInfo.name} $!{tablefirstLowerCase} = null;
+        if ("update".equalsIgnoreCase(action)) {
+            $!{tablefirstLowerCase} = $!{tablefirstLowerCase}Service.findOne(id);
+            //$!{tablefirstLowerCase}.setDepartment(null);/*department 脱离持久化状态*/
+        }
+        return $!{tablefirstLowerCase};
+    }
+
+    /**
+     * 修改前先查询一次，然后与传递的对比，合并新数据
+     *
+     * @param $!{tablefirstLowerCase}
+     * @return
+     */
+    @RequestMapping("/update")
+    @ResponseBody
+    public HashMap<Object, Object> update(@ModelAttribute("update") $!{tableInfo.name} $!{tablefirstLowerCase}) {
+        $!{tablefirstLowerCase}Service.update($!{tablefirstLowerCase});
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("success", true);
+        map.put("msg", "操作做成功");
+        return map;
+    }
+}

@@ -1,0 +1,32 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "ServiceImpl"))
+#set($tablefirstLowerCase = $tool.firstLowerCase($tableInfo.name))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/java/cn/itsource/service/impl"))
+
+
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service.impl;
+
+import $!{tableInfo.savePackageName}.domain.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.repository.I$!{tableInfo.name}Repository;
+import $!{tableInfo.savePackageName}.service.I$!{tableInfo.name}Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表Service层接口
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+ @Service
+public class $!{tableName} extends BaseServiceImpl<$!{tableInfo.name},Long> implements I$!{tableInfo.name}Service{
+
+    private I$!{tableInfo.name}Repository $!{tablefirstLowerCase}Repository;
+
+    @Autowired
+    public void set$!{tableInfo.name}Repository(I$!{tableInfo.name}Repository $!{tablefirstLowerCase}Repository) {
+        this.$!{tablefirstLowerCase}Repository = $!{tablefirstLowerCase}Repository;
+    }
+}

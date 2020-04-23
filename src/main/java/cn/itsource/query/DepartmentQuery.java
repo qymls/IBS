@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
  * (Department)Query实体类
  *
  * @author 申林
- * @since 2020-04-23 20:36:45
+ * @since 2020-04-23 21:39:57
  */
 public class DepartmentQuery extends BaseQuery<Department>{
     private String name;

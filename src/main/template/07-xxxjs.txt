@@ -1,3 +1,8 @@
+##定义初始变量
+#set($tablefirstLowerCase = $tool.firstLowerCase($tableInfo.name))
+##设置回调
+$!callback.setFileName($tool.append($tablefirstLowerCase, ".js"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/admin/$!{tablefirstLowerCase}"))
 new Vue({
     el: "#app",
     data: function () {
@@ -6,47 +11,18 @@ new Vue({
             rows: [],
             updateModel: false,
             formValidate: {
-                id : '' ,
-                name : '' ,
-                color : '' ,
-                pic : '' ,
-                smallpic : '' ,
-                costprice : '' ,
-                saleprice : '' ,
-                typesId : '' ,
-                unitId : '' ,
-                brandId : '' ,
-            
+            #foreach($column in $tableInfo.fullColumn)
+    $!{column.name} : '' ,
+            #end
+
             },
             ruleValidate: {
-                name : [
+            #foreach($column in $tableInfo.otherColumn)
+    $!{column.name} : [
                     {required: true, message: '请输入对应的值', trigger: 'blur'},
                 ],
-                color : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                pic : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                smallpic : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                costprice : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                saleprice : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                typesId : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                unitId : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                brandId : [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                        },
+            #end
+            },
             formInline: {
                 name: '',
             },
@@ -62,44 +38,14 @@ new Vue({
                     width: 100,
                     align: 'center',
                 },
-                                {
-                    title: 'name',
-                    key: 'name',
+                #foreach($column in $tableInfo.otherColumn)
+                {
+                    title: '$!{column.name}',
+                    key: '$!{column.name}',
                 },
-                                {
-                    title: 'color',
-                    key: 'color',
-                },
-                                {
-                    title: 'pic',
-                    key: 'pic',
-                },
-                                {
-                    title: 'smallpic',
-                    key: 'smallpic',
-                },
-                                {
-                    title: 'costprice',
-                    key: 'costprice',
-                },
-                                {
-                    title: 'saleprice',
-                    key: 'saleprice',
-                },
-                                {
-                    title: 'typesId',
-                    key: 'typesId',
-                },
-                                {
-                    title: 'unitId',
-                    key: 'unitId',
-                },
-                                {
-                    title: 'brandId',
-                    key: 'brandId',
-                },
-                            ],
-            ProductData: [],
+                #end
+            ],
+            $!{tableInfo.name}Data: [],
             total: 0,
             page: 1,/*当前页默认为1*/
             pageSize: 5,/* 默认5条*/
@@ -122,10 +68,10 @@ new Vue({
             var param = this.formValidate;
             var url;
             if (this.formValidate.id) {/*修改*/
-                url = "Admin/Product/update"
+                url = "Admin/$!{tableInfo.name}/update"
                 param.action = "update"/*传递这个参数是配合 @ModelAttribute注解使用的，只用于修改*/
                 } else {/*添加*/
-                var url = "Admin/Product/save";
+                var url = "Admin/$!{tableInfo.name}/save";
                 param.action = "save";
             }
             $.ajax({
@@ -169,7 +115,7 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Product/findAll",
+                url: "Admin/$!{tableInfo.name}/findAll",
                 data: {
                     "name": this.formInline.name,
                     "currentPage": page,
@@ -179,7 +125,7 @@ new Vue({
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    $page.ProductData = result.content;
+                    $page.$!{tableInfo.name}Data = result.content;
                     $page.total = result.totalElements;
                     $page.page = result.number + 1/*处理一个小bug*/
                 }
@@ -197,13 +143,13 @@ new Vue({
             }
         },
 
-        deleteProduct() {
+        delete$!{tableInfo.name}() {
             var $page = this;
             var notice = this.$Notice;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Product/delete",
+                url: "Admin/$!{tableInfo.name}/delete",
                 data: {"ids": this.rows.toString()},
                 dataType: 'json',
                 traditional: true,//防止深度序列化
