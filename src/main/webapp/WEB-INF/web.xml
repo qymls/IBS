@@ -1,0 +1,69 @@
+<!--<!DOCTYPE web-app PUBLIC
+        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd" >-->
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+  <!--SpringMvc注册，固定写法-->
+  <servlet>
+    <servlet-name>SpringMVC</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param><!--启动初始化参数就是mvc的配置文件-->
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:applicationContext-MVC.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup><!--启动就实例化，找mcv的配置文件，找不到tomcat无法启动-->
+  </servlet>
+  <!--spring拦截所有的.do的方法，springMVC底层去判断-->
+  <servlet-mapping>
+    <servlet-name>SpringMVC</servlet-name>
+    <!--*.do不支持restful，/*会拦截所有请求包括jsp
+    /会拦截所有请求，但是不拦截jsp，支持restful风格，但是静态资源无法访问，css，js等
+    原因是将tomcat的url-pattern覆盖了，整个项目没有处理静态资源-->
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+
+  <!--处理post请求中文乱码的问题，springMVC-->
+  <filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <!--强制utf-8编方式的-->
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <!--配置Spring-->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+
+  <!--监听Spring启动-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!--添加一个过滤器，延长entityManage的生命周期,从controller开始到controller结束为止-->
+
+  <filter>
+    <filter-name>openEntityManagerInViewFilter</filter-name>
+    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>openEntityManagerInViewFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+</web-app>

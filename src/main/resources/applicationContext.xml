@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd"
+>
+
+    <!--使用自动装载注解-->
+    <import resource="dataSource.xml"/><!--引入jdbc的连接池-->
+   <!--<context:component-scan base-package="dao"/>--><!--扫描dao层使用spring data jpa 无法使用注解，在前面配置的扫描 dataSource.xml-->
+
+    <!--  <bean id="iUserService" class="_20200323.service.impl.UserServiceImpl">
+          <property name="IUserDao" ref="iUserDao1"/>
+      </bean>-->
+    <context:component-scan base-package="cn.itsource.service"/><!--扫描service层-->
+
+    <bean id="threadPoolTaskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"></bean><!--用于第三方登录，异步下载头像-->
+
+
+</beans>

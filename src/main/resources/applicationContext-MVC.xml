@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+>
+
+
+    <!-- <bean id="/hello.do" class="_20200323.HelloController"></bean>&lt;!&ndash;对外暴露的资源&ndash;&gt;-->
+    <context:component-scan base-package="cn.itsource.web.controller"/>
+    <!--扫描包下面的类是否有@Controller注解，有的话，就交给springMvc来创建对象
+    -->
+
+    <!--放行静态资源-->
+    <mvc:default-servlet-handler/><!--相当于让RequestMapping注解失效-->
+    <mvc:annotation-driven>
+        <!-- 添加消息转换器 解决json数据传递过程中的乱码问题 -->
+        <mvc:message-converters register-defaults="true">
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter"><!--引入第三方fastJson包-->
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+                <!--  <property name="features">
+                      <list>
+                          <value>PrettyFormat</value>
+                          <value>WriteMapNullValue</value>
+                          <value>WriteNullStringAsEmpty</value>
+                          <value>WriteNullListAsEmpty</value>
+                          <value>DisableCircularReferenceDetect</value>
+                      </list>
+                  </property>-->
+                <!--配置日期解析格式-->
+                <property name="fastJsonConfig"><!--Spring 4.2 以上配置fastjson的正确方式，以前配置是过时的配置-->
+                    <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
+                        <property name="serializerFeatures"><!--不能填写features，应该填写序列化-->
+                            <array>
+                                <value>DisableCircularReferenceDetect</value>
+                            </array>
+                        </property>
+                        <property name="dateFormat" value="yyyy-MM-dd HH:mm:ss"></property>
+                    </bean>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven><!--让注解重新生效-->
+
+    <!--视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">
+        <!--前缀-->
+        <property name="prefix" value="/"/>
+        <!--后缀-->
+        <property name="suffix" value=".jsp"/>
+        <!--<property name="contentType" value="text/html;charset=utf-8"/>-->
+    </bean>
+
+    <!--配置SpringMVC的上传解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 允许附件最大上传大小 -->
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>
+
+    <!--  <mvc:interceptors>&lt;!&ndash;拦截器只拦截方法&ndash;&gt;
+          &lt;!&ndash;  使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求   &ndash;&gt;
+          <mvc:interceptor>
+              <mvc:mapping path="/Jobs/**"/>&lt;!&ndash;/*只能拦截一级/a,/b这种，/**可拦截多级&ndash;&gt;
+              <mvc:exclude-mapping path="/login"/>&lt;!&ndash;不拦截登录方法&ndash;&gt;
+              <bean class="interceptor.AdminInterceptor"/>
+          </mvc:interceptor>
+      </mvc:interceptors>-->
+</beans>
