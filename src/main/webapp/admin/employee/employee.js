@@ -122,8 +122,9 @@ new Vue({
                 {
                     title: '头像',
                     key: 'headImage',
-                    /* slot: 'icon_show',*/
+                    slot: 'icon_show',
                     align: 'center',
+                    width: 100
                 },
 
             ],
@@ -132,6 +133,7 @@ new Vue({
             total: 0,
             page: 1,/*当前页默认为1*/
             pageSize: 5,/* 默认5条*/
+            visible: false,/*预览图片*/
         }
     },
     created() {
@@ -295,7 +297,40 @@ new Vue({
                     $page.rows = [];
                 }
             });
-        }
+        },
+        /*图片上传的相关方法*/
+        upload_success(response, file, fileList) {
+            this.formValidate.headImage = response;
+        },
+        handleProgress(event, file, fileList) {/*没有调试好，无法使用*/
+            // 调用监听 上传进度 的事件
+            event.target.onprogress = function (event) {
+                console.log('上传中'); // 继承了原生函数的 event 事件
+                let uploadPercent = parseFloat(((event.loaded / event.total) * 100).toFixed(2))	// 保留两位小数，具体根据自己需求做更改
+                console.log('上传中', event); // 继承了原生函数的 event 事件
+                // 手动设置显示上传进度条 以及上传百分比
+                file.showProgress = true
+                file.percentage = uploadPercent
+            }
+        },
+        handleView(name) {
+            this.visible = true;
+        },
+        handleRemove(path) {
+            var page = this;
+            $.ajax({
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "Admin/Employee/deleteImg",
+                data: {"path": path},
+                dataType: 'json',
+                traditional: true,//防止深度序列化
+                async: false,/*取消异步加载*/
+                success: function (result) {/*用了框架的*/
+                    page.formValidate.headImage = '';/*删除了重置headimg*/
+                }
+            });
+        },
     }
 
 });

@@ -107,7 +107,7 @@
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
                     <template slot-scope="{ row, index }" slot="icon_show">
-                        <Icon :type="row.icon"></Icon>
+                        <Avatar shape="square" :src="row.headImage" size="large" v-if="row.headImage"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="department_show">
                         <p>{{getDepatmentName(row)}}</p>
@@ -124,8 +124,9 @@
             </div>
             <Modal title="员工管理" v-model="updateModel" class-name="vertical-center-modal" footer-hide>
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                    <Form-Item prop="id">
-                        <input type="hidden" v-model="formValidate.id"/><%--菜单id--%>
+                    <Form-Item prop="id" v-show="false">
+                        <i-input type="text" v-model="formValidate.id"/>
+                        <%--菜单id--%>
                     </Form-Item>
                     <Form-Item label="用户名" prop="username">
                         <i-Input v-model="formValidate.username" placeholder="请输入用户名"></i-Input>
@@ -146,23 +147,32 @@
                             </template>
                         </i-Select>
                     </Form-Item>
-                    <%--<input type="hidden" v-model="formValidate.headImage"/>
+                    <Form-Item prop="headImage" v-show="false">
+                        <i-input type="text" v-model="formValidate.headImage"/>
+                    </Form-Item>
                     <Form-Item label="头像">
-                        <div class="demo-upload-list">
-                            <img src="admin/images/GitHub.svg">
+                        <div class="demo-upload-list" v-if="formValidate.headImage">
+                            <img :src="formValidate.headImage">
                             <div class="demo-upload-list-cover">
-                                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                                <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
+                                <Icon type="ios-trash-outline"
+                                      @click.native="handleRemove(formValidate.headImage)"></Icon>
                             </div>
                         </div>
-
-                        <Upload action="#" type="drag" style="width: 58px;display: inline-block;" class="upload_style"
-                                :show-upload-list="false">
+                        <Upload ref="upload" action="Admin/Employee/upload" type="drag"
+                                style="width: 58px;display: inline-block;"
+                                class="upload_style" :show-upload-list="false" name="multipartFile" type="drag"
+                                :on-success="upload_success" :data="{'headImage':formValidate.headImage}"
+                                :on-progress="handleProgress">
                             <div style="width: 58px;height:58px;line-height: 58px;">
                                 <Icon type="ios-camera" size="20"></Icon>
                             </div>
                         </Upload>
-                    </Form-Item>--%>
+                        <Modal title="预览图片" v-model="visible" draggable>
+                            <img :src="formValidate.headImage" v-if="visible" style="width: 100%">
+                        </Modal>
+                    </Form-Item>
+
                     <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>

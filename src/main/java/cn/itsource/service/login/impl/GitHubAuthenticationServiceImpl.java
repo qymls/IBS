@@ -42,7 +42,6 @@ public class GitHubAuthenticationServiceImpl implements IAuthenticationService {
         requestEntity.add("code", code);
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(GITHUB_ACCESSS_TOKEN_URL, requestEntity, String.class);
-
         String message = responseEntity.getBody().trim();
 
         String access_token = message.split("&")[0].split("=")[1];

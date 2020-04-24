@@ -1,8 +1,3 @@
-##定义初始变量
-#set($tablefirstLowerCase = $tool.firstLowerCase($tableInfo.name))
-##设置回调
-$!callback.setFileName($tool.append($tablefirstLowerCase, ".jsp"))
-$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/admin/$!{tablefirstLowerCase}"))
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="/admin/public/public_source.jsp" %>
 <style>
@@ -67,7 +62,7 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
         <Row>
             <i-col span="3">
                 <i-button type="primary" icon="md-add" @click="newAdd">添加</i-button>
-                <i-button v-if="rows.length>0" type="error" icon="ios-trash" @click="delete$!{tableInfo.name}">删除</i-button>
+                <i-button v-if="rows.length>0" type="error" icon="ios-trash" @click="deleteProductstock">删除</i-button>
             </i-col>
 
             <i-col span="21">
@@ -88,7 +83,7 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
 
         <Row justify="center" align="middle">
             <div style="margin-top:20px">
-                <i-Table row-key="name" :columns="columns" :data="$!{tableInfo.name}Data" border max-height="650"
+                <i-Table row-key="name" :columns="columns" :data="ProductstockData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
                 </i-Table>
@@ -106,12 +101,34 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
                     <Form-Item prop="id" v-show=false>
                         <input type="text" v-model="formValidate.id"/>
                     </Form-Item>
-                    #foreach($column in $tableInfo.otherColumn)
-                    <Form-Item label="$!{column.name}" prop="$!{column.name}">
-                        <i-Input v-model="formValidate.$!{column.name}" placeholder="请输入相关值"></i-Input>
+                                        <Form-Item label="num" prop="num">
+                        <i-Input v-model="formValidate.num" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                    #end
-                    <Form-Item>
+                                        <Form-Item label="amount" prop="amount">
+                        <i-Input v-model="formValidate.amount" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="price" prop="price">
+                        <i-Input v-model="formValidate.price" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="incomedate" prop="incomedate">
+                        <i-Input v-model="formValidate.incomedate" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="warning" prop="warning">
+                        <i-Input v-model="formValidate.warning" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="topnum" prop="topnum">
+                        <i-Input v-model="formValidate.topnum" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="bottomnum" prop="bottomnum">
+                        <i-Input v-model="formValidate.bottomnum" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="productId" prop="productId">
+                        <i-Input v-model="formValidate.productId" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="depotId" prop="depotId">
+                        <i-Input v-model="formValidate.depotId" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
                     </Form-Item>
@@ -122,6 +139,5 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
         </Row>
 
     </Card>
-    <script src="admin/$!{tablefirstLowerCase}/$!{tablefirstLowerCase}.js" type="module"></script>
+    <script src="admin/productstock/productstock.js" type="module"></script>
 </div>
-
