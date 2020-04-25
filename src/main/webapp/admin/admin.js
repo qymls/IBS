@@ -333,6 +333,7 @@ var vue = new Vue({
         personClick: function (name) {
             if (name == 'logout') {
                 console.log('退出登录')
+                window.location.href='Admin/logout';
             } else if (name == 'refresh') {
                 window.location.reload();/*刷新当前页*/
             } else {

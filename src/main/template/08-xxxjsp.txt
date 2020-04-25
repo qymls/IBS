@@ -26,8 +26,7 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
                         placement="right"
                         transfer
                         title="您确认删除这些信息吗?"
-                        @on-ok="delete$!{tableInfo.name}"
-                        @on-cancel="cancel">
+                        @on-ok="delete$!{tableInfo.name}">
                     <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
                 </Poptip>
             </i-col>

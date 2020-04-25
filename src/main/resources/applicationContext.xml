@@ -8,7 +8,8 @@
 
     <!--使用自动装载注解-->
     <import resource="dataSource.xml"/><!--引入jdbc的连接池-->
-   <!--<context:component-scan base-package="dao"/>--><!--扫描dao层使用spring data jpa 无法使用注解，在前面配置的扫描 dataSource.xml-->
+    <import resource="applicationContext-shiro.xml"/><!--引入shiro框架-->
+    <!--<context:component-scan base-package="dao"/>--><!--扫描dao层使用spring data jpa 无法使用注解，在前面配置的扫描 dataSource.xml-->
 
     <!--  <bean id="iUserService" class="_20200323.service.impl.UserServiceImpl">
           <property name="IUserDao" ref="iUserDao1"/>

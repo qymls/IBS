@@ -67,8 +67,7 @@
                         placement="right"
                         transfer
                         title="您确认删除这些信息吗?"
-                        @on-ok="deleteEmployee"
-                        @on-cancel="cancel">
+                        @on-ok="deleteEmployee">
                     <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
                 </Poptip>
             </i-col>

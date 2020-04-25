@@ -1,54 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="/admin/public/public_source.jsp" %>
 <style>
-    .upload_style .ivu-icon {
-        line-height: unset;
-    }
-
     .page_class .ivu-icon {
         line-height: unset;
-    }
-</style>
-<style>
-    .demo-upload-list {
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-        text-align: center;
-        line-height: 60px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        overflow: hidden;
-        background: #fff;
-        position: relative;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
-        margin-right: 4px;
-    }
-
-    .demo-upload-list img {
-        width: 100%;
-        height: 100%;
-    }
-
-    .demo-upload-list-cover {
-        display: none;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0, 0, 0, .6);
-    }
-
-    .demo-upload-list:hover .demo-upload-list-cover {
-        display: block;
-    }
-
-    .demo-upload-list-cover i {
-        color: #fff;
-        font-size: 20px;
-        cursor: pointer;
-        margin: 0 2px;
     }
 </style>
 <div id="app">
@@ -62,7 +16,14 @@
         <Row>
             <i-col span="3">
                 <i-button type="primary" icon="md-add" @click="newAdd">添加</i-button>
-                <i-button v-if="rows.length>0" type="error" icon="ios-trash" @click="deleteDepartment">删除</i-button>
+                <Poptip
+                        confirm
+                        placement="right"
+                        transfer
+                        title="您确认删除这些信息吗?"
+                        @on-ok="deleteDepartment">
+                    <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
+                </Poptip>
             </i-col>
 
             <i-col span="21">
@@ -98,30 +59,13 @@
             </div>
             <Modal title="添加信息" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable>
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                    <Form-Item prop="id">
-                        <input type="hidden" v-model="formValidate.id"/>
+                    <Form-Item prop="id" v-show=false>
+                        <input type="text" v-model="formValidate.id"/>
                     </Form-Item>
                                         <Form-Item label="name" prop="name">
                         <i-Input v-model="formValidate.name" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                                        <%--<input type="hidden" v-model="formValidate.headImage"/>
-                    <Form-Item label="头像">
-                        <div class="demo-upload-list">
-                            <img src="admin/images/GitHub.svg">
-                            <div class="demo-upload-list-cover">
-                                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                            </div>
-                        </div>
-
-                        <Upload action="#" type="drag" style="width: 58px;display: inline-block;" class="upload_style"
-                                :show-upload-list="false">
-                            <div style="width: 58px;height:58px;line-height: 58px;">
-                                <Icon type="ios-camera" size="20"></Icon>
-                            </div>
-                        </Upload>
-                    </Form-Item>--%>
-                    <Form-Item>
+                                        <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
                     </Form-Item>
