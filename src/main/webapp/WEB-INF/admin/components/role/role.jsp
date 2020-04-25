@@ -11,7 +11,6 @@
     .ivu-modal-body {
         max-height: 500px;
         overflow: auto;
-
     }
 
     ::-webkit-scrollbar { /*不要滚动条*/

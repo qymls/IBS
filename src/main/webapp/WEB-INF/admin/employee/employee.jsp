@@ -62,7 +62,15 @@
         <Row>
             <i-col span="3">
                 <i-button type="primary" icon="md-add" @click="newAdd">员工管理</i-button>
-                <i-button v-if="rows.length>0" type="error" icon="ios-trash" @click="deleteEmployee">删除</i-button>
+                <Poptip
+                        confirm
+                        placement="right"
+                        transfer
+                        title="您确认删除这些信息吗?"
+                        @on-ok="deleteEmployee"
+                        @on-cancel="cancel">
+                    <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
+                </Poptip>
             </i-col>
 
             <i-col span="21">

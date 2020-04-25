@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * (Department)表Service层接口
  *
  * @author 申林
- * @since 2020-04-23 21:39:58
+ * @since 2020-04-25 10:14:25
  */
  @Service
 public class DepartmentServiceImpl extends BaseServiceImpl<Department,Long> implements IDepartmentService{
