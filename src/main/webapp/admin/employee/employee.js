@@ -217,7 +217,7 @@ new Vue({
                             $page.updateModel = false;
                             $page.$Message.success('操作数据成功');
                             $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
-                            delete param["department.id"]/*必须清空*/
+                            //delete param["department.id"]/*必须清空*/
                         }
                     });
                 } else {

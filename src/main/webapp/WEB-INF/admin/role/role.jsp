@@ -48,13 +48,17 @@
 
         <Row justify="center" align="middle">
             <div style="margin-top:20px">
-                <i-Table  :columns="columns" :data="RoleData" border max-height="650"
+                <i-Table :columns="columns" :data="RoleData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
                     <template slot-scope="{ row, index }" slot="action">
                         <Tooltip content="权限配置" transfer placement="right" style="cursor: pointer;">
                             <Icon type="md-cog"></Icon>
                         </Tooltip>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="permission_list">
+                        <div style="overflow:hidden;text-overflow:ellipsis">{{getPermissionName(row)}}</div>
+                        <%--省略号--%>
                     </template>
                 </i-Table>
             </div>
@@ -66,8 +70,8 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="添加信息" v-model="updateModel" class-name="vertical-center-modal"  draggable
-                   :scrollable="true" width="1050" :styles="{top: '20px'}">
+            <Modal title="添加信息" v-model="updateModel" class-name="vertical-center-modal" draggable
+                   :scrollable="true" width="1250" :styles="{top: '20px'}">
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
                     <Form-Item prop="id" v-show=false>
                         <input type="text" v-model="formValidate.id"/>
@@ -79,38 +83,39 @@
                         <i-Input v-model="formValidate.sn" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
 
-                        <div slot="header">
-                            <h2>
-                                <Icon type="md-options"></Icon>
-                                权限控制
-                            </h2>
-                        </div>
-                        <Row>
-                            <i-col span="12">
-                                <div>
-                                    <i-Table :columns="columnSource" :data="sourceData" border height="520"
-                                             @on-row-click="changSetting">
-                                    </i-Table>
-                                </div>
-                            </i-col>
-                            <i-col span="12">
-                                <div>
-                                    <i-Table :columns="columnTraget" :data="TragetData" border height="520"
-                                             @on-row-click="changSettingReturn">
-                                    </i-Table>
-                                </div>
-                            </i-col>
-
-                        </Row>
-                        <div style="margin: 10px;overflow: hidden">
-                            <div style="float: left;">
-                                <Page :total="roleSettingTotal" show-total :page-size="roleSettingPageSize"
-                                      :page-size-opts="[5,10,20]" :current="roleSettingPage"
-                                      show-sizer transfer show-elevator
-                                      @on-change="roleSettingChangePage" @on-page-size-change="roleSettingSizeChange"
-                                      class-name="page_class" style="margin-top: 10px;"></Page>
+                    <div slot="header">
+                        <h2>
+                            <Icon type="md-options"></Icon>
+                            权限控制
+                        </h2>
+                    </div>
+                    <Row>
+                        <i-col span="12">
+                            <div>
+                                <i-Table ref="selection" :columns="columnSource" :data="sourceData" border height="520"
+                                         @on-row-dblclick="changSetting" @on-select="changeSourceDataSelect" @on-select-cancel="cancelSourceDataSelect"
+                                         @on-select-all ="allSourceDataSelect" @on-select-all-cancel="allCancelSourceDataSelect">
+                                </i-Table>
                             </div>
+                        </i-col>
+                        <i-col span="12">
+                            <div>
+                                <i-Table :columns="columnTraget" :data="TragetData" border height="520"
+                                         @on-row-click="changSettingReturn">
+                                </i-Table>
+                            </div>
+                        </i-col>
+
+                    </Row>
+                    <div style="margin: 10px;overflow: hidden">
+                        <div style="float: left;">
+                            <Page :total="roleSettingTotal" show-total :page-size="roleSettingPageSize"
+                                  :page-size-opts="[5,10,20]" :current="roleSettingPage"
+                                  show-sizer transfer show-elevator
+                                  @on-change="roleSettingChangePage" @on-page-size-change="roleSettingSizeChange"
+                                  class-name="page_class" style="margin-top: 10px;"></Page>
                         </div>
+                    </div>
 
                 </i-Form>
                 <div slot="footer" style="text-align: center">

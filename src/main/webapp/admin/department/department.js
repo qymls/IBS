@@ -45,6 +45,9 @@ new Vue({
         this.getFirstMenuData(this.page, this.pageSize);
     },
     methods: {
+        click_enter(){/*键盘事件,调用查找方法*/
+            this.handleSubmit();
+        },
         updateModelShow(data) {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
             this.updateModel = true;

@@ -13,9 +13,9 @@ public class FilterChainDefinitionMap {
         map.put("/Admin/logout", "anon");
         map.put("/Admin/register", "anon");
         map.put("/iview/**", "anon");
-        map.put("/Admin/Employee/save", "perms[employee:save]");
+        /*map.put("/Admin/Employee/save", "perms[employee:save]");
         map.put("/Admin/Employee/delete", " perms[employee:delete]");
-        map.put("/Admin/Employee/update", "perms[employee:update]");
+        map.put("/Admin/Employee/update", "perms[employee:update]");*/
         map.put("/**", "authc");
         return map;
     }
