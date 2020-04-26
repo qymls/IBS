@@ -1,7 +1,9 @@
 package cn.itsource.web.controller;
 
 import cn.itsource.service.login.IAuthenticationService;
+import cn.itsource.shiro.LoginResult;
 import cn.itsource.util.Constant;
+import com.google.inject.internal.cglib.proxy.$Factory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.mgt.DefaultSecurityManager;
@@ -58,26 +60,25 @@ public class LoginController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> login(String username, String password) {
-        HashMap<String, String> map = new HashMap<>();
+    public LoginResult login(String username, String password) {
         SecurityUtils.setSecurityManager(securityManager);/*设置上下文*/
         Subject subject = SecurityUtils.getSubject();
         if (!subject.isAuthenticated()) {/*是否登录了*/
             try {
                 AuthenticationToken token = new UsernamePasswordToken(username, password);
                 subject.login(token);/*登录*/
-                map.put("success", "success");/*只有登录成功了才会执行*/
+                return new LoginResult(true, "success");/*只有登录成功了才会执行*/
             } catch (UnknownAccountException e) {
-                map.put("errorMessage", "用户名不存在,错误码" + "("+System.currentTimeMillis()+")");
+                return new LoginResult(false, "用户名不存在");
             } catch (IncorrectCredentialsException e) {
-                map.put("errorMessage", "密码错误,错误码" + "("+System.currentTimeMillis()+")");
+                return new LoginResult(false, "密码错误");
             } catch (AuthenticationException e) {
-                map.put("errorMessage", "系统繁忙,错误码" + "("+System.currentTimeMillis()+")");
+                return new LoginResult(false, "系统繁忙");
+
             }
         } else {
-            map.put("success", "以登录");
+            return new LoginResult(true, "已登录");
         }
-        return map;
     }
 
     /**
@@ -88,7 +89,7 @@ public class LoginController {
         SecurityUtils.setSecurityManager(securityManager);/*设置上下文*/
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
-        return "WEB-INF/admin/login";/*跳回到登录页面*/
+        return "redirect:Admin/login";/*跳回到登录页面*/
     }
 
     /**

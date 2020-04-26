@@ -27,9 +27,9 @@
             </i-col>
 
             <i-col span="21">
-                <i-Form ref="formInline" :model="formInline" inline style="margin-left: 20px;">
+                <i-Form ref="formInline" :model="formInline" inline style="margin-left: 20px;" @submit.native.prevent>
                     <Form-Item prop="name">
-                        <i-Input type="text" v-model="formInline.name" placeholder="请输入查找的名称">
+                        <i-Input type="text" v-model="formInline.name" placeholder="请输入查找的名称" @on-enter="click_enter">
                             <Icon type="ios-menu" slot="prepend"></Icon>
                         </i-Input>
                     </Form-Item>
@@ -44,7 +44,7 @@
 
         <Row justify="center" align="middle">
             <div style="margin-top:20px">
-                <i-Table row-key="name" :columns="columns" :data="DepartmentData" border max-height="650"
+                <i-Table :columns="columns" :data="DepartmentData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
                 </i-Table>

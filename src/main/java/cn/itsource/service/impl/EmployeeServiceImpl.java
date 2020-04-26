@@ -6,6 +6,8 @@ import cn.itsource.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmployeeServiceImpl extends BaseServiceImpl<Employee, Long> implements IEmployeeService {
 
@@ -16,4 +18,13 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee, Long> impleme
         this.employeeRepository = employeeRepository;
     }
 
+    @Override
+    public Employee findByUsername(String username) {
+        String jpql = "select e from Employee e where e.username=?1";
+        List<Employee> employeeList = employeeRepository.findByJpql(jpql, username);
+        if (employeeList.size() > 0) {
+            return employeeList.get(0);
+        }
+        return null;
+    }
 }

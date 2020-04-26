@@ -1,35 +1,48 @@
 package cn.itsource.web.controller;
 
-import cn.itsource.domain.Department;
-import cn.itsource.query.DepartmentQuery;
-import cn.itsource.service.IDepartmentService;
+import cn.itsource.domain.Permission;
+import cn.itsource.domain.Role;
+import cn.itsource.query.RoleQuery;
+import cn.itsource.service.IPermissionService;
+import cn.itsource.service.IRoleService;
+import com.hazelcast.security.permission.ListPermission;
+import org.hibernate.annotations.AttributeAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.HashMap;
+import java.util.List;
+
 /**
- * (Department)表Controller
+ * (Role)表Controller
  *
  * @author 申林
- * @since 2020-04-26 13:55:45
+ * @since 2020-04-26 14:28:46
  */
 @Controller
-@RequestMapping("Admin/Department")
-public class DepartmentController {
-    private IDepartmentService departmentService;
+@RequestMapping("Admin/Role")
+public class RoleController {
+    private IRoleService roleService;
+    private IPermissionService permissionService;
 
     @Autowired
-    public void setDepartmentService(IDepartmentService departmentService) {
-        this.departmentService = departmentService;
+    public void setRoleService(IRoleService roleService) {
+        this.roleService = roleService;
+    }
+
+    @Autowired
+    public void setPermissionService(IPermissionService permissionService) {
+        this.permissionService = permissionService;
     }
 
     @RequestMapping("/findAll")
     @ResponseBody
-    public Page<Department> findAll(DepartmentQuery departmentQuery) {
-        Page<Department> pageUtil = departmentService.findPageByQuery(departmentQuery);
+    public Page<Role> findAll(RoleQuery roleQuery) {
+        Page<Role> pageUtil = roleService.findPageByQuery(roleQuery);
         return pageUtil;
     }
 
@@ -39,7 +52,7 @@ public class DepartmentController {
         HashMap<Object, Object> map = null;
         if (ids.length > 0) {
             for (long id : ids) {
-                departmentService.delete(id);
+                roleService.delete(id);
             }
             map = new HashMap<>();
             map.put("success", true);
@@ -50,8 +63,8 @@ public class DepartmentController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public HashMap<Object, Object> save(Department department) {
-        departmentService.save(department);
+    public HashMap<Object, Object> save(Role role) {
+        roleService.save(role);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         map.put("msg", "操作做成功");
@@ -59,28 +72,34 @@ public class DepartmentController {
     }
 
     @ModelAttribute("update")/*所有方法执行前都要执行*/
-    public Department findOneBeforeUpdate(String action, Long id) {
-        Department department = null;
+    public Role findOneBeforeUpdate(String action, Long id) {
+        Role role = null;
         if ("update".equalsIgnoreCase(action)) {
-            department = departmentService.findOne(id);
-            //department.setDepartment(null);/*department 脱离持久化状态*/
+            role = roleService.findOne(id);
+            role.getPermissionList().clear();/*解决nton*/
         }
-        return department;
+        return role;
     }
 
     /**
      * 修改前先查询一次，然后与传递的对比，合并新数据
      *
-     * @param department
+     * @param role
      * @return
      */
     @RequestMapping("/update")
     @ResponseBody
-    public HashMap<Object, Object> update(@ModelAttribute("update") Department department) {
-        departmentService.update(department);
+    public HashMap<Object, Object> update(@ModelAttribute("update") Role role) {
+        roleService.update(role);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         map.put("msg", "操作做成功");
         return map;
+    }
+
+    @RequestMapping("/permission/findAll")
+    @ResponseBody
+    public List<Permission> findAllPermission() {
+        return permissionService.findAll();
     }
 }

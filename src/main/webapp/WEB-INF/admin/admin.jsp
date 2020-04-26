@@ -1,3 +1,4 @@
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: qymls
@@ -601,7 +602,7 @@
                                       @on-click="personClick">
                                 <a href="javascript:void(0)">
                                     <menu-item name="6">
-                                        iview-admin
+                                        <shiro:principal property="username"/>
                                         <Icon type="ios-arrow-down"></Icon>
                                     </menu-item>
                                 </a>

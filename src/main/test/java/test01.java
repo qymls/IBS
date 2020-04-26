@@ -92,27 +92,27 @@ public class test01 {
     /*高级查询*/
     @Test
     public void findAllByUsernameLike() throws Exception {
-        List<Employee> employeeList = employeeRepository.findAllByUsernameLike("%admin%");
-        System.out.println(employeeList.size());
+       /* List<Employee> employeeList = employeeRepository.findAllByUsernameLike("%admin%");
+        System.out.println(employeeList.size());*/
     }
 
     @Test
     public void findByUsernameAndPassword(){
-        Employee admin = employeeRepository.findByUsernameAndPassword("admin", "123456");
-        System.out.println(admin);
+       /* Employee admin = employeeRepository.findByUsernameAndPassword("admin", "123456");
+        System.out.println(admin);*/
     }
 
 
     @Test
     public void findByNameAndPwd(){
-        Employee admin = employeeRepository.findByNameAndPwd("admin", "123456");
-        System.out.println(admin);
+       /* Employee admin = employeeRepository.findByNameAndPwd("admin", "123456");
+        System.out.println(admin);*/
     }
 
     @Test
     public void findByNameAndPwdNative(){
-        Employee admin = employeeRepository.findByNameAndPwdNative("admin", "123456");
-        System.out.println(admin);
+     /*   Employee admin = employeeRepository.findByNameAndPwdNative("admin", "123456");
+        System.out.println(admin);*/
     }
 
 

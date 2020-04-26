@@ -1,6 +1,7 @@
 package cn.itsource.shiro;
 
 import cn.itsource.domain.Employee;
+import cn.itsource.service.IEmployeeService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -8,6 +9,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +18,9 @@ import java.util.Set;
  * 继承AuthorizingRealm类，就是间接实现了Realm，就可以做登录 权限认证了
  */
 public class JpaRealm extends AuthorizingRealm {
+    @Autowired
+    private IEmployeeService employeeService;
+
     /**
      * 身份验证（当条用subject.login就执行），并且获取到UsernamePasswordToken对象
      * 该方法返回AuthenticationInfo对象，当其为null时，用户名不存在，抛出UnknownAccountException
@@ -30,7 +35,7 @@ public class JpaRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;/*强转*/
         String username = token.getUsername();
-        Employee employee = this.findByUserName(username);
+        Employee employee = employeeService.findByUsername(username);/*查询数据库*/
         if (employee != null) {
             /**
              * (Object principal, 主题对象，一旦登陆成功shiro会自动保存在session中
@@ -44,15 +49,6 @@ public class JpaRealm extends AuthorizingRealm {
         return null;
     }
 
-    private Employee findByUserName(String username) {
-        if ("admin".equals(username)) {
-            Employee employee = new Employee();
-            employee.setUsername("admin");
-            employee.setPassword("7d4c3a269316a73ce7f3256cf5d550c4");
-            return employee;
-        }
-        return null;
-    }
 
     /**
      * 权限认证

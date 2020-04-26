@@ -46,7 +46,8 @@
             </i-Input>
         </Form-Item>
         <Form-Item prop="password" :error="showError">
-            <i-Input type="password" password size="large" v-model="formInline.password" placeholder="Password">
+            <i-Input type="password" password size="large" v-model="formInline.password" placeholder="Password"
+                     @keyup.enter.native="click_enter">
                 <Icon type="ios-lock" slot="prefix"></Icon>
             </i-Input>
         </Form-Item>
@@ -98,8 +99,23 @@
             },
             showError: '',
         },
-        create: {},
+        created() {
+            if (window != window.top) {/*如果当前登录页面不是第一级窗口，就重新请求登录页面，解决登录页面嵌套*/
+                window.top.location.href = "Admin/login"
+            }
+            var page = this
+            document.onkeydown = function (e) {/*全局键盘事件*/
+                let key = window.event.keyCode;
+                if (key == 13) {
+                    page.click_enter();
+                }
+            }
+        },
         methods: {
+            click_enter() {/*回车事事件*/
+                this.handleSubmit('formInline'); /*触发表单*/
+            }
+            ,
             handleSubmit(name) {
                 var page = this;
                 this.$refs[name].validate((valid) => {
@@ -116,7 +132,7 @@
                                 if (result.success) {/*登录成功跳转*/
                                     window.location.href = "Admin/admin";
                                 } else {
-                                    page.showError = result.errorMessage;/*信息不能重复，否则error只显示一次*/
+                                    page.showError = result.msg;/*信息不能重复，否则error只显示一次*/
                                     //page.$Message.error(result.errorMessage);
                                 }
                             }

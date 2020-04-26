@@ -1,6 +1,5 @@
 package cn.itsource.shiro;
 
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 

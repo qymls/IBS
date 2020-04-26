@@ -46,21 +46,26 @@
             authc：需要登录后才能访问，必须放在最后一行，除了上面的的资源，其余的都需要权限
             /** ：所有文件及其子文件
         -->
-        <property name="filterChainDefinitions">
-            <value>
-                #不需要登录的就能访问的
-                /Admin/gitHubLogin = anon
-                /Admin/qqLogin = anon
-                /Admin/login = anon
-                /Admin/logout = anon
-                /Admin/register = anon
-                /iview/** = anon<!--放行iview文件下的资源，image或js,css-->
-                /Admin/Employee/save = perms[employee:save]<!--需要save才能访问-->
-                /Admin/Employee/delete = perms[employee:delete]
-                /Admin/Employee/update = perms[employee:update]
-                /** = authc
-            </value>
-        </property>
-    </bean>
+        <!-- <property name="filterChainDefinitions">
+             <value>
+                 #不需要登录的就能访问的
+                 /Admin/gitHubLogin = anon
+                 /Admin/qqLogin = anon
+                 /Admin/login = anon
+                 /Admin/logout = anon
+                 /Admin/register = anon
+                 /iview/** = anon&lt;!&ndash;放行iview文件下的资源，image或js,css&ndash;&gt;
+                 /Admin/Employee/save = perms[employee:save]&lt;!&ndash;需要save才能访问&ndash;&gt;
+                 /Admin/Employee/delete = perms[employee:delete]
+                 /Admin/Employee/update = perms[employee:update]
+                 /** = authc
+             </value>
+         </property>-->
+        <!--过滤器-->
+        <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>
 
+    </bean>
+    <!--实例工厂-->
+    <bean id="filterChainDefinitionMapFactory" class="cn.itsource.shiro.FilterChainDefinitionMap"/>
+    <bean id="filterChainDefinitionMap" factory-bean="filterChainDefinitionMapFactory" factory-method="create"/>
 </beans>

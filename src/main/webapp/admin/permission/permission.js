@@ -1,8 +1,3 @@
-##定义初始变量
-#set($tablefirstLowerCase = $tool.firstLowerCase($tableInfo.name))
-##设置回调
-$!callback.setFileName($tool.append($tablefirstLowerCase, ".js"))
-$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/admin/$!{tablefirstLowerCase}"))
 new Vue({
     el: "#app",
     data: function () {
@@ -11,18 +6,31 @@ new Vue({
             rows: [],
             updateModel: false,
             formValidate: {
-            #foreach($column in $tableInfo.fullColumn)
-    $!{column.name} : '' ,
-            #end
-
+                id : '' ,
+                name : '' ,
+                url : '' ,
+                descs : '' ,
+                sn : '' ,
+                menuId : '' ,
+            
             },
             ruleValidate: {
-            #foreach($column in $tableInfo.otherColumn)
-    $!{column.name} : [
+                name : [
                     {required: true, message: '请输入对应的值', trigger: 'blur'},
                 ],
-            #end
-            },
+                url : [
+                    {required: true, message: '请输入对应的值', trigger: 'blur'},
+                ],
+                descs : [
+                    {required: true, message: '请输入对应的值', trigger: 'blur'},
+                ],
+                sn : [
+                    {required: true, message: '请输入对应的值', trigger: 'blur'},
+                ],
+                menuId : [
+                    {required: true, message: '请输入对应的值', trigger: 'blur'},
+                ],
+                        },
             formInline: {
                 name: '',
             },
@@ -38,14 +46,28 @@ new Vue({
                     width: 100,
                     align: 'center',
                 },
-                #foreach($column in $tableInfo.otherColumn)
-                {
-                    title: '$!{column.name}',
-                    key: '$!{column.name}',
+                                {
+                    title: 'name',
+                    key: 'name',
                 },
-                #end
-            ],
-            $!{tableInfo.name}Data: [],
+                                {
+                    title: 'url',
+                    key: 'url',
+                },
+                                {
+                    title: 'descs',
+                    key: 'descs',
+                },
+                                {
+                    title: 'sn',
+                    key: 'sn',
+                },
+                                {
+                    title: 'menuId',
+                    key: 'menuId',
+                },
+                            ],
+            PermissionData: [],
             total: 0,
             page: 1,/*当前页默认为1*/
             pageSize: 5,/* 默认5条*/
@@ -71,10 +93,10 @@ new Vue({
             var param = this.formValidate;
             var url;
             if (this.formValidate.id) {/*修改*/
-                url = "Admin/$!{tableInfo.name}/update"
+                url = "Admin/Permission/update"
                 param.action = "update"/*传递这个参数是配合 @ModelAttribute注解使用的，只用于修改*/
                 } else {/*添加*/
-                var url = "Admin/$!{tableInfo.name}/save";
+                var url = "Admin/Permission/save";
                 param.action = "save";
             }
             $.ajax({
@@ -118,7 +140,7 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/$!{tableInfo.name}/findAll",
+                url: "Admin/Permission/findAll",
                 data: {
                     "name": this.formInline.name,
                     "currentPage": page,
@@ -128,7 +150,7 @@ new Vue({
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    $page.$!{tableInfo.name}Data = result.content;
+                    $page.PermissionData = result.content;
                     $page.total = result.totalElements;
                     $page.page = result.number + 1/*处理一个小bug*/
                 }
@@ -146,13 +168,13 @@ new Vue({
             }
         },
 
-        delete$!{tableInfo.name}() {
+        deletePermission() {
             var $page = this;
             var notice = this.$Notice;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/$!{tableInfo.name}/delete",
+                url: "Admin/Permission/delete",
                 data: {"ids": this.rows.toString()},
                 dataType: 'json',
                 traditional: true,//防止深度序列化

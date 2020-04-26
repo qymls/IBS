@@ -1,8 +1,8 @@
 package cn.itsource.web.controller;
 
-import cn.itsource.domain.Department;
-import cn.itsource.query.DepartmentQuery;
-import cn.itsource.service.IDepartmentService;
+import cn.itsource.domain.Permission;
+import cn.itsource.query.PermissionQuery;
+import cn.itsource.service.IPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -11,25 +11,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 /**
- * (Department)表Controller
+ * (Permission)表Controller
  *
  * @author 申林
- * @since 2020-04-26 13:55:45
+ * @since 2020-04-26 13:55:49
  */
 @Controller
-@RequestMapping("Admin/Department")
-public class DepartmentController {
-    private IDepartmentService departmentService;
+@RequestMapping("Admin/Permission")
+public class PermissionController {
+    private IPermissionService permissionService;
 
     @Autowired
-    public void setDepartmentService(IDepartmentService departmentService) {
-        this.departmentService = departmentService;
+    public void setPermissionService(IPermissionService permissionService) {
+        this.permissionService = permissionService;
     }
 
     @RequestMapping("/findAll")
     @ResponseBody
-    public Page<Department> findAll(DepartmentQuery departmentQuery) {
-        Page<Department> pageUtil = departmentService.findPageByQuery(departmentQuery);
+    public Page<Permission> findAll(PermissionQuery permissionQuery) {
+        Page<Permission> pageUtil = permissionService.findPageByQuery(permissionQuery);
         return pageUtil;
     }
 
@@ -39,7 +39,7 @@ public class DepartmentController {
         HashMap<Object, Object> map = null;
         if (ids.length > 0) {
             for (long id : ids) {
-                departmentService.delete(id);
+                permissionService.delete(id);
             }
             map = new HashMap<>();
             map.put("success", true);
@@ -50,8 +50,8 @@ public class DepartmentController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public HashMap<Object, Object> save(Department department) {
-        departmentService.save(department);
+    public HashMap<Object, Object> save(Permission permission) {
+        permissionService.save(permission);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         map.put("msg", "操作做成功");
@@ -59,25 +59,25 @@ public class DepartmentController {
     }
 
     @ModelAttribute("update")/*所有方法执行前都要执行*/
-    public Department findOneBeforeUpdate(String action, Long id) {
-        Department department = null;
+    public Permission findOneBeforeUpdate(String action, Long id) {
+        Permission permission = null;
         if ("update".equalsIgnoreCase(action)) {
-            department = departmentService.findOne(id);
-            //department.setDepartment(null);/*department 脱离持久化状态*/
+            permission = permissionService.findOne(id);
+            //permission.setDepartment(null);/*department 脱离持久化状态*/
         }
-        return department;
+        return permission;
     }
 
     /**
      * 修改前先查询一次，然后与传递的对比，合并新数据
      *
-     * @param department
+     * @param permission
      * @return
      */
     @RequestMapping("/update")
     @ResponseBody
-    public HashMap<Object, Object> update(@ModelAttribute("update") Department department) {
-        departmentService.update(department);
+    public HashMap<Object, Object> update(@ModelAttribute("update") Permission permission) {
+        permissionService.update(permission);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         map.put("msg", "操作做成功");

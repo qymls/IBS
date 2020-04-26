@@ -1,6 +1,9 @@
 package shiro;
 
+import cn.itsource.domain.Employee;
+import cn.itsource.service.IEmployeeService;
 import cn.itsource.shiro.JpaRealm;
+import cn.itsource.shiro.MD5Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -9,8 +12,18 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext.xml")
 public class test03md5 {
+    @Autowired
+    private IEmployeeService employeeService;
     @Test
     public void test() throws Exception {
         /**
@@ -65,5 +78,15 @@ public class test03md5 {
         //System.out.println("当前用户是否是admin"+subject.hasRole("admin"));
         /*判断当前角色有什么权限*/
         System.out.println("当前用户是否有对应的权限employee:save   " + subject.isPermitted("employee:save"));
+    }
+
+    @Test
+    public void testupdateMd5() throws Exception {
+        List<Employee> all = employeeService.findAll();
+        for (Employee employee : all) {
+            employee.setPassword(MD5Utils.getMD5Password(employee.getUsername()));
+            employeeService.save(employee);
+        }
+
     }
 }

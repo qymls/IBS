@@ -1,6 +1,6 @@
 package cn.itsource.query;
 
-import cn.itsource.domain.Department;
+import cn.itsource.domain.Permission;
 import com.github.wenhao.jpa.PredicateBuilder;
 import com.github.wenhao.jpa.Specifications;
 import org.apache.commons.lang3.StringUtils;
@@ -10,16 +10,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
- * (Department)Query实体类
+ * (Permission)Query实体类
  *
  * @author 申林
- * @since 2020-04-26 13:55:44
+ * @since 2020-04-26 13:55:47
  */
-public class DepartmentQuery extends BaseQuery<Department>{
+public class PermissionQuery extends BaseQuery<Permission>{
     private String name;
     @Override
     public Specification getSpecification() {
-        Specification<Department> specification = Specifications.<Department>and()
+        Specification<Permission> specification = Specifications.<Permission>and()
         .like(StringUtils.isNoneBlank(name), "name", "%" + name + "%")
         .build();
         return specification;

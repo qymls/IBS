@@ -1,8 +1,3 @@
-##定义初始变量
-#set($tablefirstLowerCase = $tool.firstLowerCase($tableInfo.name))
-##设置回调
-$!callback.setFileName($tool.append($tablefirstLowerCase, ".jsp"))
-$!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/admin/$!{tablefirstLowerCase}"))
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="/admin/public/public_source.jsp" %>
 <style>
@@ -26,7 +21,7 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
                         placement="right"
                         transfer
                         title="您确认删除这些信息吗?"
-                        @on-ok="delete$!{tableInfo.name}">
+                        @on-ok="deletePermission">
                     <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
                 </Poptip>
             </i-col>
@@ -49,7 +44,7 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
 
         <Row justify="center" align="middle">
             <div style="margin-top:20px">
-                <i-Table :columns="columns" :data="$!{tableInfo.name}Data" border max-height="650"
+                <i-Table row-key="name" :columns="columns" :data="PermissionData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
                 </i-Table>
@@ -67,12 +62,22 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
                     <Form-Item prop="id" v-show=false>
                         <input type="text" v-model="formValidate.id"/>
                     </Form-Item>
-                    #foreach($column in $tableInfo.otherColumn)
-                    <Form-Item label="$!{column.name}" prop="$!{column.name}">
-                        <i-Input v-model="formValidate.$!{column.name}" placeholder="请输入相关值"></i-Input>
+                                        <Form-Item label="name" prop="name">
+                        <i-Input v-model="formValidate.name" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                    #end
-                    <Form-Item>
+                                        <Form-Item label="url" prop="url">
+                        <i-Input v-model="formValidate.url" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="descs" prop="descs">
+                        <i-Input v-model="formValidate.descs" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="sn" prop="sn">
+                        <i-Input v-model="formValidate.sn" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item label="menuId" prop="menuId">
+                        <i-Input v-model="formValidate.menuId" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
+                                        <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
                     </Form-Item>
@@ -83,6 +88,5 @@ $!callback.setSavePath($tool.append($tableInfo.savePath, "/main/webapp/WEB-INF/a
         </Row>
 
     </Card>
-    <script src="admin/$!{tablefirstLowerCase}/$!{tablefirstLowerCase}.js" type="module"></script>
+    <script src="admin/permission/permission.js" type="module"></script>
 </div>
-
