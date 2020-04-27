@@ -63,8 +63,14 @@
          </property>-->
         <!--过滤器-->
         <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>
-
+        <!-- 引用自定义的权限过滤器 -->
+        <property name="filters">
+            <map>
+                <entry key="customPerms" value-ref="customPermissionsAuthorizationFilter"></entry>
+            </map>
+        </property>
     </bean>
+    <bean id="customPermissionsAuthorizationFilter" class="cn.itsource.shiro.CustomPermissionsAuthorizationFilter"/>
     <!--实例工厂-->
     <bean id="filterChainDefinitionMapFactory" class="cn.itsource.shiro.FilterChainDefinitionMap"/>
     <bean id="filterChainDefinitionMap" factory-bean="filterChainDefinitionMapFactory" factory-method="create"/>

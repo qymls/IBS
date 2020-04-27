@@ -1,9 +1,10 @@
 package cn.itsource.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import com.google.inject.internal.cglib.core.$ClassNameReader;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Employee extends BaseDomain {
@@ -15,6 +16,10 @@ public class Employee extends BaseDomain {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "employee_role", joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roleList = new ArrayList<>();
 
     public Department getDepartment() {
         return department;

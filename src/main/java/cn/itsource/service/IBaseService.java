@@ -26,4 +26,10 @@ public interface IBaseService<T, ID extends Serializable> {
     //根据jpql与对应的参数拿到数据
     List findByJpql(String jpql, Object... values);
 
+    //原生sql查询
+    List findByNaciveSql(String sql, Class tClass, Object... values);
+
+    //执行原生sql
+    void createNativeQuery(String sql, Object... values);
+
 }

@@ -6,6 +6,7 @@ import cn.itsource.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -55,6 +56,16 @@ public class BaseServiceImpl<T, ID extends Serializable> implements IBaseService
 
     @Override
     public List findByJpql(String jpql, Object... values) {
-        return baseRepository.findByJpql(jpql,values);
+        return baseRepository.findByJpql(jpql, values);
+    }
+
+    @Override
+    public List findByNaciveSql(String sql, Class tClass, Object... values) {
+        return baseRepository.findByNaciveSql(sql, tClass, values);
+    }
+
+    @Override
+    public void createNativeQuery(String sql, Object... values) {
+        baseRepository.createNativeQuery(sql, values);
     }
 }

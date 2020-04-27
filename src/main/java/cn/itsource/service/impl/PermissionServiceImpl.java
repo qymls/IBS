@@ -5,6 +5,9 @@ import cn.itsource.repository.IPermissionRepository;
 import cn.itsource.service.IPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+
 /**
  * (Permission)表Service层接口
  *
@@ -19,5 +22,10 @@ public class PermissionServiceImpl extends BaseServiceImpl<Permission,Long> impl
     @Autowired
     public void setPermissionRepository(IPermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
+    }
+
+    @Override
+    public Set<String> findPermissionsByID(Long id) {
+        return permissionRepository.findPermissionsByID(id);
     }
 }

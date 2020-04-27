@@ -2,6 +2,7 @@ package cn.itsource.shiro;
 
 import cn.itsource.domain.Employee;
 import cn.itsource.service.IEmployeeService;
+import cn.itsource.service.IPermissionService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -20,6 +21,8 @@ import java.util.Set;
 public class JpaRealm extends AuthorizingRealm {
     @Autowired
     private IEmployeeService employeeService;
+    @Autowired
+    private IPermissionService permissionService;
 
     /**
      * 身份验证（当条用subject.login就执行），并且获取到UsernamePasswordToken对象
@@ -64,16 +67,11 @@ public class JpaRealm extends AuthorizingRealm {
         /*获取当前登录对象*/
         Employee employee = (Employee) SecurityUtils.getSubject().getPrincipal();
         /*Employee employee = (Employee)principalCollection.getPrimaryPrincipal();*/
-        System.out.println(employee);
         SimpleAuthorizationInfo authenticationInfo = new SimpleAuthorizationInfo();
-        Set<String> permissions = findPermissionsByID(employee.getId());/*通过id查询权限*/
+        Set<String> permissions = permissionService.findPermissionsByID(employee.getId());
+        System.out.println("根据对应的登录用户查询拥有的权限了");
         authenticationInfo.setStringPermissions(permissions);/*授权*/
+        System.out.println("已获得对应的权限");
         return authenticationInfo;
-    }
-
-    private Set<String> findPermissionsByID(Long id) {
-        HashSet<String> permissions = new HashSet<>();
-        permissions.add("employee:findAll");
-        return permissions;
     }
 }

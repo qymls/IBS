@@ -2,6 +2,7 @@ package shiro;
 
 import cn.itsource.domain.Employee;
 import cn.itsource.service.IEmployeeService;
+import cn.itsource.service.IPermissionService;
 import cn.itsource.shiro.JpaRealm;
 import cn.itsource.shiro.MD5Utils;
 import org.apache.shiro.SecurityUtils;
@@ -18,12 +19,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
 public class test03md5 {
     @Autowired
     private IEmployeeService employeeService;
+    @Autowired
+    private IPermissionService permissionService;
     @Test
     public void test() throws Exception {
         /**
@@ -88,5 +92,11 @@ public class test03md5 {
             employeeService.save(employee);
         }
 
+    }
+
+    @Test
+    public void test12312313() throws Exception {
+        Set<String> permissionsByID = permissionService.findPermissionsByID(1l);
+        System.out.println(permissionsByID);
     }
 }
