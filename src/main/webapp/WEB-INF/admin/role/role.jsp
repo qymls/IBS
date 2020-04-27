@@ -5,6 +5,35 @@
         line-height: unset;
     }
 
+    .roleTable_style .ivu-table-cell-expand .ivu-icon {
+        line-height: unset;
+    }
+
+    .ivu-table .demo-table-info-cell-style {
+        background-color: #2db7f5;
+        color: #fff;
+    }
+
+    .header_close_style { /*Modal框右上角关闭按钮框*/
+        font-size: 31px;
+        color: #999;
+        -webkit-transition: color .2s ease;
+        transition: color .2s ease;
+        position: relative;
+        top: 1px;
+        cursor: pointer;
+    }
+
+    .header_class_close {
+        z-index: 1;
+        font-size: 12px;
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
     /*    ::-webkit-scrollbar { !*不要滚动条*!
             width: 0;
         }*/
@@ -47,7 +76,7 @@
         </Row>
 
         <Row justify="center" align="middle">
-            <div style="margin-top:20px">
+            <div style="margin-top:20px" class="roleTable_style">
                 <i-Table :columns="columns" :data="RoleData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
@@ -70,8 +99,14 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="添加信息" v-model="updateModel" class-name="vertical-center-modal" draggable
-                   :scrollable="true" width="1250" :styles="{top: '20px'}">
+            <Modal v-model="updateModel" class-name="vertical-center-modal" draggable
+                   :scrollable="true" width="1250" :styles="{top: '20px'}" :closable="false">
+                <div slot="header">
+                    <div class="header_class_close" @click="close_modal">
+                        <Icon type="ios-close" class="header_close_style"></Icon>
+                    </div>
+                    <p>添加信息</p>
+                </div>
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
                     <Form-Item prop="id" v-show=false>
                         <input type="text" v-model="formValidate.id"/>
@@ -93,14 +128,17 @@
                         <i-col span="12">
                             <div>
                                 <i-Table ref="selection" :columns="columnSource" :data="sourceData" border height="520"
-                                         @on-row-dblclick="changSetting" @on-select="changeSourceDataSelect" @on-select-cancel="cancelSourceDataSelect"
-                                         @on-select-all ="allSourceDataSelect" @on-select-all-cancel="allCancelSourceDataSelect">
+                                         @on-row-dblclick="changSetting" @on-select="changeSourceDataSelect"
+                                         @on-select-cancel="cancelSourceDataSelect"
+                                         @on-select-all="allSourceDataSelect"
+                                         @on-select-all-cancel="allCancelSourceDataSelect">
                                 </i-Table>
                             </div>
                         </i-col>
                         <i-col span="12">
                             <div>
                                 <i-Table :columns="columnTraget" :data="TragetData" border height="520"
+                                         class="tragetTable"
                                          @on-row-click="changSettingReturn">
                                 </i-Table>
                             </div>

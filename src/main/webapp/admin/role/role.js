@@ -23,6 +23,24 @@ new Vue({
             },
             columns: [
                 {
+                    type: 'expand',
+                    width: 50,
+                    render: (h, params) => {
+                        var permissions = this.getPermissionName(params.row).split(";")
+                        return h('div',
+                            [
+                                permissions.map((item, index) => {
+                                    return h('Tag',
+                                        {
+                                            props: {color: "blue"},
+                                            style: {cursor: "pointer"}
+                                        }
+                                        , item)
+                                })
+                            ]);
+                    }
+                },
+                {
                     type: 'selection',
                     width: 60,
                     align: 'center'
@@ -113,12 +131,15 @@ new Vue({
             var roleMsg = '';
             if (row.permissionList.length > 0) {
                 $.each(row.permissionList, function (i, o) {
-                    roleMsg += o.name + ';'
+                    if (i == row.permissionList.length - 1) {
+                        roleMsg += o.name
+                    } else {
+                        roleMsg += o.name + ';'
+                    }
                 })
                 return roleMsg;
             }
             return "暂无权限"
-
         },
         changeSourceDataSelect(selection, row) {/*勾选多选框触发*/
             this.changSetting(row);
@@ -170,7 +191,22 @@ new Vue({
                 }
             }
             this.TragetData.push(sourceData)/*添加到目标中,*/
+            this.changeStyleAdd(sourceData)
+            this.scrollToBottom();/*添加数据滚动条到底部*/
             this.getAllPermission(this.roleSettingPage, this.roleSettingPageSize);/*再次查询，同步权限勾选框*/
+        },
+        changeStyleAdd(sourceData) {/*给添加的数据添加一个样式*/
+            for (let i = 0; i < this.TragetData.length; i++) {
+                if (sourceData.id == this.TragetData[i].id) {
+                    this.TragetData[i] = $.extend({}, this.TragetData[i], {
+                        cellClassName: {
+                            name: "demo-table-info-cell-style",
+                            url: "demo-table-info-cell-style",
+                            sn: "demo-table-info-cell-style"
+                        }
+                    });
+                }
+            }
         },
         changSettingReturn(tragetData, index) {/*双击又返回去*/
             this.TragetData.splice(index, 1);
@@ -225,6 +261,10 @@ new Vue({
             this.roleSettingPage = 1;/*默认的第一页*/
             this.getAllPermission(this.roleSettingPage, this.roleSettingPageSize);/*源权限的数据加载了在查询，为了勾选上权限框*/
         },
+        close_modal() {/*modal框关闭触发*/
+            this.$refs.selection.selectAll(false);/*全部设置成未选中的状态*/
+            this.updateModel = false;
+        },
         handleSubmitUpdate: function (name) {//提交方法
             var refs = this.$refs;
             refs['formValidate'].validate((valid) => {
@@ -266,6 +306,7 @@ new Vue({
 
         handleReset: function (name) {//重置方法
             this.$refs['formValidate'].resetFields();
+            this.$refs.selection.selectAll(false);/*全部设置成未选中的状态*/
             this.TragetData = [];/*清空目标权限*/
         },
 
@@ -337,7 +378,13 @@ new Vue({
                     $page.rows = [];
                 }
             });
-        }
+        },
+        scrollToBottom: function () {/*滚动条到底部的方法,出现滚动条之后下一次点击才会到底部*/
+            this.$nextTick(() => {
+                var container = $(".tragetTable .ivu-table-body");/*滚动条在谁身上就找谁*/
+                container[0].scrollTop = container[0].scrollHeight
+            })
+        },
     }
 
 });

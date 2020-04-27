@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.persistence.criteria.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -84,5 +85,11 @@ public class test02 {
 
     }
 
+    @Test
+    public void testss() throws Exception {
+    String str = "c";
+        String[] split = str.split(";");
+        System.out.println(Arrays.toString(split));
+    }
 
 }

@@ -97,9 +97,4 @@ public class RoleController {
         return map;
     }
 
-    @RequestMapping("/permission/findAll")
-    @ResponseBody
-    public List<Permission> findAllPermission() {
-        return permissionService.findAll();
-    }
 }
