@@ -270,6 +270,7 @@ new Vue({
             refs['formValidate'].validate((valid) => {
                 if (valid) {
                     var $page = this;
+                    var messagePage = this.$Message;
                     var param = $.extend({}, this.formValidate)/*复制一份，应为要删除*/
                     var url;
                     for (let i = 0; i < this.TragetData.length; i++) {
@@ -292,10 +293,14 @@ new Vue({
                         async: false,/*取消异步加载*/
                         traditional: true,//防止深度序列化
                         success: function (result) {
-                            $page.updateModel = false;
-                            $page.$Message.success("操作数据成功");
-                            $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
-                            $page.$refs.selection.selectAll(false);/*全部设置成未选中的状态*/
+                            if (!result.success) {/*操作失败，无权限*/
+                                messagePage.error(result.msg);
+                            } else {
+                                $page.updateModel = false;
+                                $page.$Message.success("操作数据成功");
+                                $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
+                                $page.$refs.selection.selectAll(false);/*全部设置成未选中的状态*/
+                            }
                         }
                     });
                 } else {
@@ -324,6 +329,7 @@ new Vue({
 
         getFirstMenuData(page, pageSize) {
             var $page = this;
+            var notice = this.$Notice;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
@@ -337,9 +343,16 @@ new Vue({
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    $page.RoleData = result.content;
-                    $page.total = result.totalElements;
-                    $page.page = result.number + 1/*处理一个小bug*/
+                    if (result.msg) {/*操作失败，无权限*/
+                        notice.error({
+                            title: '通知提醒',
+                            desc: result.msg,
+                        });
+                    } else {
+                        $page.RoleData = result.content;
+                        $page.total = result.totalElements;
+                        $page.page = result.number + 1/*处理一个小bug*/
+                    }
                 }
             });
         },
@@ -370,12 +383,19 @@ new Vue({
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
-                    notice.success({
-                        title: "通知提醒",
-                        desc: "删除成功",
-                    });
-                    $page.rows = [];
+                    if (!result.success) {/*操作失败，无权限*/
+                        notice.error({
+                            title: '通知提醒',
+                            desc: result.msg,
+                        });
+                    } else {
+                        notice.success({
+                            title: '通知提醒',
+                            desc: "删除成功",
+                        });
+                        $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
+                        $page.rows = [];
+                    }
                 }
             });
         },

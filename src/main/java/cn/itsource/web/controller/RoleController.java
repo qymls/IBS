@@ -1,12 +1,9 @@
 package cn.itsource.web.controller;
 
-import cn.itsource.domain.Permission;
 import cn.itsource.domain.Role;
 import cn.itsource.query.RoleQuery;
 import cn.itsource.service.IPermissionService;
 import cn.itsource.service.IRoleService;
-import com.hazelcast.security.permission.ListPermission;
-import org.hibernate.annotations.AttributeAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * (Role)表Controller
@@ -56,7 +52,6 @@ public class RoleController {
             }
             map = new HashMap<>();
             map.put("success", true);
-            map.put("msg", "操作做成功");
         }
         return map;
     }
@@ -67,7 +62,6 @@ public class RoleController {
         roleService.save(role);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 
@@ -93,7 +87,6 @@ public class RoleController {
         roleService.update(role);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 

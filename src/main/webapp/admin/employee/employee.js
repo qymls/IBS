@@ -295,6 +295,7 @@ new Vue({
 
         deleteEmployee() {
             var $page = this;
+            var notice = this.$Notice;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
@@ -305,12 +306,12 @@ new Vue({
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
                     if (!result.success) {/*操作失败，无权限*/
-                        $page.$Notice.error({
+                        notice.error({
                             title: '通知提醒',
                             desc: result.msg,
                         });
                     } else {
-                        $page.$Notice.success({
+                        notice.success({
                             title: '通知提醒',
                             desc: "删除成功",
                         });

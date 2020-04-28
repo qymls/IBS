@@ -14,7 +14,7 @@ import java.util.HashMap;
  * (Permission)表Controller
  *
  * @author 申林
- * @since 2020-04-26 13:55:49
+ * @since 2020-04-28 13:06:01
  */
 @Controller
 @RequestMapping("Admin/Permission")
@@ -43,7 +43,6 @@ public class PermissionController {
             }
             map = new HashMap<>();
             map.put("success", true);
-            map.put("msg", "操作做成功");
         }
         return map;
     }
@@ -54,7 +53,6 @@ public class PermissionController {
         permissionService.save(permission);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 
@@ -80,7 +78,6 @@ public class PermissionController {
         permissionService.update(permission);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 }

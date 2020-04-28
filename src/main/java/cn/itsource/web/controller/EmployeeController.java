@@ -116,5 +116,4 @@ public class EmployeeController {
     public Boolean deleteImg(String path, HttpServletRequest req) {
         return pictureService.deleteImage(path, req);
     }
-
 }

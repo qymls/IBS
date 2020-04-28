@@ -44,7 +44,7 @@
 
         <Row justify="center" align="middle">
             <div style="margin-top:20px">
-                <i-Table row-key="name" :columns="columns" :data="PermissionData" border max-height="650"
+                <i-Table :columns="columns" :data="PermissionData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
                 </i-Table>

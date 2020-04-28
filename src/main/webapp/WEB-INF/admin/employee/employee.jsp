@@ -129,7 +129,7 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="员工管理" v-model="updateModel" class-name="vertical-center-modal" footer-hide>
+            <Modal title="员工管理" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable>
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <Form-Item prop="id" v-show="false">
                         <i-input type="text" v-model="formValidate.id"/>
