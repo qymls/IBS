@@ -18,30 +18,19 @@ public class CustomPermissionsAuthorizationFilter extends PermissionsAuthorizati
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
-        Subject subject = this.getSubject(request, response);
-        if (subject.getPrincipal() == null) {
-            //没有登录成功后的操作
-            this.saveRequestAndRedirectToLogin(request, response);
+        //登录成功后没有权限的操作
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse rep = (HttpServletResponse) response;
+        //判断是什么请求
+        String xRequestedWith = req.getHeader("X-Requested-With");
+        if (xRequestedWith != null && "XMLHttpRequest".equals(xRequestedWith)) {/*ajax请求*/
+            //表示ajax请求 {"success":false,"message":"没有权限"}
+            rep.setContentType("text/json; charset=UTF-8");
+            rep.getWriter().print("{\"success\":false,\"msg\":\"抱歉，您无相应的权限,请联系管理员\"}");
+            rep.getWriter().flush();
+            rep.getWriter().close();
         } else {
-            //登录成功后没有权限的操作
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            //判断是什么请求
-            String xRequestedWith = httpRequest.getHeader("X-Requested-With");
-            if (xRequestedWith != null && "XMLHttpRequest".equals(xRequestedWith)) {/*ajax请求*/
-                //表示ajax请求 {"success":false,"message":"没有权限"}
-                httpResponse.setContentType("text/json; charset=UTF-8");
-                httpResponse.getWriter().print("{\"success\":false,\"msg\":\"抱歉，您无相应的权限,请联系管理员\"}");
-                httpResponse.getWriter().flush();
-                httpResponse.getWriter().close();
-            } else {
-                String unauthorizedUrl = this.getUnauthorizedUrl();
-                if (StringUtils.hasText(unauthorizedUrl)) {
-                    WebUtils.issueRedirect(request, response, unauthorizedUrl);
-                } else {
-                    WebUtils.toHttp(response).sendError(401);
-                }
-            }
+            return super.onAccessDenied(request, response);/*如果是同步请求就，交给父类去处理*/
         }
         return false;
     }
