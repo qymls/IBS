@@ -68,13 +68,6 @@ public class JpaRealm extends AuthorizingRealm {
         /*Employee employee = (Employee)principalCollection.getPrimaryPrincipal();*/
         SimpleAuthorizationInfo authenticationInfo = new SimpleAuthorizationInfo();
         Set<String> permissions = permissionService.findPermissionsByID(employee.getId());
-        if (permissions.size() == 1) {
-            for (String permission : permissions) {
-                if (permission == null) {
-                    permissions.clear();/*当用户没有权限是，会返回一个null，那么就清空*/
-                }
-            }
-        }
         System.out.println("根据对应的登录用户查询拥有的权限了");
         authenticationInfo.setStringPermissions(permissions);/*授权*/
         return authenticationInfo;

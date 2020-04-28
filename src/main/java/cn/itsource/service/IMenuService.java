@@ -10,9 +10,13 @@ public interface IMenuService extends IBaseService<Menu, Long> {
 
     PageUtil<Menu> findPageByQueryUseUtil(MenuQuery menuQuery);
 
-    List<String> findAllParent(Long parent);
+    List<String> findAllParent(Menu menu);
 
     Long saveReturnParam(Menu menu);
 
     Menu findByName(String name);
+
+    List<Menu> findMenuByEmployeeId(Long id);
+
+    List<Menu> findMenuItem();
 }

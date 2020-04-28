@@ -21,7 +21,7 @@ public class MenuQuery extends BaseQuery<Menu> {
     @Override
     public Specification getSpecification() {
         PredicateBuilder<Employee> and = Specifications.and();
-        and.eq("parent", 0);
+        and.eq("firstmenuid", 0);
         and.like(StringUtils.isNoneBlank(name), "name", "%" + name + "%");
         if (StringUtils.isNoneBlank(time)) {/*时间处理特殊*/
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");

@@ -61,7 +61,10 @@
             <Form-Item label="父级菜单">
                 <i-Input v-model="parentMenu" disabled></i-Input>
             </Form-Item>
-            <input type="hidden" v-model="formValidate.parent"/><%--父菜单的id--%>
+            <Form-Item prop="parent" v-show="false">
+                <i-input type="text" v-model="formValidate.parent"/>
+                <%--父菜单的id--%>
+            </Form-Item>
             <Form-Item label="菜单名称" prop="name">
                 <i-Input v-model="formValidate.name" placeholder="请输入菜单名" @on-blur="getEnglishName"></i-Input>
             </Form-Item>
@@ -316,6 +319,13 @@
             },
 
             handleSubmit: function (name) {//提交方法
+                var param = $.extend({}, this.formValidate)/*复制一份，应为要删除*/
+                if (param.parent == 0) {/*一级菜单需要加到firstmenuid字段中*/
+                    param["firstmenuid"] = param.parent
+                } else {
+                    param['parent.id'] = param.parent;
+                }
+                delete param['parent']
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         var $page = this;
@@ -324,19 +334,23 @@
                             type: "POST",
                             contentType: "application/x-www-form-urlencoded",
                             url: "Admin/Menu/save",
-                            data: this.formValidate,
+                            data: param,
                             dataType: 'json',
                             async: false,/*取消异步加载*/
                             success: function (result) {
-                                newMenu = result;
-                                var data = $page.tempAppendData;
-                                var newMenuData = $.extend({}, result, {title: result.name});/*需要为展开状态*/
-                                const children = data.children || [];
-                                children.push(newMenuData);
-                                data.expand = true;/*将该菜单打开*/
-                                $page.$set(data, 'children', children);//是处理data没有children属性的情况的
-                                $page.addModel = false//关闭model
-                                /*$page.$refs['formValidate'].resetFields();// 清空值,打开model就清空*/
+                                if (result.msg) {/*操作失败，无权限*/
+                                    $page.$Message.error(result.msg);
+                                } else {
+                                    newMenu = result;
+                                    var data = $page.tempAppendData;
+                                    var newMenuData = $.extend({}, result, {title: result.name});/*需要为展开状态*/
+                                    const children = data.children || [];
+                                    children.push(newMenuData);
+                                    data.expand = true;/*将该菜单打开*/
+                                    $page.$set(data, 'children', children);//是处理data没有children属性的情况的
+                                    $page.addModel = false//关闭model
+                                    /*$page.$refs['formValidate'].resetFields();// 清空值,打开model就清空*/
+                                }
                             }
                         });
                         this.$Message.success('添加菜单' + newMenu.name + "成功");
@@ -371,10 +385,17 @@
                         dataType: 'json',
                         async: false,/*取消异步加载*/
                         success: function (result) {
-                            $page.$Notice.success({
-                                title: '通知提醒',
-                                desc: "删除成功",
-                            });
+                            if (result.msg) {/*操作失败，无权限*/
+                                $page.$Notice.error({
+                                    title: '通知提醒',
+                                    desc: result.msg,
+                                });
+                            } else {
+                                $page.$Notice.success({
+                                    title: '通知提醒',
+                                    desc: "删除成功",
+                                });
+                            }
                             const index = parent.children.indexOf(data);
                             parent.children.splice(index, 1);
                         }

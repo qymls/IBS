@@ -1,7 +1,10 @@
 package cn.itsource.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,11 +22,24 @@ public class Menu {
     private String operator;
     @Column(name = "create_time")
     private Timestamp createTime;
-    @Column(name = "parent_id")
-    private Long parent;
+
+    private Long firstmenuid;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")/*将其看成是子菜单，如果父菜单是null，则是一级菜单*/
+    @JSONField(serialize = false)/*json转换时忽略*/
+    private Menu parent;
+
     private String description;
-    @Transient/*临时字段，不持久化*/
-    private List<Menu> children;
+    @Transient/*临时字段，不持久化*//*配置关系的话会直接查出子菜单*/
+    private List<Menu> children = new ArrayList<>();/*减当前菜单当成父菜单，会拥有一子菜单*/
+
+    public Menu getParent() {
+        return parent;
+    }
+
+    public void setParent(Menu parent) {
+        this.parent = parent;
+    }
 
     public Menu() {
     }
@@ -44,6 +60,13 @@ public class Menu {
         this.id = id;
     }
 
+    public Long getFirstmenuid() {
+        return firstmenuid;
+    }
+
+    public void setFirstmenuid(Long firstmenuid) {
+        this.firstmenuid = firstmenuid;
+    }
 
     public String getName() {
         return name;
@@ -108,15 +131,6 @@ public class Menu {
     }
 
 
-    public Long getParent() {
-        return parent;
-    }
-
-    public void setParent(Long parent) {
-        this.parent = parent;
-    }
-
-
     public String getDescription() {
         return description;
     }
@@ -136,7 +150,6 @@ public class Menu {
                 ", englishName='" + englishName + '\'' +
                 ", operator='" + operator + '\'' +
                 ", createTime=" + createTime +
-                ", parent=" + parent +
                 ", description='" + description + '\'' +
                 ", children=" + children +
                 '}';

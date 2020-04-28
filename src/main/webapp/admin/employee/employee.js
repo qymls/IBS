@@ -113,7 +113,6 @@ new Vue({
                 {
                     title: '部门',
                     slot: 'department_show',
-                    key: 'department',
                     width: 150,
                     align: "center",
                     sortable: true
@@ -121,7 +120,6 @@ new Vue({
 
                 {
                     title: '头像',
-                    key: 'headImage',
                     slot: 'icon_show',
                     align: 'center',
                     width: 100
@@ -194,7 +192,7 @@ new Vue({
                 if (valid) {
                     var $page = this;
                     var messagePage = this.$Message;
-                    var param = $.extend({}, this.formValidate)/*复制一份，应为要删除*/
+                    var param = $.extend({}, this.formValidate)/*复制一份，因为要删除*/
                     if (this.formValidate.department.id) {/*选择部门才传递*/
                         param["department.id"] = this.formValidate.department.id;/*当选择这个部门时才添加这个属性*/
                     }
@@ -215,7 +213,7 @@ new Vue({
                         async: false,/*取消异步加载*/
                         traditional: true,//防止深度序列化
                         success: function (result) {
-                            if (!result.success) {/*操作失败，无权限*/
+                            if (result.msg) {/*操作失败，无权限*/
                                 messagePage.error(result.msg);
                             } else {
                                 $page.$Message.success('操作数据成功');
@@ -305,7 +303,7 @@ new Vue({
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    if (!result.success) {/*操作失败，无权限*/
+                    if (result.msg) {/*操作失败，无权限*/
                         notice.error({
                             title: '通知提醒',
                             desc: result.msg,

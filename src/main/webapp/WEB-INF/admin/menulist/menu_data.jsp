@@ -236,17 +236,17 @@
                         width: 150,
                     },
                     {
-                        title: '创建时间',
-                        key: 'createTime',
-                        width: 200
-                    },
-                    {
                         title: '菜单描述',
                         key: 'description',
                         ellipsis: true,
                     },
                     {
-                        title: '操作人',
+                        title: '创建时间',
+                        key: 'createTime',
+                        width: 200
+                    },
+                    {
+                        title: '创建人',
                         key: 'operator',
                         width: 100
                     },
@@ -335,6 +335,8 @@
 
             },
             handleSubmitUpdate: function (name) {//提交方法
+                var param = $.extend({}, this.formValidate)/*复制一份，应为要删除*/
+                param['action'] = 'update';
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         var $page = this;
@@ -342,19 +344,23 @@
                             type: "POST",
                             contentType: "application/x-www-form-urlencoded",
                             url: "Admin/Menu/update",
-                            data: this.formValidate,
+                            data: param,
                             dataType: 'json',
                             async: false,/*取消异步加载*/
                             success: function (result) {
-                                $page.updateModel = false;
-                                $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
-                                if (result.length > 0) {/*result返回的是修改菜单的父菜单*/
-                                    $page.getDelInfo($page.menuData, result);/*刷新数据后，打开修改后的children，添加一个属性*/
+                                if (result.msg) {/*操作失败，无权限*/
+                                    $page.$Message.error(result.msg);
                                 } else {
-                                    console.log('一级菜单不用展开')
+                                    $page.updateModel = false;
+                                    $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
+                                    if (result.length > 0) {/*result返回的是修改菜单的父菜单*/
+                                        $page.getDelInfo($page.menuData, result);/*刷新数据后，打开修改后的children，添加一个属性*/
+                                    } else {
+                                        console.log('一级菜单不用展开')
+                                    }
+                                    /* $page.$refs[name].resetFields();/!*清除model的表单数据*!/*/
+                                    $page.$Message.success('修改数据成功');
                                 }
-                                /* $page.$refs[name].resetFields();/!*清除model的表单数据*!/*/
-                                $page.$Message.success('修改数据成功');
                             }
                         });
                     } else {
@@ -397,9 +403,16 @@
                     traditional: true,//防止深度序列化
                     async: false,/*取消异步加载*/
                     success: function (result) {
-                        $page.menuData = result.list;
-                        $page.total = result.totalRows;
-                        $page.page = result.currentPage/*处理一个小bug*/
+                        if (result.msg) {/*操作失败，无权限*/
+                            this.$Notice.notice.error({
+                                title: '通知提醒',
+                                desc: result.msg,
+                            });
+                        } else {
+                            $page.menuData = result.list;
+                            $page.total = result.totalRows;
+                            $page.page = result.currentPage/*处理一个小bug*/
+                        }
                     }
                 });
             },

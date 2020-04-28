@@ -77,7 +77,7 @@ new Vue({
                 async: false,/*取消异步加载*/
                 traditional: true,//防止深度序列化
                 success: function (result) {
-                    if (!result.success) {/*操作失败，无权限*/
+                    if (result.msg) {/*操作失败，无权限*/
                             messagePage.error(result.msg);
                         } else {
                             $page.$Message.success('操作数据成功');
@@ -163,7 +163,7 @@ new Vue({
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    if (!result.success) {/*操作失败，无权限*/
+                    if (result.msg) {/*操作失败，无权限*/
                         notice.error({
                             title: '通知提醒',
                             desc: result.msg,

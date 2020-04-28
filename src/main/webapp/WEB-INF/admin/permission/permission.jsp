@@ -47,6 +47,9 @@
                 <i-Table :columns="columns" :data="PermissionData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
+                    <template slot-scope="{ row, index }" slot="menuName">
+                        {{getMenuName(row)}}
+                    </template>
                 </i-Table>
             </div>
             <div style="margin: 10px;overflow: hidden">
@@ -62,22 +65,24 @@
                     <Form-Item prop="id" v-show=false>
                         <input type="text" v-model="formValidate.id"/>
                     </Form-Item>
-                                        <Form-Item label="name" prop="name">
+                    <Form-Item label="name" prop="name">
                         <i-Input v-model="formValidate.name" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                                        <Form-Item label="url" prop="url">
+                    <Form-Item label="url" prop="url">
                         <i-Input v-model="formValidate.url" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                                        <Form-Item label="descs" prop="descs">
+                    <Form-Item label="descs" prop="descs">
                         <i-Input v-model="formValidate.descs" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                                        <Form-Item label="sn" prop="sn">
+                    <Form-Item label="sn" prop="sn">
                         <i-Input v-model="formValidate.sn" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                                        <Form-Item label="menuId" prop="menuId">
-                        <i-Input v-model="formValidate.menuId" placeholder="请输入相关值"></i-Input>
+                    <Form-Item label="menuId" prop="menuId">
+                        <i-Select v-model="formValidate.menuId">
+                            <Option value="beijing">New York</Option>
+                        </i-Select>
                     </Form-Item>
-                                        <Form-Item>
+                    <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
                     </Form-Item>

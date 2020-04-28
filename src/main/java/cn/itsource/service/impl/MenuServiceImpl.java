@@ -1,10 +1,12 @@
 package cn.itsource.service.impl;
 
+import cn.itsource.domain.Employee;
 import cn.itsource.domain.Menu;
 import cn.itsource.query.MenuQuery;
 import cn.itsource.repository.IMenuRepository;
 import cn.itsource.service.IMenuService;
 import cn.itsource.util.PageUtil;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -57,12 +59,13 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
             }
         });*/
         for (Menu menu : menuList) {/*将所有菜单的parentid和传递的菜单id对比，相等就递归调用，并且加到treeList中，用于setChildren*/
-            if (id.equals(menu.getParent())) {/*可能出现空指的放在后面*/
-                menu.setUrl("Admin/jframeUrl?url=" + menu.getUrl());/*特殊处理下url，用于放在web-info下时请求*/
-                menu.setChildren(getMenuTree(menuList, menu.getId()));
-                treeList.add(menu);
+            if (menu.getParent() != null) {/*排除一级菜单在进来对比的情况*/
+                if (id.equals(menu.getParent().getId())) {/*可能出现空指的放在后面*/
+                    menu.setUrl("Admin/jframeUrl?url=" + menu.getUrl());/*特殊处理下url，用于放在web-info下时请求*/
+                    menu.setChildren(getMenuTree(menuList, menu.getId()));
+                    treeList.add(menu);
+                }
             }
-
         }
         return treeList;
     }
@@ -100,9 +103,11 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
     private List<Menu> getMenuTreeMenu(List<Menu> menuList, Long id) {
         List<Menu> treeList = new ArrayList<>();
         for (Menu menu : menuList) {/*将所有菜单的parentid和传递的菜单id对比，相等就递归调用，并且加到treeList中，用于setChildren*/
-            if (id.equals(menu.getParent())) {/*可能出现空指的放在后面*/
-                menu.setChildren(getMenuTreeMenu(menuList, menu.getId()));
-                treeList.add(menu);
+            if (menu.getParent() != null) {
+                if (id.equals(menu.getParent().getId())) {/*可能出现空指的放在后面*/
+                    menu.setChildren(getMenuTreeMenu(menuList, menu.getId()));
+                    treeList.add(menu);
+                }
             }
         }
         return treeList;
@@ -115,13 +120,10 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
      * @return
      */
     @Override
-    public List<String> findAllParent(Long parent) {
-        List<String> menuListParent = new LinkedList<>();
-        Menu menu = menuRepository.findOne(parent);
-        if (menu != null) {
-            menuListParent.add(menu.getName());
-            getPartnt(menu.getParent(), menuListParent);
-        }
+    public List<String> findAllParent(Menu menu) {
+        List<String> menuListParent = new ArrayList<>();
+        Menu updateMenu = menuRepository.findOne(menu.getId());/*修改的菜单*/
+        getPartnt(updateMenu, menuListParent);
         return menuListParent;
     }
 
@@ -129,30 +131,17 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
     /**
      * 递归查找所有的父菜单,装到list中
      *
-     * @param parent
      * @param list
      */
-    public void getPartnt(Long parent, List<String> list) {
-        Menu menu = menuRepository.findOne(parent);
-        if (menu != null) {
-            list.add(menu.getName());
-            getPartnt(menu.getParent(), list);
+    public void getPartnt(Menu updateMenu, List<String> list) {
+        Menu parent = updateMenu.getParent();
+        if (parent != null) {
+            list.add(parent.getName());
+            getPartnt(parent, list);
         }
 
     }
 
-
-    /**
-     * 重写父类的sqve方法，不能满足需求
-     *
-     * @param menu
-     */
-    @Transactional(readOnly = false)
-    @Override
-    public void update(Menu menu) {
-        String sql = "update menu set name =? , label = ? , icon = ?,english_name = ? , url= ?,description = ? where id = ?";
-        menuRepository.createNativeQuery(sql, menu.getName(), menu.getName(), menu.getIcon(), menu.getEnglishName(), menu.getUrl(), menu.getDescription(), menu.getId());
-    }
 
     /**
      * 添加菜单返回主键
@@ -163,8 +152,10 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
     @Override
     @Transactional(readOnly = false)
     public Long saveReturnParam(Menu menu) {
+        Employee employee = (Employee) SecurityUtils.getSubject().getPrincipal();/*获取当前用户*/
         menu.setLabel(menu.getName());/*这里的name和lable必须一致*/
         menu.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        menu.setOperator(employee.getUsername());/*创建菜单操作人*/
         menuRepository.save(menu);
         return menu.getId();
     }
@@ -174,5 +165,53 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
         return menuRepository.findByName(name);
     }
 
+    @Override
+    public List<Menu> findMenuByEmployeeId(Long id) {
+        List<Menu> firstMenuList = new ArrayList<>();/*用于装一级菜单*/
+        List<Menu> menuByEmployeeIdList = menuRepository.findMenuByEmployeeId(id);/*查询用户有权限的菜单*/
+        for (Menu menuByEmployeeId : menuByEmployeeIdList) {/*数据不能重复，需要去重复，sql或写逻辑代码，这里用了sql*/
+            getPermissionnMenuDg(menuByEmployeeId, firstMenuList);
+        }
+        return firstMenuList;
+    }
+
+
+    public void getPermissionnMenuDg(Menu menuByEmployeeId, List<Menu> firstMenuList) {
+        menuByEmployeeId.setUrl("Admin/jframeUrl?url=" + menuByEmployeeId.getUrl());
+        Menu parent = menuByEmployeeId.getParent();
+        if (parent != null) {
+            parent.setUrl("Admin/jframeUrl?url=" + parent.getUrl());
+            parent.getChildren().add(menuByEmployeeId);
+            getPermissionnMenuDg(parent, firstMenuList);/*递归了*/
+        } else {
+            if (!firstMenuList.contains(menuByEmployeeId)) {/*这里解决两个子菜单拥有用一个父菜单的情况*/
+                firstMenuList.add(menuByEmployeeId);/*一直递归到没有父菜单为止*/
+            }
+        }
+    }
+
+    /**
+     * 查询所有最后一级菜单
+     *
+     * @return
+     */
+    @Override
+    public List<Menu> findMenuItem() {
+        List<Menu> menuItemList = new ArrayList<>();
+        List<Menu> allMenu = findAll();/*得到所有菜单的数据已经是有children的数据了*/
+        getLastMenuItem(allMenu, menuItemList);
+        return menuItemList;
+    }
+
+    public void getLastMenuItem(List<Menu> menuList, List<Menu> menuItemList) {
+        for (Menu menu : menuList) {
+            if (menu.getChildren().size() > 0) {
+                getLastMenuItem(menu.getChildren(), menuItemList);
+            }else {
+                menuItemList.add(menu);
+            }
+
+        }
+    }
 
 }

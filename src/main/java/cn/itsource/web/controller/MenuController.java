@@ -1,18 +1,21 @@
 package cn.itsource.web.controller;
 
 import cn.itsource.com.baidu.translate.demo.TransApi;
+import cn.itsource.domain.Employee;
 import cn.itsource.domain.Menu;
 import cn.itsource.query.MenuQuery;
 import cn.itsource.service.IMenuService;
 import cn.itsource.util.ConstantApi;
 import cn.itsource.util.PageUtil;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/Admin/Menu")
@@ -84,12 +87,13 @@ public class MenuController {
      */
     @RequestMapping("/delete")
     @ResponseBody
-    public String delete(Long[] ids) {
+    public Map<Object, Object> delete(Long[] ids) {
+        HashMap<Object, Object> map = new HashMap<>();
         for (long id : ids) {
             menuService.delete(id);
         }
-
-        return "";
+        map.put("success", true);
+        return map;
     }
 
     /**
@@ -105,6 +109,17 @@ public class MenuController {
         return newMenu;/*返回添加的对象*/
     }
 
+    @ModelAttribute("update")/*所有方法执行前都要执行*/
+    public Menu findOneBeforeUpdate(String action, Long id) {
+        Menu menu = null;
+        if ("update".equalsIgnoreCase(action)) {
+            menu = menuService.findOne(id);
+            //permission.setDepartment(null);/*department 脱离持久化状态*/
+        }
+        return menu;
+    }
+
+
     /**
      * 修改方法，并且返回当前修改菜单的所有父菜单
      *
@@ -113,10 +128,11 @@ public class MenuController {
      */
     @RequestMapping("/update")
     @ResponseBody
-    public List<String> update(Menu menu) {
+    public List<String> update(@ModelAttribute("update") Menu menu) {
+        menu.setLabel(menu.getName());/*修改name要和lable一起修改了*/
         menuService.update(menu);/*修改后返回其父菜单，用于打开父菜单*/
         /*如果直接返回null的话，ajax的success方法不会执行*/
-        List<String> allParentName = menuService.findAllParent(menu.getParent());/*list中只添加了名字，可以自行添加整个菜单*/
+        List<String> allParentName = menuService.findAllParent(menu);/*list中只添加了名字，可以自行添加整个菜单*/
         return allParentName;
     }
 
@@ -147,6 +163,29 @@ public class MenuController {
         TransApi api = new TransApi(ConstantApi.BaiduFanyi_APP_ID, ConstantApi.BaiduFanyi_SECURITY_KEY);
         String transResult = api.getTransResult(name, "auto", "en");
         return transResult;
+    }
+
+    /**
+     * 根据用户权限查询菜单
+     *
+     * @return
+     */
+    @RequestMapping("/findMenuByEmployeeId")
+    @ResponseBody
+    public List<Menu> findMenuByEmployeeId() {
+        Employee employee = (Employee) SecurityUtils.getSubject().getPrincipal();/*获取登录用户*/
+        return menuService.findMenuByEmployeeId(employee.getId());
+    }
+
+    /**
+     * 查询所有最后一级菜单
+     *
+     * @return
+     */
+    @RequestMapping("/findMenuItem")
+    @ResponseBody
+    public List<Menu> findMenuItem() {
+        return menuService.findMenuItem();
     }
 
 }

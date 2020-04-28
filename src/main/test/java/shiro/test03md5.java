@@ -1,11 +1,16 @@
 package shiro;
 
 import cn.itsource.domain.Employee;
+import cn.itsource.domain.Menu;
+import cn.itsource.query.MenuQuery;
 import cn.itsource.repository.IPermissionRepository;
 import cn.itsource.service.IEmployeeService;
+import cn.itsource.service.IMenuService;
 import cn.itsource.service.IPermissionService;
 import cn.itsource.shiro.JpaRealm;
 import cn.itsource.shiro.MD5Utils;
+import cn.itsource.util.PageUtil;
+import com.google.inject.internal.util.$SourceProvider;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -28,7 +33,7 @@ public class test03md5 {
     @Autowired
     private IEmployeeService employeeService;
     @Autowired
-    private IPermissionService permissionService;
+    private IMenuService menuService;
     @Autowired
     private IPermissionRepository permissionRepository;
 
@@ -103,5 +108,24 @@ public class test03md5 {
     public void test12312313() throws Exception {
         Set<String> permissionsByID = permissionRepository.findPermissionsByID(1l);
         System.out.println(permissionsByID);
+    }
+    @Test
+    public void tests() throws Exception {
+        List<Menu> menuByEmployeeId = menuService.findMenuByEmployeeId(1l);
+        System.out.println(menuByEmployeeId);
+    }
+
+    @Test
+    public void testd() throws Exception {
+        MenuQuery menuQuery = new MenuQuery();
+        menuQuery.setCurrentPage(1);
+        menuQuery.setPageSize(5);
+        PageUtil<Menu> pageByQueryUseUtil = menuService.findPageByQueryUseUtil(menuQuery);
+        System.out.println(pageByQueryUseUtil.getList());
+    }
+
+    @Test
+    public void testss() throws Exception {
+     menuService.findMenuItem();
     }
 }
