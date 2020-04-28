@@ -14,7 +14,7 @@ import java.util.HashMap;
  * (Department)表Controller
  *
  * @author 申林
- * @since 2020-04-26 13:55:45
+ * @since 2020-04-28 12:38:19
  */
 @Controller
 @RequestMapping("Admin/Department")
@@ -43,7 +43,6 @@ public class DepartmentController {
             }
             map = new HashMap<>();
             map.put("success", true);
-            map.put("msg", "操作做成功");
         }
         return map;
     }
@@ -54,7 +53,6 @@ public class DepartmentController {
         departmentService.save(department);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 
@@ -80,7 +78,6 @@ public class DepartmentController {
         departmentService.update(department);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 }

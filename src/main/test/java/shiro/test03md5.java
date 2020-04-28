@@ -1,6 +1,7 @@
 package shiro;
 
 import cn.itsource.domain.Employee;
+import cn.itsource.repository.IPermissionRepository;
 import cn.itsource.service.IEmployeeService;
 import cn.itsource.service.IPermissionService;
 import cn.itsource.shiro.JpaRealm;
@@ -28,6 +29,10 @@ public class test03md5 {
     private IEmployeeService employeeService;
     @Autowired
     private IPermissionService permissionService;
+    @Autowired
+    private IPermissionRepository permissionRepository;
+
+
     @Test
     public void test() throws Exception {
         /**
@@ -96,7 +101,7 @@ public class test03md5 {
 
     @Test
     public void test12312313() throws Exception {
-        Set<String> permissionsByID = permissionService.findPermissionsByID(1l);
+        Set<String> permissionsByID = permissionRepository.findPermissionsByID(1l);
         System.out.println(permissionsByID);
     }
 }

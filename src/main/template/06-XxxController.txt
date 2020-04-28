@@ -52,7 +52,6 @@ public class $!{tableInfo.name}Controller {
             }
             map = new HashMap<>();
             map.put("success", true);
-            map.put("msg", "操作做成功");
         }
         return map;
     }
@@ -63,7 +62,6 @@ public class $!{tableInfo.name}Controller {
         $!{tablefirstLowerCase}Service.save($!{tablefirstLowerCase});
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 
@@ -89,7 +87,6 @@ public class $!{tableInfo.name}Controller {
         $!{tablefirstLowerCase}Service.update($!{tablefirstLowerCase});
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 }

@@ -66,7 +66,6 @@ public class EmployeeController {
             }
             map = new HashMap<>();
             map.put("success", true);
-            map.put("msg", "操作做成功");
         }
         return map;
     }
@@ -78,7 +77,6 @@ public class EmployeeController {
         employeeService.save(employee);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 
@@ -104,7 +102,6 @@ public class EmployeeController {
         employeeService.update(employee);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
-        map.put("msg", "操作做成功");
         return map;
     }
 

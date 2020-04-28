@@ -31,7 +31,7 @@ public class FilterChainDefinitionMap {
             String url = permission.getUrl();//资源
             String sn = permission.getSn();//权限
             //把路径与资源放到拦截中去
-            map.put(url, "perms[" + sn + "]");
+            map.put(url, "customPerms[" + sn + "]");/*customPerms来自自定义权限过滤器的key。xml文件*/
         }
         map.put("/**", "authc");
         return map;

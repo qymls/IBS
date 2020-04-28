@@ -18,7 +18,6 @@ public class CustomPermissionsAuthorizationFilter extends PermissionsAuthorizati
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
-        System.out.println(123);
         Subject subject = this.getSubject(request, response);
         if (subject.getPrincipal() == null) {
             //没有登录成功后的操作
@@ -32,8 +31,9 @@ public class CustomPermissionsAuthorizationFilter extends PermissionsAuthorizati
             if (xRequestedWith != null && "XMLHttpRequest".equals(xRequestedWith)) {/*ajax请求*/
                 //表示ajax请求 {"success":false,"message":"没有权限"}
                 httpResponse.setContentType("text/json; charset=UTF-8");
-                httpResponse.getWriter().print(new LoginResult(false,"抱歉，您无相应的权限,请联系管理员"));
-                System.out.println("ajax");
+                httpResponse.getWriter().print("{\"success\":false,\"msg\":\"抱歉，您无相应的权限,请联系管理员\"}");
+                httpResponse.getWriter().flush();
+                httpResponse.getWriter().close();
             } else {
                 String unauthorizedUrl = this.getUnauthorizedUrl();
                 if (StringUtils.hasText(unauthorizedUrl)) {
