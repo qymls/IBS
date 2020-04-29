@@ -119,6 +119,14 @@
                         <i-Input v-model="formValidate.description" type="textarea" :autosize="{minRows: 2,maxRows: 20}"
                                  placeholder="一些简单描述"></i-Input>
                     </Form-Item>
+                    <Form-Item label="权限管理" prop="permission">
+                        <Checkbox-Group v-model="formValidate.permission">
+                            <Checkbox >
+                                <Icon type="md-add"></Icon>
+                                <span>菜单管理列表</span>
+                            </Checkbox>
+                        </Checkbox-Group>
+                    </Form-Item>
                     <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
@@ -257,6 +265,7 @@
                 page: 1,/*当前页默认为1*/
                 pageSize: 5,/* 默认5条*/
                 menuName: '',/*解决当前菜单不被当成重复菜单的标识*/
+                permissonList:[],
             }
         },
         created() {

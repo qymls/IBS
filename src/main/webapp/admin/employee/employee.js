@@ -4,16 +4,16 @@ new Vue({
         const nameplates = (rule, value, callback) => {/*异步验证菜单名称*/
             console.log("input改变了")
             if (value === '') {
-                callback(new Error('请输入菜单名称'));
+                callback(new Error('请输入员工姓名'));
 
             } else {
                 const result = this.getRepetitionName(value);
                 if (result != null) {
                     if (result.name != this.menuName) {
-                        callback(new Error("该菜单已存在"));/*修改当前菜单，不是重复菜单，去掉这种情况*/
+                        callback(new Error("该员工已存在"));/*修改当前菜单，不是重复菜单，去掉这种情况*/
                     } else {
                         callback();/*通过*/
-                        console.log("修改当前菜单")
+                        console.log("修改当前员工")
                     }
                 } else {
                     callback();
@@ -161,19 +161,19 @@ new Vue({
             });
         },
         getRepetitionName(value) {
-            let data;
+           /* let data;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
                 url: "Admin/Menu/findByName",
                 data: {"name": value},
                 dataType: 'json',
-                async: false,/*取消异步加载*/
+                async: false,/!*取消异步加载*!/
                 success: function (result) {
-                    data = result;/*只有前端返回的有值，才会执行这一句话*/
+                    data = result;/!*只有前端返回的有值，才会执行这一句话*!/
                 }
             });
-            return data;
+            return data;*/
         },
         updateModelShow(data) {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/

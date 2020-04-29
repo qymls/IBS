@@ -1,7 +1,9 @@
 package cn.itsource.web.controller;
 
+import cn.itsource.domain.Menu;
 import cn.itsource.domain.Permission;
 import cn.itsource.query.PermissionQuery;
+import cn.itsource.service.IMenuService;
 import cn.itsource.service.IPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,7 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.HashMap;
+import java.util.List;
+
 /**
  * (Permission)表Controller
  *
@@ -20,10 +25,16 @@ import java.util.HashMap;
 @RequestMapping("Admin/Permission")
 public class PermissionController {
     private IPermissionService permissionService;
+    private IMenuService menuService;
 
     @Autowired
     public void setPermissionService(IPermissionService permissionService) {
         this.permissionService = permissionService;
+    }
+
+    @Autowired
+    public void setMenuService(IMenuService menuService) {
+        this.menuService = menuService;
     }
 
     @RequestMapping("/findAll")
@@ -61,7 +72,7 @@ public class PermissionController {
         Permission permission = null;
         if ("update".equalsIgnoreCase(action)) {
             permission = permissionService.findOne(id);
-            //permission.setDepartment(null);/*department 脱离持久化状态*/
+            permission.setMenu(null);/*menu 脱离持久化状态,no to no*/
         }
         return permission;
     }
@@ -79,5 +90,11 @@ public class PermissionController {
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         return map;
+    }
+
+    @RequestMapping("/findMenuItem")
+    @ResponseBody
+    public List<Menu> findMenuItem() {
+        return menuService.findMenuItem();
     }
 }

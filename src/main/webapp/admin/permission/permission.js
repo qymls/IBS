@@ -21,9 +21,6 @@ new Vue({
                 url: [
                     {required: true, message: '请输入对应的值', trigger: 'blur'},
                 ],
-                descs: [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
                 sn: [
                     {required: true, message: '请输入对应的值', trigger: 'blur'},
                 ],
@@ -68,19 +65,19 @@ new Vue({
             total: 0,
             page: 1,/*当前页默认为1*/
             pageSize: 5,/* 默认5条*/
-            menuItem:[]/*查询所有最后一级菜单*/
+            menuItem: []/*查询所有最后一级菜单*/
         }
     },
     created() {
         this.getFirstMenuData(this.page, this.pageSize);
     },
     methods: {
-        findMenuItem(){/*查询所有最后一级菜单*/
+        findMenuItem() {/*查询所有最后一级菜单*/
             var $page = this;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Menu/findMenuItem",
+                url: "Admin/Permission/findMenuItem",
                 dataType: 'json',
                 async: false,/*取消异步加载*/
                 success: function (result) {
@@ -100,10 +97,12 @@ new Vue({
         },
         updateModelShow(data) {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
-            this.updateModel = true;
             this.findMenuItem();/*所有最后一级菜单*/
+            this.updateModel = true;
             this.formValidate = data;
-
+            if (data.menu) {/*如果有菜单，就回显*/
+                this.formValidate.menuId = data.menu.id
+            }
         },
         handleSubmitUpdate: function (name) {//提交方法
             var refs = this.$refs;
@@ -112,7 +111,10 @@ new Vue({
                     var $page = this;
                     var messagePage = this.$Message;
                     var param = $.extend({}, this.formValidate)/*复制一份，因为要删除*/
-                    param['menu.id'] = param.menuId;
+                    if (param.menuId) {
+                        param['menu.id'] = param.menuId;
+                    }
+                    delete param["menuId"]
                     delete param["menu"]
                     var url;
                     if (this.formValidate.id) {/*修改*/
@@ -196,6 +198,7 @@ new Vue({
 
         newAdd: function () {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
+            this.findMenuItem();/*所有最后一级菜单*/
             this.updateModel = true;
         },
         deleteRows: function (selection) {

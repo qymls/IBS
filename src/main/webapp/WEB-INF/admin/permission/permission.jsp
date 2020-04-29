@@ -71,15 +71,16 @@
                     <Form-Item label="url" prop="url">
                         <i-Input v-model="formValidate.url" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                    <Form-Item label="descs" prop="descs">
-                        <i-Input v-model="formValidate.descs" placeholder="请输入相关值"></i-Input>
-                    </Form-Item>
                     <Form-Item label="sn" prop="sn">
                         <i-Input v-model="formValidate.sn" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
+                    <Form-Item label="descs" prop="descs">
+                        <i-Input v-model="formValidate.descs" placeholder="请输入相关值"></i-Input>
+                    </Form-Item>
                     <Form-Item label="menuId" prop="menuId">
                         <i-Select v-model="formValidate.menuId">
-                            <Option value="beijing">New York</Option>
+                            <i-Option v-for="item in menuItem" v-if="item.name!='首页'" :value="item.id">{{item.name}}
+                            </i-Option>
                         </i-Select>
                     </Form-Item>
                     <Form-Item>

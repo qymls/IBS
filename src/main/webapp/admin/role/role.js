@@ -217,7 +217,7 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Permission/findAll",
+                url: "Admin/Role/permission/findPageByQuery",
                 data: {
                     "currentPage": roleSettingPage,
                     "pageSize": roleSettingPageSize

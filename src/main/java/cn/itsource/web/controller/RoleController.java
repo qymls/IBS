@@ -1,6 +1,8 @@
 package cn.itsource.web.controller;
 
+import cn.itsource.domain.Permission;
 import cn.itsource.domain.Role;
+import cn.itsource.query.PermissionQuery;
 import cn.itsource.query.RoleQuery;
 import cn.itsource.service.IPermissionService;
 import cn.itsource.service.IRoleService;
@@ -88,6 +90,13 @@ public class RoleController {
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         return map;
+    }
+
+    @RequestMapping("permission/findPageByQuery")
+    @ResponseBody
+    public Page<Permission> findAll(PermissionQuery permissionQuery) {
+        Page<Permission> pageUtil = permissionService.findPageByQuery(permissionQuery);
+        return pageUtil;
     }
 
 }
