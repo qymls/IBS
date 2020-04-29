@@ -8,5 +8,6 @@ import cn.itsource.domain.Department;
  * @since 2020-04-28 12:38:19
  */
 public interface IDepartmentService extends IBaseService<Department,Long>{
+    Department findByName(String name);
 
 }

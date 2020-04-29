@@ -162,7 +162,11 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
 
     @Override
     public Menu findByName(String name) {
-        return menuRepository.findByName(name);
+        List<Menu> menuList = menuRepository.findByName(name);
+        if (menuList.size() > 0) {
+            return menuList.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -207,7 +211,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
         for (Menu menu : menuList) {
             if (menu.getChildren().size() > 0) {
                 getLastMenuItem(menu.getChildren(), menuItemList);
-            }else {
+            } else {
                 menuItemList.add(menu);
             }
 

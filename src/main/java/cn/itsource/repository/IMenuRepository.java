@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface IMenuRepository extends IBaseRepository<Menu, Long> {
-    Menu findByName(String name);
+
+    @Query("select m from Menu m where m.name = ?1")
+    List<Menu> findByName(String name);
 
     @Query(nativeQuery = true, value = "select * from menu where firstmenuid = 0")
     List<Menu> getStairMenu();

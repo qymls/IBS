@@ -46,10 +46,10 @@ public class easypoi {
     public void testWrite02() throws Exception {
 //手动准备数据，下午集成了SpringMVC之后就直接调用Service层方法去查询数据了
         List<PoiEmployee> list = new ArrayList<>();
-        list.add(new PoiEmployee("admin1", "admin1@qq.com", 22, "市场部", true));
+       /* list.add(new PoiEmployee("admin1", "admin1@qq.com", 22, "市场部", true));
         list.add(new PoiEmployee("admin2", "admin2@qq.com", 21, "市场部", true));
         list.add(new PoiEmployee("admin3", "admin3@qq.com", 23, "IT部", false));
-        list.add(new PoiEmployee("admin4", "admin4@qq.com", 20, "IT部", false));
+        list.add(new PoiEmployee("admin4", "admin4@qq.com", 20, "IT部", false));*/
 /**
  * ExportParams entity 导出参数
  * Class<?> pojoClass domain实体类的字节码类型
@@ -62,7 +62,67 @@ public class easypoi {
         Workbook workbook = ExcelExportUtil.exportExcel(params,
                 PoiEmployee.class, list);
 //将内容输出到excel文件中
-        OutputStream outputStream = new FileOutputStream("员工02.xlsx");
+        OutputStream outputStream = new FileOutputStream("员工.xls");
+        workbook.write(outputStream);
+        outputStream.close();
+        workbook.close();
+    }
+
+
+    @Test
+    public void testWrite03() throws Exception {
+//手动准备数据，下午集成了SpringMVC之后就直接调用Service层方法去查询数据了
+        List<PoiEmployee> list = new ArrayList<>();
+      /*  list.add(new PoiEmployee("admin1", "admin1@qq.com", 22, "市场部", true));
+        list.add(new PoiEmployee("admin2", "admin2@qq.com", 21, "市场部", true));
+        list.add(new PoiEmployee("admin3", "admin3@qq.com", 23, "IT部", false));
+        list.add(new PoiEmployee("admin4", "admin4@qq.com", 20, "IT部", false));*/
+
+        ExportParams params = new ExportParams();
+        params.setSheetName("员工列表"); //设置工作表名称
+        params.setTitle("员工列表数据"); //设置标题（合并单元格之后居中显示）
+        Workbook workbook = ExcelExportUtil.exportExcel(params,
+                PoiEmployee.class, list);
+        OutputStream outputStream = new FileOutputStream("员工.xls");
+        workbook.write(outputStream);
+        outputStream.close();
+        workbook.close();
+    }
+
+    @Test
+    public void testWrite05() throws Exception {
+//手动准备数据，下午集成了SpringMVC之后就直接调用Service层方法去查询数据了
+        List<PoiEmployee> list = new ArrayList<>();
+        list.add(new PoiEmployee("admin1", "admin1@qq.com", 22, "市场部", true, new PoiDepartment(1l, "测试部")));
+        list.add(new PoiEmployee("admin2", "admin2@qq.com", 21, "市场部", true, new PoiDepartment(2l, "财务部")));
+        list.add(new PoiEmployee("admin3", "admin3@qq.com", 23, "IT部", false, new PoiDepartment(3l, "开发部")));
+        list.add(new PoiEmployee("admin4", "admin4@qq.com", 20, "IT部", false, new PoiDepartment(4l, "公关部")));
+
+        ExportParams params = new ExportParams();
+        params.setSheetName("员工列表"); //设置工作表名称
+        params.setTitle("员工列表数据"); //设置标题（合并单元格之后居中显示）
+        Workbook workbook = ExcelExportUtil.exportExcel(params,
+                PoiEmployee.class, list);
+        OutputStream outputStream = new FileOutputStream("员工.xls");
+        workbook.write(outputStream);
+        outputStream.close();
+        workbook.close();
+    }
+
+    @Test
+    public void testWrite06() throws Exception {
+//手动准备数据，下午集成了SpringMVC之后就直接调用Service层方法去查询数据了
+        List<PoiDepartment> list = new ArrayList<>();
+        list.add(new PoiDepartment(1l, "测试部"));
+        list.add(new PoiDepartment(2l, "财务部"));
+        list.add(new PoiDepartment(3l, "开发部"));
+        list.add(new PoiDepartment(4l, "公关部"));
+        ExportParams params = new ExportParams();
+        params.setSheetName("部门列表"); //设置工作表名称
+        params.setTitle("部门列表数据"); //设置标题（合并单元格之后居中显示）
+        Workbook workbook = ExcelExportUtil.exportExcel(params,
+                PoiDepartment.class, list);
+        OutputStream outputStream = new FileOutputStream("部门.xls");
         workbook.write(outputStream);
         outputStream.close();
         workbook.close();

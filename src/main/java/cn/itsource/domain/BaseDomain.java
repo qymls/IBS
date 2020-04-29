@@ -1,5 +1,7 @@
 package cn.itsource.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;

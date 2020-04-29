@@ -25,6 +25,15 @@
         margin-right: 4px;
     }
 
+    .imgLook_style .ivu-modal-body {
+        max-height: 360px;
+        overflow: auto;
+    }
+
+    ::-webkit-scrollbar { /*不要滚动条*/
+        width: 0;
+    }
+
     .demo-upload-list img {
         width: 100%;
         height: 100%;
@@ -73,37 +82,45 @@
             </i-col>
 
             <i-col span="21">
-                <i-Form ref="formInline" :model="formInline" inline style="margin-left: 20px;">
-                    <Form-Item prop="username">
-                        <i-Input type="text" v-model="formInline.username" placeholder="请输入查找的名称">
-                            <Icon type="ios-menu" slot="prepend"></Icon>
-                        </i-Input>
-                    </Form-Item>
-                    <Form-Item>
-                        <Row>
-                            <Col span="11">
-                            <Form-Item prop="age1">
-                                <i-Input type="text" v-model="formInline.age1" placeholder="请输入年龄段">
+                <Row>
+                    <i-col span="13">
+                        <i-Form ref="formInline" :model="formInline" inline style="margin-left: 20px;">
+                            <Form-Item prop="username">
+                                <i-Input type="text" v-model="formInline.username" placeholder="请输入查找的名称">
+                                    <Icon type="ios-menu" slot="prepend"></Icon>
                                 </i-Input>
                             </Form-Item>
-                            </Col>
-                            <Col span="2" style="text-align: center">
-                            <p style="display: inline-block;padding-right: 8px;">-</p>
-                            </Col>
-                            <Col span="11">
-                            <Form-Item prop="age2">
-                                <i-Input type="text" v-model="formInline.age2" placeholder="请输入年龄段">
-                                </i-Input>
+                            <Form-Item>
+                                <Row>
+                                    <Col span="11">
+                                    <Form-Item prop="age1">
+                                        <i-Input type="text" v-model="formInline.age1" placeholder="请输入年龄段">
+                                        </i-Input>
+                                    </Form-Item>
+                                    </Col>
+                                    <Col span="2" style="text-align: center">
+                                    <p style="display: inline-block;padding-right: 8px;">-</p>
+                                    </Col>
+                                    <Col span="11">
+                                    <Form-Item prop="age2">
+                                        <i-Input type="text" v-model="formInline.age2" placeholder="请输入年龄段">
+                                        </i-Input>
+                                    </Form-Item>
+                                    </Col>
+                                </Row>
                             </Form-Item>
-                            </Col>
-                        </Row>
-                    </Form-Item>
 
 
-                    <Form-Item>
-                        <i-Button type="info" icon="ios-search" @click="handleSubmit('formInline')">查找</i-Button>
-                    </Form-Item>
-                </i-Form>
+                            <Form-Item>
+                                <i-Button type="info" icon="ios-search" @click="handleSubmit('formInline')">查找
+                                </i-Button>
+                            </Form-Item>
+                        </i-Form>
+                    </i-col>
+                    <i-col span="11">
+                        <i-button type="primary" icon="ios-download-outline" @click="export_data">导出数据</i-button>
+                    </i-col>
+                </Row>
             </i-col>
 
         </Row>
@@ -129,7 +146,8 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="员工管理" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable>
+            <Modal title="员工管理" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable
+                   :z-index="50">
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <Form-Item prop="id" v-show="false">
                         <i-input type="text" v-model="formValidate.id"/>
@@ -175,7 +193,7 @@
                                 <Icon type="ios-camera" size="20"></Icon>
                             </div>
                         </Upload>
-                        <Modal title="预览图片" v-model="visible" draggable>
+                        <Modal title="预览图片" class="imgLook_style" v-model="visible" draggable :z-index="100">
                             <img :src="formValidate.headImage" v-if="visible" style="width: 100%">
                         </Modal>
                     </Form-Item>

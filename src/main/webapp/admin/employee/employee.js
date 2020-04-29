@@ -138,6 +138,9 @@ new Vue({
         this.getFirstMenuData(this.page, this.pageSize);
     },
     methods: {
+        export_data(){/*使用easypoi导出数据*/
+            window.location.href="Admin/Employee/exportEmployeeData?username="+this.formInline.username+"&age1="+this.formInline.age1+"&age2="+this.formInline.age2;
+        },
 
         getDepatmentName(row) {/*回显列表的部门*/
             if (row.department) {
@@ -185,7 +188,11 @@ new Vue({
             if (data.age) {/*这转换的是因为，age是long类型，但是表单检验是string类型的*/
                 data.age = data.age.toString();
             }
+            if (!data.headImage){/*处理图片上传时，数据库是NUll值，传递过来不显示的情况的*/
+                data["headImage"] = "";
+            }
             this.formValidate = data;
+
         },
         handleSubmitUpdate: function (name) {//提交方法
             this.$refs[name].validate((valid) => {

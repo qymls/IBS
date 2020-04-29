@@ -1,5 +1,8 @@
 package cn.itsource.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
+import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
 import com.google.inject.internal.cglib.core.$ClassNameReader;
 
 import javax.persistence.*;
@@ -7,14 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@ExcelTarget("emp")
 public class Employee extends BaseDomain {
+    @Excel(name = "员工姓名")
     private String username;
+    @Excel(name = "员工密码", width = 50)
     private String password;
+    @Excel(name = "员工邮箱", width = 50)
     private String email;
+    @Excel(name = "员工头像", type = 2, width = 10,height = 20)
     private String headImage;
+    @Excel(name = "年龄")
     private Long age;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
+    @ExcelEntity
     private Department department;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "employee_role", joinColumns = @JoinColumn(name = "employee_id"),

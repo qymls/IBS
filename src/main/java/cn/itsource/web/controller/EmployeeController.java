@@ -1,20 +1,26 @@
 package cn.itsource.web.controller;
 
+import cn.afterturn.easypoi.entity.vo.NormalExcelConstants;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.itsource.domain.Department;
 import cn.itsource.domain.Employee;
 import cn.itsource.query.EmployeeQuery;
 import cn.itsource.service.IDepartmentService;
 import cn.itsource.service.IEmployeeService;
 import cn.itsource.service.picture.IPictureService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -115,5 +121,28 @@ public class EmployeeController {
     @ResponseBody
     public Boolean deleteImg(String path, HttpServletRequest req) {
         return pictureService.deleteImage(path, req);
+    }
+
+    /**
+     * 导出数据
+     * ModelMap的键值会储存在当前请求作用域中
+     * 会返回一个字符串，继续处理
+     *
+     * @return
+     */
+    @RequestMapping("/exportEmployeeData")
+    public String exportEmployeeData(EmployeeQuery query, ModelMap map, HttpServletRequest req) {
+        List<Employee> list = employeeService.findByQuery(query);
+        //搞定路径问题
+        String realPath = req.getServletContext().getRealPath("/");
+        list.forEach(e -> e.setHeadImage(realPath + e.getHeadImage()));
+        ExportParams params = new ExportParams("员工数据", "员工列表", ExcelType.XSSF);
+        //params.setFreezeCol(5); //设置冻结列数
+        map.put(NormalExcelConstants.DATA_LIST, list); // 数据集合
+        map.put(NormalExcelConstants.CLASS, Employee.class);//导出实体
+        map.put(NormalExcelConstants.PARAMS, params);//参数
+        map.put(NormalExcelConstants.FILE_NAME, "员工信息");//文件名称
+        return NormalExcelConstants.EASYPOI_EXCEL_VIEW;
+
     }
 }
