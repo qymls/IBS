@@ -46,6 +46,17 @@ public class EmployeeController {
         this.pictureService = pictureService;
     }
 
+    /**
+     * 菜单跳转
+     *
+     * @return
+     */
+    @RequestMapping("/index")
+    public String index() {
+        return "WEB-INF/admin/employee/employee";
+    }
+
+
     @RequestMapping("/findAll")
     @ResponseBody
     public Page<Employee> findAll(EmployeeQuery employeeQuery) {

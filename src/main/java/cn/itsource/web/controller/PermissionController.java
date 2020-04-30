@@ -37,6 +37,16 @@ public class PermissionController {
         this.menuService = menuService;
     }
 
+    /**
+     * 菜单跳转
+     *
+     * @return
+     */
+    @RequestMapping("/index")
+    public String index() {
+        return "WEB-INF/admin/permission/permission";
+    }
+
     @RequestMapping("/findAll")
     @ResponseBody
     public Page<Permission> findAll(PermissionQuery permissionQuery) {

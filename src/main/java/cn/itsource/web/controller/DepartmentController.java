@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.HashMap;
+
 /**
  * (Department)表Controller
  *
@@ -24,6 +26,16 @@ public class DepartmentController {
     @Autowired
     public void setDepartmentService(IDepartmentService departmentService) {
         this.departmentService = departmentService;
+    }
+
+    /**
+     * 菜单跳转
+     *
+     * @return
+     */
+    @RequestMapping("/index")
+    public String index() {
+        return "WEB-INF/admin/department/department";
     }
 
     @RequestMapping("/findAll")

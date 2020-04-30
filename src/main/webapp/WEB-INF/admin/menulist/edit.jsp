@@ -56,7 +56,7 @@
         </Row>
     </Card>
 
-    <Modal title="新增菜单" v-model="addModel" class-name="vertical-center-modal" footer-hide>
+    <Modal title="新增菜单" v-model="addModel" class-name="vertical-center-modal" footer-hide draggable>
         <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
             <Form-Item label="父级菜单">
                 <i-Input v-model="parentMenu" disabled></i-Input>

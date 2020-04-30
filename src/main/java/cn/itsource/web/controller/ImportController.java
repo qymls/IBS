@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Controller
 @RequestMapping("/Admin/Import")
 public class ImportController {
@@ -31,9 +32,14 @@ public class ImportController {
         this.employeeService = employeeService;
     }
 
+    /**
+     * 菜单跳转
+     *
+     * @return
+     */
     @RequestMapping("/index")
     public String index() {
-        return "";
+        return "WEB-INF/admin/employee/import";
     }
 
     @RequestMapping("/importEmployeeData")
@@ -52,7 +58,7 @@ public class ImportController {
                 Department department = departmentService.findByName(employee.getDepartment().getName());
                 employee.setDepartment(department);
             }
-           /* employeeService.save(employee);*/
+            /* employeeService.save(employee);*/
             employeeList.add(employee);
         }
         return employeeList;

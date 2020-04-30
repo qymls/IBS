@@ -37,6 +37,16 @@ public class RoleController {
         this.permissionService = permissionService;
     }
 
+    /**
+     * 菜单跳转
+     *
+     * @return
+     */
+    @RequestMapping("/index")
+    public String index() {
+        return "WEB-INF/admin/role/role";
+    }
+
     @RequestMapping("/findAll")
     @ResponseBody
     public Page<Role> findAll(RoleQuery roleQuery) {

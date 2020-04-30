@@ -35,6 +35,16 @@ public class $!{tableInfo.name}Controller {
         this.$!{tablefirstLowerCase}Service = $!{tablefirstLowerCase}Service;
     }
 
+     /**
+     * 菜单跳转
+     *
+     * @return
+     */
+    @RequestMapping("/index")
+    public String index() {
+        return "WEB-INF/admin/$!{tablefirstLowerCase}/$!{tablefirstLowerCase}";
+    }
+
     @RequestMapping("/findAll")
     @ResponseBody
     public Page<$!{tableInfo.name}> findAll($!{tableInfo.name}Query $!{tablefirstLowerCase}Query) {

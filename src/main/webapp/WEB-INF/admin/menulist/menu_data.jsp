@@ -92,7 +92,7 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="修改菜单" v-model="updateModel" class-name="vertical-center-modal" footer-hide>
+            <Modal title="修改菜单" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable>
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <input type="hidden" v-model="formValidate.id"/><%--菜单id--%>
                     <Form-Item label="菜单名称" prop="name">

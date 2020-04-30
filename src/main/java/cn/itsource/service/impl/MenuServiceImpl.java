@@ -37,7 +37,6 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
         List<Menu> menuList = menuRepository.findAll();
         List<Menu> stairMenuList = menuRepository.getStairMenu();
         for (Menu stairMenu : stairMenuList) {
-            stairMenu.setUrl("Admin/jframeUrl?url=" + stairMenu.getUrl());/*特殊处理下url，用于放在web-info下时请求不需要的可以换个地方*/
             stairMenu.setChildren(getMenuTree(menuList, stairMenu.getId()));/*一级菜单*/
         }
         return stairMenuList;
@@ -61,7 +60,6 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
         for (Menu menu : menuList) {/*将所有菜单的parentid和传递的菜单id对比，相等就递归调用，并且加到treeList中，用于setChildren*/
             if (menu.getParent() != null) {/*排除一级菜单在进来对比的情况*/
                 if (id.equals(menu.getParent().getId())) {/*可能出现空指的放在后面*/
-                    menu.setUrl("Admin/jframeUrl?url=" + menu.getUrl());/*特殊处理下url，用于放在web-info下时请求*/
                     menu.setChildren(getMenuTree(menuList, menu.getId()));
                     treeList.add(menu);
                 }
@@ -181,10 +179,8 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
 
 
     public void getPermissionnMenuDg(Menu menuByEmployeeId, List<Menu> firstMenuList) {
-        menuByEmployeeId.setUrl("Admin/jframeUrl?url=" + menuByEmployeeId.getUrl());
         Menu parent = menuByEmployeeId.getParent();
         if (parent != null) {
-            parent.setUrl("Admin/jframeUrl?url=" + parent.getUrl());
             parent.getChildren().add(menuByEmployeeId);
             getPermissionnMenuDg(parent, firstMenuList);/*递归了*/
         } else {

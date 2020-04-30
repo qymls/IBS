@@ -28,6 +28,16 @@ public class MenuController {
     }
 
     /**
+     * 菜单跳转
+     *
+     * @return
+     */
+    @RequestMapping("/index")
+    public String index() {
+        return "WEB-INF/admin/menulist/menu_data";
+    }
+
+    /**
      * 初始化的菜单
      *
      * @return
