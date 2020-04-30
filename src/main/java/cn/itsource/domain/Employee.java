@@ -3,9 +3,12 @@ package cn.itsource.domain;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
 import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
+import cn.itsource.easypoi.DepartmentNameNotNull;
 import com.google.inject.internal.cglib.core.$ClassNameReader;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +21,16 @@ public class Employee extends BaseDomain {
     private String password;
     @Excel(name = "员工邮箱", width = 50)
     private String email;
-    @Excel(name = "员工头像", type = 2, width = 10,height = 20)
+    @Excel(name = "员工头像", type = 2, width = 10, height = 20)
     private String headImage;
+    @Min(value = 18, message = "年龄最小18")
+    @Max(value = 50, message = "年龄最大50")
     @Excel(name = "年龄")
     private Long age;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     @ExcelEntity
+    @DepartmentNameNotNull/*部门名称不为空*/
     private Department department;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "employee_role", joinColumns = @JoinColumn(name = "employee_id"),

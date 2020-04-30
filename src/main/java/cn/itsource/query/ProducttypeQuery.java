@@ -1,6 +1,7 @@
 package cn.itsource.query;
 
-import cn.itsource.domain.Menu;
+import cn.itsource.domain.Employee;
+import cn.itsource.domain.Producttype;
 import com.github.wenhao.jpa.PredicateBuilder;
 import com.github.wenhao.jpa.Specifications;
 import org.apache.commons.lang3.StringUtils;
@@ -9,37 +10,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class MenuQuery extends BaseQuery<Menu> {
+/**
+ * (Producttype)Query实体类
+ *
+ * @author 申林
+ * @since 2020-04-30 11:50:13
+ */
+public class ProducttypeQuery extends BaseQuery<Producttype> {
     private String name;
-    private String time;/*查询的字段*/
 
     @Override
     public Specification getSpecification() {
-        PredicateBuilder<Menu> and = Specifications.and();
-        and.eq("firstmenuid", 0);
+        PredicateBuilder<Producttype> and = Specifications.and();
+        and.eq("firstid", 0);
         and.like(StringUtils.isNoneBlank(name), "name", "%" + name + "%");
-        if (StringUtils.isNoneBlank(time)) {/*时间处理特殊*/
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            if (!",".equals(time)) {/*处理区间段是空，也会有个，号的*/
-                String start_time = time.split(",")[0];
-                String end_time = time.split(",")[1];
-                Date start_data = null;/*需要时间格式*/
-                Date end_data = null;
-                try {
-                    start_data = sdf.parse(start_time);
-                    end_data = sdf.parse(end_time);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                and.ge("createTime", start_data);
-                and.le("createTime", end_data);
-            }
-        }
-        Specification<Menu> specification = and.build();
+        Specification<Producttype> specification = and.build();
         return specification;
     }
 
@@ -69,14 +54,6 @@ public class MenuQuery extends BaseQuery<Menu> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
 

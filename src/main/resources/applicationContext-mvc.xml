@@ -12,6 +12,7 @@
     <!-- <bean id="/hello.do" class="_20200323.HelloController"></bean>&lt;!&ndash;对外暴露的资源&ndash;&gt;-->
     <context:component-scan base-package="cn.itsource.web.controller"/>
     <context:component-scan base-package="cn.afterturn.easypoi.view"/><!--扫描easyPoi的包-->
+    <context:component-scan base-package="cn.itsource.easypoi"/><!--用于查询数据库，扫描包-->
     <!--扫描包下面的类是否有@Controller注解，有的话，就交给springMvc来创建对象
     -->
 
