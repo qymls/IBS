@@ -92,7 +92,7 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="修改菜单" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable>
+            <Modal title="修改菜单" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable :z-index="50">
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <input type="hidden" v-model="formValidate.id"/><%--菜单id--%>
                     <Form-Item label="菜单名称" prop="name">
@@ -134,7 +134,7 @@
 
                 </i-Form>
             </Modal>
-            <Modal v-model="iconModal" footer-hide class-name="max_model_icon">
+            <Modal v-model="iconModal" footer-hide class-name="max_model_icon" draggable :z-index="100">
                 <div slot="header" style="text-align: center;">
                     <i-input type="text" v-model="searchInput" placeholder="输入英文关键词搜索，比如 add" style="width: 260px;"
                              @on-change="search_icon"></i-input>

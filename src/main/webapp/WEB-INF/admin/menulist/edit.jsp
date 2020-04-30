@@ -56,7 +56,7 @@
         </Row>
     </Card>
 
-    <Modal title="新增菜单" v-model="addModel" class-name="vertical-center-modal" footer-hide draggable>
+    <Modal title="新增菜单" v-model="addModel" class-name="vertical-center-modal" footer-hide draggable :z-index="50">
         <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
             <Form-Item label="父级菜单">
                 <i-Input v-model="parentMenu" disabled></i-Input>
@@ -94,7 +94,7 @@
         </i-Form>
     </Modal>
 
-    <Modal v-model="delModel" width="360">
+    <Modal v-model="delModel" width="360" draggable>
         <p slot="header" style="color:#f60;text-align:center">
             <Icon type="ios-information-circle"></Icon>
             <span>删除确认</span>
@@ -109,7 +109,7 @@
         </div>
     </Modal>
 
-    <Modal v-model="iconModal" footer-hide class-name="max_model_icon">
+    <Modal v-model="iconModal" footer-hide class-name="max_model_icon" draggable :z-index="100">
         <div slot="header" style="text-align: center;">
             <i-input type="text" v-model="searchInput" placeholder="输入英文关键词搜索，比如 add" style="width: 260px;"
                      @on-change="search_icon"></i-input>
