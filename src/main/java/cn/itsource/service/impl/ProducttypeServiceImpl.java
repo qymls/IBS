@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,9 +34,9 @@ public class ProducttypeServiceImpl extends BaseServiceImpl<Producttype, Long> i
         Page pageByQuery = producttypeRepository.findPageByQuery(producttypeQuery);
         List<Producttype> producttypeList = producttypeRepository.findAll();
         PageUtil<Producttype> producttypePageUtil = new PageUtil<>();
-        List<Producttype> stairProducttypeList = pageByQuery.getContent();/*分页对的一级菜单数据需要处理一下*/
+        List<Producttype> stairProducttypeList = pageByQuery.getContent();/*分页对的一级数据需要处理一下*/
         for (Producttype stairProducttype : stairProducttypeList) {
-            stairProducttype.setChildren(getProducttypeTreeProducttype(producttypeList, stairProducttype.getId()));/*一级菜单*/
+            stairProducttype.setChildren(getProducttypeTreeProducttype(producttypeList, stairProducttype.getId()));
         }
         producttypePageUtil.setList(stairProducttypeList);
         producttypePageUtil.setCurrentPage(pageByQuery.getNumber() + 1);/*当前页数+1，是从0开始的*/
@@ -43,24 +44,43 @@ public class ProducttypeServiceImpl extends BaseServiceImpl<Producttype, Long> i
         return producttypePageUtil;
     }
 
-
     /**
-     * 菜单管理，不用初始化菜单，不需要特殊处理url
-     *
      * @param producttypeList
      * @param id
      * @return
      */
     private List<Producttype> getProducttypeTreeProducttype(List<Producttype> producttypeList, Long id) {
         List<Producttype> treeList = new ArrayList<>();
-        for (Producttype producttype : producttypeList) {/*将所有菜单的parentid和传递的菜单id对比，相等就递归调用，并且加到treeList中，用于setChildren*/
+        for (Producttype producttype : producttypeList) {
             if (producttype.getParent() != null) {
-                if (id.equals(producttype.getParent().getId())) {/*可能出现空指的放在后面*/
+                if (id.equals(producttype.getParent().getId())) {
                     producttype.setChildren(getProducttypeTreeProducttype(producttypeList, producttype.getId()));
                     treeList.add(producttype);
                 }
             }
         }
         return treeList;
+    }
+
+    @Override
+    public List<Long> findAllParentByID(Long id) {
+        List<Long> producttypeListParent = new ArrayList<>();
+        Producttype updateProducttype = producttypeRepository.findOne(id);/*修改的菜单*/
+        getPartnt(updateProducttype, producttypeListParent);
+        producttypeListParent.sort(Long::compareTo);
+        return producttypeListParent;
+    }
+
+    /**
+     * @param updateProducttype
+     * @param list
+     */
+    public void getPartnt(Producttype updateProducttype, List<Long> list) {
+        Producttype parent = updateProducttype.getParent();
+        if (parent != null) {
+            list.add(parent.getId());
+            getPartnt(parent, list);
+        }
+
     }
 }

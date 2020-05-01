@@ -4,6 +4,8 @@ import cn.itsource.domain.Producttype;
 import cn.itsource.query.ProducttypeQuery;
 import cn.itsource.util.PageUtil;
 
+import java.util.List;
+
 /**
  * (Producttype)表Service层接口
  *
@@ -12,5 +14,7 @@ import cn.itsource.util.PageUtil;
  */
 public interface IProducttypeService extends IBaseService<Producttype, Long> {
     PageUtil<Producttype> findAllHasChild(ProducttypeQuery producttypeQuery);
+
+    List<Long> findAllParentByID(Long id);
 
 }

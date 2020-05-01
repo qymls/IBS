@@ -4,6 +4,7 @@ import cn.itsource.domain.Producttype;
 import cn.itsource.query.ProducttypeQuery;
 import cn.itsource.service.IProducttypeService;
 import cn.itsource.util.PageUtil;
+import com.hazelcast.internal.metrics.LongGauge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * (Producttype)表Controller
@@ -74,7 +76,7 @@ public class ProducttypeController {
         Producttype producttype = null;
         if ("update".equalsIgnoreCase(action)) {
             producttype = producttypeService.findOne(id);
-            //producttype.setDepartment(null);/*department 脱离持久化状态*/
+            producttype.setParent(null);
         }
         return producttype;
     }
@@ -93,4 +95,17 @@ public class ProducttypeController {
         map.put("success", true);
         return map;
     }
+
+    /**
+     * 通过id查询所有的父类，用于级联选择器回显和修改后展开菜单
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping("/findAllParentByID")
+    @ResponseBody
+    public List<Long> findAllParentByID(Long id) {
+        return producttypeService.findAllParentByID(id);
+    }
+
 }

@@ -9,7 +9,6 @@ new Vue({
                 id: '',
                 name: '',
                 descs: '',
-                parentId: '',
 
             },
             ruleValidate: {
@@ -17,9 +16,6 @@ new Vue({
                     {required: true, message: '请输入对应的值', trigger: 'blur'},
                 ],
                 descs: [
-                    {required: true, message: '请输入对应的值', trigger: 'blur'},
-                ],
-                parentId: [
                     {required: true, message: '请输入对应的值', trigger: 'blur'},
                 ],
             },
@@ -31,12 +27,6 @@ new Vue({
                     type: 'selection',
                     width: 60,
                     align: 'center'
-                },
-                {
-                    title: '序号',
-                    type: 'index',
-                    width: 100,
-                    align: 'center',
                 },
                 {
                     title: '名称',
@@ -53,6 +43,8 @@ new Vue({
             total: 0,
             page: 1,/*当前页默认为1*/
             pageSize: 5,/* 默认5条*/
+            parentData: [],/*级联选择器的数据*/
+            parentValue: []/*选择器的值*/
         }
     },
     created() {
@@ -64,8 +56,50 @@ new Vue({
         },
         updateModelShow(data) {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
+            this.$refs.cascader.clearSelect();/*清空级联选择器显示的数据*/
+            this.getParetnt();
             this.updateModel = true;
-            this.formValidate = data;
+            this.formValidate.id = data.id;
+            this.formValidate.descs = data.descs
+            this.formValidate.name = data.name
+            var parentValueList = this.getSelectAllPartnt(data.id);
+            //parentValueList.push(data.id)/*将子类加入到数组中,这里只显示父级*/
+            this.$nextTick(() => {/*必须放在这个里面，不然值不会刷新的*/
+                this.parentValue = parentValueList;
+            })
+
+        },
+        getSelectAllPartnt(id) {
+            var parentValueList = [];
+            var $page = this;
+            $.ajax({
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "Admin/Producttype/findAllParentByID",
+                data: {"id": id},
+                dataType: 'json',
+                traditional: true,//防止深度序列化
+                async: false,/*取消异步加载*/
+                success: function (result) {/*用了框架的*/
+                    parentValueList = result;
+                }
+            });
+            return parentValueList;
+        },
+        getParetnt() {
+            var parentData = $.extend(true, [], this.ProducttypeData);//数组的深度复制,不影响原数组
+            this.formatparentData(parentData);/*格式化数据*/
+            this.parentData = parentData;
+        },
+        formatparentData(data) {/*格式化数据*/
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].children && data[i].children.length > 0) {
+                    data[i] = $.extend({}, data[i], {value: data[i].id, label: data[i].name});
+                    this.formatparentData(data[i].children)
+                } else {
+                    data[i] = $.extend({}, data[i], {value: data[i].id, label: data[i].name});
+                }
+            }
         },
         handleSubmitUpdate: function (name) {//提交方法
             var refs = this.$refs;
@@ -74,6 +108,12 @@ new Vue({
                     var $page = this;
                     var messagePage = this.$Message;
                     var param = $.extend({}, this.formValidate)/*复制一份，因为要删除*/
+                    var parent = this.parentValue[this.parentValue.length - 1];
+                    if (parent) {
+                        param["parent.id"] = parent;
+                    } else {/*如果没有父类就是一级*/
+                        param["firstid"] = 0;
+                    }
                     var url;
                     if (this.formValidate.id) {/*修改*/
                         url = "Admin/Producttype/update"
@@ -109,6 +149,7 @@ new Vue({
         handleReset: function (name) {//重置方法
             var ref = this.$refs;
             ref[name].resetFields();
+            this.$refs.cascader.clearSelect();/*清空级联选择器显示的数据*/
         },
 
         handleSubmit() {
@@ -156,6 +197,8 @@ new Vue({
 
         newAdd: function () {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
+            this.$refs.cascader.clearSelect();/*清空级联选择器显示的数据*/
+            this.getParetnt();
             this.updateModel = true;
         },
         deleteRows: function (selection) {

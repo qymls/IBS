@@ -62,16 +62,16 @@
                     <Form-Item prop="id" v-show=false>
                         <input type="text" v-model="formValidate.id"/>
                     </Form-Item>
-                                        <Form-Item label="name" prop="name">
+                    <Form-Item label="名称" prop="name">
                         <i-Input v-model="formValidate.name" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                                        <Form-Item label="descs" prop="descs">
+                    <Form-Item label="描述" prop="descs">
                         <i-Input v-model="formValidate.descs" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-                                        <Form-Item label="parentId" prop="parentId">
-                        <i-Input v-model="formValidate.parentId" placeholder="请输入相关值"></i-Input>
+                    <Form-Item label="父级">
+                        <Cascader ref="cascader" change-on-select :data="parentData"  v-model="parentValue"></Cascader>
                     </Form-Item>
-                                        <Form-Item>
+                    <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
                     </Form-Item>
