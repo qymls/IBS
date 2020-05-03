@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.naming.PartialResultException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,34 +42,41 @@ public class ProducttypeController {
         return "WEB-INF/admin/producttype/producttype";
     }
 
-    @RequestMapping("/findAll")
+    @RequestMapping("/findAllByPage")
     @ResponseBody
     public PageUtil<Producttype> findAllHasChild(ProducttypeQuery producttypeQuery) {
         PageUtil<Producttype> pageUtil = producttypeService.findAllHasChild(producttypeQuery);
         return pageUtil;
     }
 
+    @RequestMapping("/findAll")
+    @ResponseBody
+    public List<Producttype> findAllProductType() {
+        List<Producttype> producttypeList = producttypeService.findAll();
+        return producttypeList;
+    }
+
+    /**
+     * 删除后返回删除的id的父类
+     * @param ids
+     * @return
+     */
     @RequestMapping("/delete")
     @ResponseBody
-    public HashMap<Object, Object> delete(long[] ids) {
-        HashMap<Object, Object> map = null;
+    public List<Long> delete(long[] ids) {
+        List<Long> allParentByID = producttypeService.findAllParentByID(ids[ids.length - 1]);
         if (ids.length > 0) {
             for (long id : ids) {
                 producttypeService.delete(id);
             }
-            map = new HashMap<>();
-            map.put("success", true);
         }
-        return map;
+        return allParentByID;
     }
 
     @RequestMapping("/save")
     @ResponseBody
-    public HashMap<Object, Object> save(Producttype producttype) {
-        producttypeService.save(producttype);
-        HashMap<Object, Object> map = new HashMap<>();
-        map.put("success", true);
-        return map;
+    public Long save(Producttype producttype) {
+        return producttypeService.saveReturnParam(producttype);/*返回主键id*/
     }
 
     @ModelAttribute("update")/*所有方法执行前都要执行*/
@@ -89,11 +97,9 @@ public class ProducttypeController {
      */
     @RequestMapping("/update")
     @ResponseBody
-    public HashMap<Object, Object> update(@ModelAttribute("update") Producttype producttype) {
+    public Long update(@ModelAttribute("update") Producttype producttype) {
         producttypeService.update(producttype);
-        HashMap<Object, Object> map = new HashMap<>();
-        map.put("success", true);
-        return map;
+        return producttype.getId();/*由于设置了parent为null，所以需要传回id，再次请求，获得所有父类*/
     }
 
     /**

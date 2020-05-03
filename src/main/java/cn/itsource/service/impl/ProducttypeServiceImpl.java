@@ -8,8 +8,10 @@ import cn.itsource.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,6 +29,39 @@ public class ProducttypeServiceImpl extends BaseServiceImpl<Producttype, Long> i
     @Autowired
     public void setProducttypeRepository(IProducttypeRepository producttypeRepository) {
         this.producttypeRepository = producttypeRepository;
+    }
+
+    /**
+     * 重写findAll方法
+     *
+     * @return
+     */
+    @Override
+    public List<Producttype> findAll() {/*重写FindAll方法，应为需要特殊处理下才能返回的数据*/
+        List<Producttype> producttypeList = producttypeRepository.findAll();
+        List<Producttype> stairProducttypeList = producttypeRepository.getStairProducttype();
+        for (Producttype stairProducttype : stairProducttypeList) {
+            stairProducttype.setChildren(getProducttypeTree(producttypeList, stairProducttype.getId()));/*一级菜单*/
+        }
+        return stairProducttypeList;
+    }
+
+    /**
+     * @param producttypeList
+     * @param id
+     * @return
+     */
+    private List<Producttype> getProducttypeTree(List<Producttype> producttypeList, Long id) {
+        List<Producttype> treeList = new ArrayList<>();
+        for (Producttype producttype : producttypeList) {/*将所有菜单的parentid和传递的菜单id对比，相等就递归调用，并且加到treeList中，用于setChildren*/
+            if (producttype.getParent() != null) {/*排除一级菜单在进来对比的情况*/
+                if (id.equals(producttype.getParent().getId())) {/*可能出现空指的放在后面*/
+                    producttype.setChildren(getProducttypeTree(producttypeList, producttype.getId()));
+                    treeList.add(producttype);
+                }
+            }
+        }
+        return treeList;
     }
 
     @Override
@@ -67,9 +102,10 @@ public class ProducttypeServiceImpl extends BaseServiceImpl<Producttype, Long> i
         List<Long> producttypeListParent = new ArrayList<>();
         Producttype updateProducttype = producttypeRepository.findOne(id);/*修改的菜单*/
         getPartnt(updateProducttype, producttypeListParent);
-        producttypeListParent.sort(Long::compareTo);
+        Collections.reverse(producttypeListParent);/*翻转元素，让第一级菜单在第一个位置*/
         return producttypeListParent;
     }
+
 
     /**
      * @param updateProducttype
@@ -82,5 +118,18 @@ public class ProducttypeServiceImpl extends BaseServiceImpl<Producttype, Long> i
             getPartnt(parent, list);
         }
 
+    }
+
+    /**
+     * 保存数据返回主键
+     *
+     * @param producttype
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public Long saveReturnParam(Producttype producttype) {
+        producttypeRepository.save(producttype);
+        return producttype.getId();
     }
 }

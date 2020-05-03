@@ -17,4 +17,6 @@ public interface IProducttypeService extends IBaseService<Producttype, Long> {
 
     List<Long> findAllParentByID(Long id);
 
+    Long saveReturnParam(Producttype producttype);/*插入数据返回主键*/
+
 }

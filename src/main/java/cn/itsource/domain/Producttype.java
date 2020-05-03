@@ -27,6 +27,9 @@ public class Producttype extends BaseDomain {
     @Transient
     private List<Producttype> children = new ArrayList<>();
 
+    public Producttype() {
+    }
+
     private Long firstid;
 
     public Producttype getParent() {

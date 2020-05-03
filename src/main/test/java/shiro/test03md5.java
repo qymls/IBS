@@ -7,6 +7,7 @@ import cn.itsource.repository.IPermissionRepository;
 import cn.itsource.service.IEmployeeService;
 import cn.itsource.service.IMenuService;
 import cn.itsource.service.IPermissionService;
+import cn.itsource.service.IProducttypeService;
 import cn.itsource.shiro.JpaRealm;
 import cn.itsource.shiro.MD5Utils;
 import cn.itsource.util.PageUtil;
@@ -36,6 +37,9 @@ public class test03md5 {
     private IMenuService menuService;
     @Autowired
     private IPermissionRepository permissionRepository;
+
+    @Autowired
+    private IProducttypeService producttypeService;
 
 
     @Test
@@ -127,5 +131,10 @@ public class test03md5 {
     @Test
     public void testss() throws Exception {
      menuService.findMenuItem();
+    }
+
+    @Test
+    public void testddd() throws Exception {
+        System.out.println(producttypeService.findAllParentByID(25l));
     }
 }

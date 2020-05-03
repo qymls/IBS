@@ -47,6 +47,11 @@
                 <i-Table row-key="id" :columns="columns" :data="ProducttypeData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
+                    <template slot-scope="{ row, index }" slot="action">
+                        <Tooltip content="删除" transfer placement="right" style="cursor: pointer;">
+                            <Icon type="ios-trash" @click="deleteType(row,index)"></Icon>
+                        </Tooltip>
+                    </template>
                 </i-Table>
             </div>
             <div style="margin: 10px;overflow: hidden">
@@ -77,6 +82,20 @@
                     </Form-Item>
                 </i-Form>
 
+            </Modal>
+            <Modal v-model="delModel" width="360" draggable>
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-information-circle"></Icon>
+                    <span>删除确认</span>
+                </p>
+                <div style="text-align:center">
+                    <p style="color: red;margin-top: 5px;">即将删除</p>
+                    <p v-for="item in delArray">{{item.name}}</p>
+                    <p style="color: red;margin-top: 5px;">后无法恢复,请谨慎操作!</p>
+                </div>
+                <div slot="footer">
+                    <i-Button type="error" size="large" long @click="deleteProducttype">删除</i-Button>
+                </div>
             </Modal>
 
         </Row>
