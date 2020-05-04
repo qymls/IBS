@@ -5,19 +5,27 @@ import cn.itsource.repository.ISystemdictionarydetailRepository;
 import cn.itsource.service.ISystemdictionarydetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 /**
  * (Systemdictionarydetail)表Service层接口
  *
  * @author 申林
  * @since 2020-04-30 11:50:12
  */
- @Service
-public class SystemdictionarydetailServiceImpl extends BaseServiceImpl<Systemdictionarydetail,Long> implements ISystemdictionarydetailService{
+@Service
+public class SystemdictionarydetailServiceImpl extends BaseServiceImpl<Systemdictionarydetail, Long> implements ISystemdictionarydetailService {
 
     private ISystemdictionarydetailRepository systemdictionarydetailRepository;
 
     @Autowired
     public void setSystemdictionarydetailRepository(ISystemdictionarydetailRepository systemdictionarydetailRepository) {
         this.systemdictionarydetailRepository = systemdictionarydetailRepository;
+    }
+
+    @Override
+    public List<Systemdictionarydetail> findBySn(String sn) {
+        return systemdictionarydetailRepository.findBySn(sn);
     }
 }

@@ -89,7 +89,6 @@ new Vue({
                 data.typesId = data.types.id.toString()
             }
             this.formValidate = data;
-            console.log( this.formValidate)
         },
         handleSubmitUpdate: function (name) {//提交方法
             var refs = this.$refs;

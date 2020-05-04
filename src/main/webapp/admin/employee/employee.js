@@ -132,14 +132,20 @@ new Vue({
             page: 1,/*当前页默认为1*/
             pageSize: 5,/* 默认5条*/
             visible: false,/*预览图片*/
+            uploadfile: {
+                status: '',
+                showProgress: false,
+                percentage: 0,
+                defaultshow: true,
+            }/*上传的文件属性*/
         }
     },
     created() {
         this.getFirstMenuData(this.page, this.pageSize);
     },
     methods: {
-        export_data(){/*使用easypoi导出数据*/
-            window.location.href="Admin/Employee/exportEmployeeData?username="+this.formInline.username+"&age1="+this.formInline.age1+"&age2="+this.formInline.age2;
+        export_data() {/*使用easypoi导出数据*/
+            window.location.href = "Admin/Employee/exportEmployeeData?username=" + this.formInline.username + "&age1=" + this.formInline.age1 + "&age2=" + this.formInline.age2;
         },
 
         getDepatmentName(row) {/*回显列表的部门*/
@@ -164,19 +170,19 @@ new Vue({
             });
         },
         getRepetitionName(value) {
-           /* let data;
-            $.ajax({
-                type: "POST",
-                contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Menu/findByName",
-                data: {"name": value},
-                dataType: 'json',
-                async: false,/!*取消异步加载*!/
-                success: function (result) {
-                    data = result;/!*只有前端返回的有值，才会执行这一句话*!/
-                }
-            });
-            return data;*/
+            /* let data;
+             $.ajax({
+                 type: "POST",
+                 contentType: "application/x-www-form-urlencoded",
+                 url: "Admin/Menu/findByName",
+                 data: {"name": value},
+                 dataType: 'json',
+                 async: false,/!*取消异步加载*!/
+                 success: function (result) {
+                     data = result;/!*只有前端返回的有值，才会执行这一句话*!/
+                 }
+             });
+             return data;*/
         },
         updateModelShow(data) {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
@@ -188,7 +194,7 @@ new Vue({
             if (data.age) {/*这转换的是因为，age是long类型，但是表单检验是string类型的*/
                 data.age = data.age.toString();
             }
-            if (!data.headImage){/*处理图片上传时，数据库是NUll值，传递过来不显示的情况的*/
+            if (!data.headImage) {/*处理图片上传时，数据库是NUll值，传递过来不显示的情况的*/
                 data["headImage"] = "";
             }
             this.formValidate = data;
@@ -329,17 +335,15 @@ new Vue({
         /*图片上传的相关方法*/
         upload_success(response, file, fileList) {
             this.formValidate.headImage = response;
+            this.uploadfile.status = 'finished';/*上传完成*/
         },
+
         handleProgress(event, file, fileList) {/*没有调试好，无法使用*/
+            // 手动设置显示上传进度条 以及上传百分比
             // 调用监听 上传进度 的事件
-            event.target.onprogress = function (event) {
-                console.log('上传中'); // 继承了原生函数的 event 事件
-                let uploadPercent = parseFloat(((event.loaded / event.total) * 100).toFixed(2))	// 保留两位小数，具体根据自己需求做更改
-                console.log('上传中', event); // 继承了原生函数的 event 事件
-                // 手动设置显示上传进度条 以及上传百分比
-                file.showProgress = true
-                file.percentage = uploadPercent
-            }
+            let uploadPercent = parseFloat(((event.loaded / event.total) * 100).toFixed(2))	// 保留两位小数，具体根据自己需求做更改
+            this.uploadfile.percentage = uploadPercent/*进度*/
+            console.log(uploadPercent)
         },
         handleView(name) {
             this.visible = true;
@@ -356,9 +360,30 @@ new Vue({
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
                     page.formValidate.headImage = '';/*删除了重置headimg*/
+                    page.uploadfile = ''/*上传文件为初始值*/
                 }
             });
         },
+        handleFormatError(file) {
+            this.$Notice.error({
+                title: '文件类型错误',
+                desc: '文件 ' + file.name + '类型错误,请选择jpg，jepg，png类型'
+            });
+            this.uploadfile = {
+                status: '',
+                showProgress: false,/*上传前就开始显示进度条了*/
+                percentage: 0,
+                defaultshow: true
+            }
+        },
+        handleBeforeUpload() {/*因为上传单个，每次上传前回复到默认状态*/
+            this.uploadfile = {
+                status: 'start',
+                showProgress: true,/*上传前就开始显示进度条了*/
+                percentage: 0
+            }
+            return true;
+        }
     }
 
 });

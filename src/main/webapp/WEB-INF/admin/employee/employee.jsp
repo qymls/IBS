@@ -1,15 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="/admin/public/public_source.jsp" %>
 <style>
-    .upload_style .ivu-icon {
-        line-height: unset;
-    }
-
     .page_class .ivu-icon {
         line-height: unset;
     }
 </style>
 <style>
+    .process_style {
+        margin-top: 23px;
+    }
+
+    .upload_style .ivu-icon {
+        line-height: unset;
+    }
+
     .demo-upload-list {
         display: inline-block;
         width: 60px;
@@ -50,7 +54,9 @@
     }
 
     .demo-upload-list:hover .demo-upload-list-cover {
-        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .demo-upload-list-cover i {
@@ -176,19 +182,32 @@
                         <i-input type="text" v-model="formValidate.headImage"/>
                     </Form-Item>
                     <Form-Item label="头像">
-                        <div class="demo-upload-list" v-if="formValidate.headImage">
-                            <img :src="formValidate.headImage">
-                            <div class="demo-upload-list-cover">
-                                <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
-                                <Icon type="ios-trash-outline"
-                                      @click.native="handleRemove(formValidate.headImage)"></Icon>
-                            </div>
+                        <div class="demo-upload-list"
+                             v-if="formValidate.headImage||uploadfile.status==='start'||uploadfile.status==='finished'">
+                            <template v-if="uploadfile.status === 'finished'||uploadfile.defaultshow">
+                                <img :src="formValidate.headImage">
+                                <div class="demo-upload-list-cover">
+                                    <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
+                                    <Icon type="ios-trash-outline"
+                                          @click.native="handleRemove(formValidate.headImage)"></Icon>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <i-Progress class="process_style" v-if="uploadfile.showProgress"
+                                            :percent="uploadfile.percentage" hide-info
+                                            :stroke-color="['#108ee9', '#87d068']"></i-Progress>
+                            </template>
                         </div>
                         <Upload ref="upload" action="Admin/Employee/upload" type="drag"
                                 style="width: 58px;display: inline-block;"
                                 class="upload_style" :show-upload-list="false" name="multipartFile" type="drag"
-                                :on-success="upload_success" :data="{'headImage':formValidate.headImage}"
-                                :on-progress="handleProgress">
+                                :format="['jpg','jpeg','png']"
+                                :on-format-error="handleFormatError"
+                                :on-progress="handleProgress"
+                                :on-success="upload_success"
+                                :before-upload="handleBeforeUpload"
+                                :data="{'headImage':formValidate.headImage}"
+                        >
                             <div style="width: 58px;height:58px;line-height: 58px;">
                                 <Icon type="ios-camera" size="20"></Icon>
                             </div>

@@ -78,8 +78,8 @@ public class EmployeeController {
         if (ids.length > 0) {
             for (long id : ids) {
                 Employee employee = employeeService.findOne(id);/*先删除图片*/
-                pictureService.deleteImage(employee.getHeadImage(), req);/*删除对应的图片*/
                 employeeService.delete(id);
+                pictureService.deleteImage(employee.getHeadImage(), req);/*删除对应的图片*/
             }
             map = new HashMap<>();
             map.put("success", true);

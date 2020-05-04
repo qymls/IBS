@@ -412,8 +412,8 @@
             getDelInfo: function (data) {//递归删除菜单
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].children && data[i].children.length > 0) {
-                        this.delArray.push(data[i])
                         this.getDelInfo(data[i].children)
+                        this.delArray.push(data[i])
                     } else {
                         this.delArray.push(data[i])
                     }
