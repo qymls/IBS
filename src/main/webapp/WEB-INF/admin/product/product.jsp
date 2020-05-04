@@ -4,7 +4,6 @@
     .page_class .ivu-icon {
         line-height: unset;
     }
-
 </style>
 <style>
     .process_style {
@@ -174,40 +173,40 @@
                         <i-Input v-model="formValidate.pic"></i-Input>
                     </Form-Item>
                     <Form-Item label="商品图片">
-                    <div class="demo-upload-list"
-                         v-if="formValidate.pic||uploadfile.status==='start'||uploadfile.status==='finished'">
-                        <template v-if="uploadfile.status === 'finished'||uploadfile.defaultshow">
-                            <img :src="formValidate.pic">
-                            <div class="demo-upload-list-cover">
-                                <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
-                                <Icon type="ios-trash-outline"
-                                      @click.native="handleRemove(formValidate.pic)"></Icon>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <i-Progress class="process_style" v-if="uploadfile.showProgress"
-                                        :percent="uploadfile.percentage" hide-info
-                                        :stroke-color="['#108ee9', '#87d068']"></i-Progress>
-                        </template>
-                    </div>
-                    <Upload ref="upload" action="Admin/Product/upload" type="drag"
-                            style="width: 58px;display: inline-block;"
-                            class="upload_style" :show-upload-list="false" name="multipartFile" type="drag"
-                            :format="['jpg','jpeg','png']"
-                            :on-format-error="handleFormatError"
-                            :on-progress="handleProgress"
-                            :on-success="upload_success"
-                            :before-upload="handleBeforeUpload"
-                            :data="{'pic':formValidate.pic}"
-                    >
-                        <div style="width: 58px;height:58px;line-height: 58px;">
-                            <Icon type="ios-camera" size="20"></Icon>
+                        <div class="demo-upload-list"
+                             v-if="formValidate.pic||uploadfile.status==='start'||uploadfile.status==='finished'">
+                            <template v-if="uploadfile.status === 'finished'||uploadfile.defaultshow">
+                                <img :src="formValidate.pic">
+                                <div class="demo-upload-list-cover">
+                                    <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
+                                    <Icon type="ios-trash-outline"
+                                          @click.native="handleRemove(formValidate.pic)"></Icon>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <i-Progress class="process_style" v-if="uploadfile.showProgress"
+                                            :percent="uploadfile.percentage" hide-info
+                                            :stroke-color="['#108ee9', '#87d068']"></i-Progress>
+                            </template>
                         </div>
-                    </Upload>
-                    <Modal title="预览图片" class="imgLook_style" v-model="visible" draggable :z-index="100">
-                        <img :src="formValidate.pic" v-if="visible" style="width: 100%">
-                    </Modal>
-                </Form-Item>
+                        <Upload ref="upload" action="Admin/Product/upload" type="drag"
+                                style="width: 58px;display: inline-block;"
+                                class="upload_style" :show-upload-list="false" name="multipartFile" type="drag"
+                                :format="['jpg','jpeg','png']"
+                                :on-format-error="handleFormatError"
+                                :on-progress="handleProgress"
+                                :on-success="upload_success"
+                                :before-upload="handleBeforeUpload"
+                                :data="{'pic':formValidate.pic}"
+                        >
+                            <div style="width: 58px;height:58px;line-height: 58px;">
+                                <Icon type="ios-camera" size="20"></Icon>
+                            </div>
+                        </Upload>
+                        <Modal title="预览图片" class="imgLook_style" v-model="visible" draggable :z-index="100">
+                            <img :src="formValidate.pic" v-if="visible" style="width: 100%">
+                        </Modal>
+                    </Form-Item>
                     <Form-Item>
                         <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
                         <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
