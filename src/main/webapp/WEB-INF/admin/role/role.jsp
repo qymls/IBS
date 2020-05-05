@@ -33,6 +33,10 @@
         overflow: hidden;
         cursor: pointer;
     }
+    .rolelook_style .ivu-modal-body {
+        max-height: 390px;
+        overflow: auto;
+    }
 
     /*    ::-webkit-scrollbar { !*不要滚动条*!
             width: 0;
@@ -127,7 +131,7 @@
                     <Row>
                         <i-col span="12">
                             <div>
-                                <i-Table ref="selection" :columns="columnSource" :data="sourceData" border height="520"
+                                <i-Table ref="selection" :columns="columnSource" :data="sourceData" border height="539"
                                          @on-row-dblclick="changSetting" @on-select="changeSourceDataSelect"
                                          @on-select-cancel="cancelSourceDataSelect"
                                          @on-select-all="allSourceDataSelect"
@@ -137,7 +141,7 @@
                         </i-col>
                         <i-col span="12">
                             <div>
-                                <i-Table :columns="columnTraget" :data="TragetData" border height="520"
+                                <i-Table :columns="columnTraget" :data="TragetData" border height="539"
                                          class="tragetTable"
                                          @on-row-click="changSettingReturn">
                                 </i-Table>
@@ -164,7 +168,7 @@
 
         </Row>
         <%--权限控制--%>
-        <Modal v-model="authority" draggable :scrollable="true" width="700">
+        <Modal v-model="authority" draggable :scrollable="true" width="700" class="rolelook_style">
             <div slot="header">
                 <h2>
                     <Icon type="md-options"></Icon>

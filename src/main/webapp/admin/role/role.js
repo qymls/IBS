@@ -125,6 +125,7 @@ new Vue({
             authorityTree: [],
             authorityTreeShow: [],
             menuIds: [],
+            temp: []/*临时数组*/
 
         }
     },
@@ -412,9 +413,12 @@ new Vue({
         },
         /*权限菜单页面*/
         addRole(id) {
+            this.temp = []/*执行一次就清空一次*/
+            this.menuIds = [];
             this.getAllMenu();
             this.authority = true;
             this.initialData(id);
+
         },
         initialData(id) {
             var roleauthority = [];
@@ -429,12 +433,22 @@ new Vue({
                     roleauthority = result
                 }
             });
-            //this.getAuthorityDateInfo(this.authorityTree, roleauthority);/*默认勾选已有权限的菜单*/
-            //var firstCopyArr = $.extend(true, [], roleauthority);//数组的深度复制,不影响原数组
-      /*      for (let i = 0; i < roleauthority.length; i++) {/!*为每个添加title属性并且默认展开*!/
-                roleauthority[i] = $.extend({}, roleauthority[i], {title: roleauthority[i].name, expand: true});
-            }*/
+            this.getrigthTreeData(roleauthority);/*特殊处理这个数据一下，用于显示*/
             this.authorityTreeShow = roleauthority
+            this.getleftselectdata(roleauthority)/*循环出来，比较勾选*/
+            this.getAuthorityDateInfo(this.authorityTree, this.temp);/*默认勾选已有权限的菜单*/
+        },
+        getleftselectdata(data) {//特殊处理一下菜单数据，加入一些其他的属性
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].children && data[i].children.length > 0) {
+                    this.temp.push(data[i])
+                    this.menuIds.push(data[i].id)
+                    this.getleftselectdata(data[i].children);
+                } else {
+                    this.temp.push(data[i])
+                    this.menuIds.push(data[i].id)
+                }
+            }
         },
         renderContent(h, {root, node, data}) {/*自定义显示tree的图标，render函数*/
             return h('span', {
