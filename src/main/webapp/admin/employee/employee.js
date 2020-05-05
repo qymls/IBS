@@ -346,6 +346,7 @@ new Vue({
             console.log(uploadPercent)
         },
         handleView(name) {
+            this.formValidate.headImage = name
             this.visible = true;
         },
         handleRemove(path) {

@@ -82,7 +82,7 @@
                          @on-row-dblclick="updateModelShow">
                     <template slot-scope="{ row, index }" slot="action">
                         <Tooltip content="权限配置" transfer placement="right" style="cursor: pointer;">
-                            <Icon type="md-cog"></Icon>
+                            <Icon type="md-cog" @click="addRole(row.id)"></Icon>
                         </Tooltip>
                     </template>
                     <template slot-scope="{ row, index }" slot="permission_list">
@@ -163,6 +163,35 @@
             </Modal>
 
         </Row>
+        <%--权限控制--%>
+        <Modal v-model="authority" draggable :scrollable="true" width="700">
+            <div slot="header">
+                <h2>
+                    <Icon type="md-options"></Icon>
+                    菜单权限控制
+                </h2>
+            </div>
+            <Row>
+                <i-col span="12">
+                    <div>
+                        <Tree :data="authorityTree" transfer show-checkbox ref="tree"
+                              @on-check-change="getAuthority" :render="renderContent"></Tree>
+                    </div>
+                </i-col>
+                <Divider type="vertical" style="height: auto;width: 2px"/>
+                <i-col span="12">
+                    <div>
+                        <Tree :data="authorityTreeShow" :render="renderContent"></Tree>
+                    </div>
+                </i-col>
+
+            </Row>
+
+            <div slot="footer">
+                <i-button type="primary" @click="saveChang">确认保存</i-button>
+            </div>
+
+        </Modal>
 
     </Card>
     <script src="admin/role/role.js" type="module"></script>

@@ -10,7 +10,9 @@ import java.util.Set;
  * @author 申林
  * @since 2020-04-26 13:55:48
  */
-public interface IPermissionService extends IBaseService<Permission,Long>{
+public interface IPermissionService extends IBaseService<Permission, Long> {
     Set<String> findPermissionsByID(Long id);
+
+    Set<Permission> findPermissionsByMenu(Long id);
 
 }

@@ -14,4 +14,7 @@ import java.util.Set;
 public interface IPermissionRepository extends IBaseRepository<Permission, Long> {
     @Query("select distinct p.sn from Employee e  join e.roleList r join r.permissionList p where e.id=?1")
     Set<String> findPermissionsByID(Long id);
+
+    @Query("select p from Permission p where p.menu.id =?1")
+    Set<Permission> findPermissionsByMenu(Long id);
 }

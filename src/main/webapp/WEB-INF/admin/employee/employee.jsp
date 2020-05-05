@@ -187,7 +187,7 @@
                             <template v-if="uploadfile.status === 'finished'||uploadfile.defaultshow">
                                 <img :src="formValidate.headImage">
                                 <div class="demo-upload-list-cover">
-                                    <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
+                                    <Icon type="ios-eye-outline" @click.native="handleView(formValidate.headImage)"></Icon>
                                     <Icon type="ios-trash-outline"
                                           @click.native="handleRemove(formValidate.headImage)"></Icon>
                                 </div>

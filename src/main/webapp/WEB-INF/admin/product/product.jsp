@@ -121,7 +121,7 @@
                         <div class="demo-upload-list">
                             <img :src="row.pic">
                             <div class="demo-upload-list-cover">
-                                <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
+                                <Icon type="ios-eye-outline" @click.native="handleView(row.pic)"></Icon>
                             </div>
                         </div>
                     </template>
@@ -178,7 +178,7 @@
                             <template v-if="uploadfile.status === 'finished'||uploadfile.defaultshow">
                                 <img :src="formValidate.pic">
                                 <div class="demo-upload-list-cover">
-                                    <Icon type="ios-eye-outline" @click.native="handleView()"></Icon>
+                                    <Icon type="ios-eye-outline" @click.native="handleView(formValidate.pic)"></Icon>
                                     <Icon type="ios-trash-outline"
                                           @click.native="handleRemove(formValidate.pic)"></Icon>
                                 </div>

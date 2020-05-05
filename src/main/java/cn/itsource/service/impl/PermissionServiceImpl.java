@@ -14,8 +14,8 @@ import java.util.Set;
  * @author 申林
  * @since 2020-04-26 13:55:48
  */
- @Service
-public class PermissionServiceImpl extends BaseServiceImpl<Permission,Long> implements IPermissionService{
+@Service
+public class PermissionServiceImpl extends BaseServiceImpl<Permission, Long> implements IPermissionService {
 
     private IPermissionRepository permissionRepository;
 
@@ -27,5 +27,10 @@ public class PermissionServiceImpl extends BaseServiceImpl<Permission,Long> impl
     @Override
     public Set<String> findPermissionsByID(Long id) {
         return permissionRepository.findPermissionsByID(id);
+    }
+
+    @Override
+    public Set<Permission> findPermissionsByMenu(Long id) {
+        return permissionRepository.findPermissionsByMenu(id);
     }
 }

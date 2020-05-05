@@ -396,6 +396,7 @@ new Vue({
             console.log(uploadPercent)
         },
         handleView(name) {
+            this.formValidate.pic = name
             this.visible = true;
         },
         handleRemove(path) {
@@ -423,7 +424,7 @@ new Vue({
                 status: '',
                 showProgress: false,/*上传前就开始显示进度条了*/
                 percentage: 0,
-                defaultshow:true
+                defaultshow: true
             }
         },
         handleBeforeUpload() {/*因为上传单个，每次上传前回复到默认状态*/

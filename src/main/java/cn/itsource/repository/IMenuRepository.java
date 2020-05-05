@@ -15,4 +15,7 @@ public interface IMenuRepository extends IBaseRepository<Menu, Long> {
 
     @Query("select distinct m from Employee e  join e.roleList r  join r.permissionList p  join p.menu m where e.id=?1")
     List<Menu> findMenuByEmployeeId(Long id);
+
+    @Query("select distinct m from Role r join r.permissionList p join p.menu m where r.id=?1")
+    List<Menu> findAllRolePermissionMenuByRoleId(Long id);
 }

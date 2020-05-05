@@ -1,9 +1,11 @@
 package cn.itsource.web.controller;
 
+import cn.itsource.domain.Menu;
 import cn.itsource.domain.Permission;
 import cn.itsource.domain.Role;
 import cn.itsource.query.PermissionQuery;
 import cn.itsource.query.RoleQuery;
+import cn.itsource.service.IMenuService;
 import cn.itsource.service.IPermissionService;
 import cn.itsource.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * (Role)表Controller
@@ -26,6 +29,7 @@ import java.util.HashMap;
 public class RoleController {
     private IRoleService roleService;
     private IPermissionService permissionService;
+    private IMenuService menuService;
 
     @Autowired
     public void setRoleService(IRoleService roleService) {
@@ -35,6 +39,11 @@ public class RoleController {
     @Autowired
     public void setPermissionService(IPermissionService permissionService) {
         this.permissionService = permissionService;
+    }
+
+    @Autowired
+    public void setMenuService(IMenuService menuService) {
+        this.menuService = menuService;
     }
 
     /**
@@ -107,6 +116,24 @@ public class RoleController {
     public Page<Permission> findAll(PermissionQuery permissionQuery) {
         Page<Permission> pageUtil = permissionService.findPageByQuery(permissionQuery);
         return pageUtil;
+    }
+
+    @RequestMapping("/Menu/findAll")
+    @ResponseBody
+    public List<Menu> findAllMenu() {
+        return menuService.findAll();
+    }
+
+    @RequestMapping("/Menu/newTreeDate")
+    @ResponseBody
+    public List<Menu> findAllMenunewTreeDate(Long[] ids) {
+        return menuService.findAllMenunewTreeDate(ids);
+    }
+
+    @RequestMapping("/Menu/findAllRolePermissionMenuByRoleId")
+    @ResponseBody
+    public List<Menu> findAllRolePermissionMenuByRoleId(Long id) {
+        return menuService.findAllRolePermissionMenuByRoleId(id);
     }
 
 }

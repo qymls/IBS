@@ -92,7 +92,8 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal title="修改菜单" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable :z-index="50">
+            <Modal title="修改菜单" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable
+                   :z-index="50">
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <input type="hidden" v-model="formValidate.id"/><%--菜单id--%>
                     <Form-Item label="菜单名称" prop="name">
@@ -121,10 +122,50 @@
                     </Form-Item>
                     <Form-Item label="权限管理" prop="permission">
                         <Checkbox-Group v-model="formValidate.permission">
-                            <Checkbox >
-                                <Icon type="md-add"></Icon>
-                                <span>菜单管理列表</span>
-                            </Checkbox>
+                            <template v-if="!formValidate.url||permissionDsiable.children.length>0">
+                                <Checkbox label="index" disabled>
+                                    <Icon type="md-add"></Icon>
+                                    <span>页面权限</span>
+                                </Checkbox>
+                                <Checkbox label="findAll" disabled>
+                                    <Icon type="md-add"></Icon>
+                                    <span>列表权限</span>
+                                </Checkbox>
+                                <Checkbox label="save" disabled>
+                                    <Icon type="md-add" disabled></Icon>
+                                    <span>新增权限</span>
+                                </Checkbox>
+                                <Checkbox label="update" disabled>
+                                    <Icon type="md-add"></Icon>
+                                    <span>修改权限</span>
+                                </Checkbox>
+                                <Checkbox label="delete" disabled>
+                                    <Icon type="md-add"></Icon>
+                                    <span>删除权限</span>
+                                </Checkbox>
+                            </template>
+                            <template v-else>
+                                <Checkbox label="index">
+                                    <Icon type="md-add"></Icon>
+                                    <span>页面权限</span>
+                                </Checkbox>
+                                <Checkbox label="findAll">
+                                    <Icon type="md-add"></Icon>
+                                    <span>列表权限</span>
+                                </Checkbox>
+                                <Checkbox label="save">
+                                    <Icon type="md-add"></Icon>
+                                    <span>新增权限</span>
+                                </Checkbox>
+                                <Checkbox label="update">
+                                    <Icon type="md-add"></Icon>
+                                    <span>修改权限</span>
+                                </Checkbox>
+                                <Checkbox label="delete">
+                                    <Icon type="md-add"></Icon>
+                                    <span>删除权限</span>
+                                </Checkbox>
+                            </template>
                         </Checkbox-Group>
                     </Form-Item>
                     <Form-Item>
@@ -202,6 +243,7 @@
                     url: '',
                     description: '',
                     parent: '',
+                    permission: []
                 },
                 ruleValidate: {
                     name: [
@@ -265,7 +307,9 @@
                 page: 1,/*当前页默认为1*/
                 pageSize: 5,/* 默认5条*/
                 menuName: '',/*解决当前菜单不被当成重复菜单的标识*/
-                permissonList:[],
+                permissionDsiable: {
+                    children: []
+                },/*如果没有地址，和其有children，则禁用*/
             }
         },
         created() {
@@ -332,6 +376,7 @@
             },
             updateModelShow(data) {
                 this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
+                this.permissionDsiable = data/*用于禁用权限勾选框*/
                 this.updateModel = true;
                 this.menuName = data.name;
                 this.formValidate.id = data.id;
@@ -341,7 +386,23 @@
                 this.formValidate.url = data.url;
                 this.formValidate.description = data.description;
                 this.formValidate.parent = data.parent;
+                this.formValidate.permission = this.getPermissons(data.id);
 
+            },
+            getPermissons(id) {
+                var permissionList = [];
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    url: "Admin/Menu/getMenuPermission",
+                    data: {"id": id},
+                    dataType: 'json',
+                    async: false,/*取消异步加载*/
+                    success: function (result) {
+                        permissionList = result;/*只有前端返回的有值，才会执行这一句话*/
+                    }
+                });
+                return permissionList
             },
             handleSubmitUpdate: function (name) {//提交方法
                 var param = $.extend({}, this.formValidate)/*复制一份，应为要删除*/
@@ -356,6 +417,7 @@
                             data: param,
                             dataType: 'json',
                             async: false,/*取消异步加载*/
+                            traditional: true,//防止深度序列化
                             success: function (result) {
                                 if (result.msg) {/*操作失败，无权限*/
                                     $page.$Message.error(result.msg);

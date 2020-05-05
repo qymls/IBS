@@ -181,7 +181,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
     public void getPermissionnMenuDg(Menu menuByEmployeeId, List<Menu> firstMenuList) {
         Menu parent = menuByEmployeeId.getParent();
         if (parent != null) {
-            parent.getChildren().add(menuByEmployeeId);
+            if (!parent.getChildren().contains(menuByEmployeeId)) {/*不添加重复的*/
+                parent.getChildren().add(menuByEmployeeId);
+            }
             getPermissionnMenuDg(parent, firstMenuList);/*递归了*/
         } else {
             if (!firstMenuList.contains(menuByEmployeeId)) {/*这里解决两个子菜单拥有用一个父菜单的情况*/
@@ -211,6 +213,61 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
                 menuItemList.add(menu);
             }
 
+        }
+    }
+
+    /**
+     * 角色和菜单配置是的需要的回显菜单数据
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Menu> findAllMenunewTreeDate(Long[] ids) {
+        ArrayList<Menu> firstMenuList = new ArrayList<>();
+        for (Long id : ids) {
+            Menu one = menuRepository.findOne(id);
+            getPermissionnMenushow(one, firstMenuList);
+        }
+        return firstMenuList;
+    }
+
+
+    public void getPermissionnMenushow(Menu menuByEmployeeId, List<Menu> firstMenuList) {
+        Menu parent = menuByEmployeeId.getParent();
+        if (parent != null) {
+            if (!parent.getChildren().contains(menuByEmployeeId)) {
+                parent.getChildren().add(menuByEmployeeId);
+            }
+            getPermissionnMenushow(parent, firstMenuList);/*递归了*/
+        } else {
+            if (!firstMenuList.contains(menuByEmployeeId)) {/*这里解决两个子菜单拥有用一个父菜单的情况*/
+                firstMenuList.add(menuByEmployeeId);/*一直递归到没有父菜单为止*/
+            }
+        }
+    }
+
+    @Override
+    public List<Menu> findAllRolePermissionMenuByRoleId(Long id) {
+        List<Menu> firstMenuList = new ArrayList<>();/*用于装一级菜单*/
+        List<Menu> menuByRoleIdIdList = menuRepository.findAllRolePermissionMenuByRoleId(id);/*查询用户有权限的菜单*/
+        for (Menu menuByRoleId : menuByRoleIdIdList) {/*数据不能重复，需要去重复，sql或写逻辑代码，这里用了sql*/
+            getPermissionnMenuByRole(menuByRoleId, firstMenuList);
+        }
+        return firstMenuList;
+    }
+
+    public void getPermissionnMenuByRole(Menu menuByEmployeeId, List<Menu> firstMenuList) {
+        Menu parent = menuByEmployeeId.getParent();
+        if (parent != null) {
+            if (!parent.getChildren().contains(menuByEmployeeId)) {
+                parent.getChildren().add(menuByEmployeeId);
+            }
+            getPermissionnMenuByRole(parent, firstMenuList);/*递归了*/
+        } else {
+            if (!firstMenuList.contains(menuByEmployeeId)) {/*这里解决两个子菜单拥有用一个父菜单的情况*/
+                firstMenuList.add(menuByEmployeeId);/*一直递归到没有父菜单为止*/
+            }
         }
     }
 
