@@ -109,7 +109,10 @@
                     <div class="header_class_close" @click="close_modal">
                         <Icon type="ios-close" class="header_close_style"></Icon>
                     </div>
-                    <p>添加信息</p>
+                    <h2>
+                        <Icon type="md-options"></Icon>
+                        权限控制
+                    </h2>
                 </div>
                 <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
                     <Form-Item prop="id" v-show=false>
@@ -121,13 +124,6 @@
                     <Form-Item label="编码" prop="sn">
                         <i-Input v-model="formValidate.sn" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
-
-                    <div slot="header">
-                        <h2>
-                            <Icon type="md-options"></Icon>
-                            权限控制
-                        </h2>
-                    </div>
                     <Row>
                         <i-col span="12">
                             <div>

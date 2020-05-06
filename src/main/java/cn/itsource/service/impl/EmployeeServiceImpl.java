@@ -27,4 +27,9 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee, Long> impleme
         }
         return null;
     }
+
+    @Override
+    public List<Employee> findEmployeeByDepartmenttName(String deptName) {
+        return employeeRepository.findEmployeeByDepartmenttName(deptName);
+    }
 }
