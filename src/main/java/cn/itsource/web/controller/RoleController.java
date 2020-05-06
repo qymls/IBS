@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * (Role)表Controller
@@ -134,6 +135,28 @@ public class RoleController {
     @ResponseBody
     public List<Menu> findAllRolePermissionMenuByRoleId(Long id) {
         return menuService.findAllRolePermissionMenuByRoleId(id);
+    }
+
+    /**
+     * 角色直接配置菜单，保存时的方法
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/Menu/getLastMenuByRoleSave")
+    @ResponseBody
+    public List<Menu> getLastMenuByRoleSave(Long[] ids) {
+        List<Menu> byRoleSave = menuService.getLastMenuByRoleSave(ids);
+        for (Menu menu : byRoleSave) {
+            Set<Permission> permissionsByMenu = permissionService.findPermissionsByMenu(menu.getId());
+            if (permissionsByMenu.size() > 0) {
+                for (Permission permission : permissionsByMenu) {
+                    /*if (permission.getUrl())*/
+                }
+            }
+        }
+
+        return menuService.getLastMenuByRoleSave(ids);
     }
 
 }

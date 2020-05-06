@@ -490,6 +490,17 @@ new Vue({
         },
         saveChang() {/*保存权限修改*/
             console.log(this.menuIds)
+            $.ajax({
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "Admin/Role/Menu/getLastMenuByRoleSave",
+                data: {"ids": this.menuIds.toString()},
+                dataType: 'json',
+                async: false,/*取消异步加载*/
+                success: function (result) {
+
+                }
+            });
         },
         getlangData(data) {//特殊处理一下菜单数据，加入一些其他的属性
             for (let i = 0; i < data.length; i++) {

@@ -271,4 +271,18 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements IMen
         }
     }
 
+    /**
+     * 角色设置页面后，处理当前数据并且获取其所有的最后一级菜单
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Menu> getLastMenuByRoleSave(Long[] ids) {
+        List<Menu> menuItemList = new ArrayList<>();
+        List<Menu> allMenunewTreeDate = findAllMenunewTreeDate(ids);/*获得了保存的权限页面的树形数据*/
+        getLastMenuItem(allMenunewTreeDate, menuItemList);
+        return menuItemList;
+    }
+
+
 }

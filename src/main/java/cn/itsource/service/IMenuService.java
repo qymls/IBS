@@ -22,5 +22,8 @@ public interface IMenuService extends IBaseService<Menu, Long> {
 
     List<Menu> findAllMenunewTreeDate(Long[] ids);/*菜单权限配置是需要的显示菜单*/
 
-    List<Menu> findAllRolePermissionMenuByRoleId(Long id);
+    List<Menu> findAllRolePermissionMenuByRoleId(Long id);/*通过rlole查询所属权限，因为要单独处理所以需要单独写*/
+
+    List<Menu> getLastMenuByRoleSave(Long[] ids);
+
 }
