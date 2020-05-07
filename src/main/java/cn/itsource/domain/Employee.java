@@ -37,6 +37,14 @@ public class Employee extends BaseDomain {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roleList = new ArrayList<>();
 
+    public List<Role> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<Role> roleList) {
+        this.roleList = roleList;
+    }
+
     public Department getDepartment() {
         return department;
     }

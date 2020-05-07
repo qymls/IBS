@@ -28,6 +28,7 @@ public class PurchasebillitemQuery extends BaseQuery<Purchasebillitem> {
     private Long buyerId;
     private Integer status;
     private Long productypeId;
+    private String groupField;
     private List params = new ArrayList();
 
     @Override
@@ -59,7 +60,7 @@ public class PurchasebillitemQuery extends BaseQuery<Purchasebillitem> {
     }
 
     public String getJpql() {/*这里使用自定义的jpql来高级查询*/
-        StringBuilder jpql = new StringBuilder("select o from Purchasebillitem o");
+        StringBuilder jpql = new StringBuilder(" from Purchasebillitem o");
         if (StringUtils.isNoneBlank(time)) {/*时间处理特殊*/
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if (!",".equals(time)) {/*处理区间段是空，也会有个，号的*/
@@ -165,5 +166,13 @@ public class PurchasebillitemQuery extends BaseQuery<Purchasebillitem> {
 
     public void setParams(List params) {
         this.params = params;
+    }
+
+    public String getGroupField() {
+        return groupField;
+    }
+
+    public void setGroupField(String groupField) {
+        this.groupField = groupField;
     }
 }

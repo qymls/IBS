@@ -4,6 +4,9 @@
     .page_class .ivu-icon {
         line-height: unset;
     }
+    .roleTable_style .ivu-table-cell-expand .ivu-icon {
+        line-height: unset;
+    }
 </style>
 <style>
     .process_style {
@@ -132,7 +135,7 @@
         </Row>
 
         <Row justify="center" align="middle">
-            <div style="margin-top:20px">
+            <div style="margin-top:20px" class="roleTable_style">
                 <i-Table row-key="name" :columns="columns" :data="EmployeeData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
@@ -141,6 +144,10 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="department_show">
                         <p>{{getDepatmentName(row)}}</p>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="role_list">
+                        <div style="overflow:hidden;text-overflow:ellipsis">{{getRoleName(row)}}</div>
+                        <%--省略号--%>
                     </template>
                 </i-Table>
             </div>

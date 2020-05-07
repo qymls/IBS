@@ -59,6 +59,24 @@ new Vue({
             },
             columns: [
                 {
+                    type: 'expand',
+                    width: 50,
+                    render: (h, params) => {
+                        var roles = this.getRoleName(params.row).split(";")
+                        return h('div',
+                            [
+                                roles.map((item, index) => {
+                                    return h('Tag',
+                                        {
+                                            props: {color: "blue"},
+                                            style: {cursor: "pointer"}
+                                        }
+                                        , item)
+                                })
+                            ]);
+                    }
+                },
+                {
                     type: 'selection',
                     width: 60,
                     align: 'center'
@@ -117,6 +135,12 @@ new Vue({
                     align: "center",
                     sortable: true
                 },
+                {
+                    title: '角色列表',
+                    slot: "role_list",
+                    width: 200,
+                    ellipsis: true
+                },
 
                 {
                     title: '头像',
@@ -144,6 +168,20 @@ new Vue({
         this.getFirstMenuData(this.page, this.pageSize);
     },
     methods: {
+        getRoleName(row) {/*基础列表回显权限*/
+            var roleMsg = '';
+            if (row.roleList.length > 0) {
+                $.each(row.roleList, function (i, o) {
+                    if (i == row.roleList.length - 1) {
+                        roleMsg += o.name
+                    } else {
+                        roleMsg += o.name + ';'
+                    }
+                })
+                return roleMsg;
+            }
+            return "暂无角色"
+        },
         export_data() {/*使用easypoi导出数据*/
             window.location.href = "Admin/Employee/exportEmployeeData?username=" + this.formInline.username + "&age1=" + this.formInline.age1 + "&age2=" + this.formInline.age2;
         },
@@ -217,6 +255,7 @@ new Vue({
                         param.action = "save";
                     }
                     delete param["department"]/*这里要department.id不能有department*/
+                    delete param["roleList"]
                     $.ajax({
                         type: "POST",
                         contentType: "application/x-www-form-urlencoded",

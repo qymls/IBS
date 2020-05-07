@@ -2,7 +2,6 @@ package cn.itsource.web.controller;
 
 import cn.itsource.domain.Employee;
 import cn.itsource.domain.Producttype;
-import cn.itsource.domain.Purchasebillitem;
 import cn.itsource.domain.Supplier;
 import cn.itsource.domain.vo.PurchaseBillItemVo;
 import cn.itsource.query.PurchasebillitemQuery;
@@ -11,14 +10,12 @@ import cn.itsource.service.IProducttypeService;
 import cn.itsource.service.IPurchasebillitemService;
 import cn.itsource.service.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (Purchasebillitem)表Controller
@@ -86,6 +83,12 @@ public class PurchasebillitemController {
     @ResponseBody
     public List<Producttype> findAllLastProducttype() {
         return producttypeService.findAllLastProducttype();
+    }
+
+    @RequestMapping("/findChartsPie")
+    @ResponseBody
+    public List<Map<String, Object>> findChartsPie(PurchasebillitemQuery purchasebillitemQuery) {
+        return purchasebillitemService.findChartsPie(purchasebillitemQuery);
     }
 
 }

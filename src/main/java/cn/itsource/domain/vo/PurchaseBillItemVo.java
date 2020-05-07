@@ -16,7 +16,7 @@ public class PurchaseBillItemVo {
     private BigDecimal price; //价格
     private BigDecimal amount; //小计 = 价格*数量
     private Integer status;//状态
-    private String groupField = ""; //分组字段
+    private String groupField = ""; //分组字段,这里没有用，没有使用分组统计
 
     public PurchaseBillItemVo() {
     }

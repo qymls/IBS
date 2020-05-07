@@ -168,9 +168,9 @@ new Vue({
                 id: '',
                 pic: '',
                 color: '',
-                price: 0.0,
-                num: 0.0,
-                amount: 0.0,
+                price: 0,
+                num: 0,
+                amount: 0,
                 desc: '',
             },
             rowsdetail: [],/*明细删除*/
@@ -186,14 +186,14 @@ new Vue({
         priceChange(price) {
             var tempamount = this.detaileformSave.num * price;
             if (tempamount > 0) {
-                this.detaileformSave.amount = tempamount
+                this.detaileformSave.amount = Number(tempamount.toFixed(2));
             }
 
         },
         numChange(num) {
             var tempamount = this.detaileformSave.price * num;
             if (tempamount > 0) {
-                this.detaileformSave.amount = tempamount
+                this.detaileformSave.amount = Number(tempamount.toFixed(2));
             }
         },
         selectProduct() {/*当选择产品时回填颜色图片*/
@@ -253,9 +253,9 @@ new Vue({
             this.scrollToBottom();/*添加数据滚动条到底部*/
             var newdata = {
                 product: {id: 0, pic: '', color: ''},
-                price: 0.0,
+                price: 0,
                 num: 0,
-                amount: 0.0,
+                amount: 0,
                 desc: ''
             }
             if (this.detaildata.length == 0 || this.detaildata[this.detaildata.length - 1].product.id) {/*判断是否为空包括0,0也是空*/
