@@ -14,24 +14,37 @@
         </p>
 
         <Row>
-            <i-col span="3">
-                <i-button type="primary" icon="md-add" @click="newAdd">添加</i-button>
-                <Poptip
-                        confirm
-                        placement="right"
-                        transfer
-                        title="您确认删除这些信息吗?"
-                        @on-ok="deletePurchasebillitem">
-                    <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
-                </Poptip>
-            </i-col>
-
-            <i-col span="21">
+            <i-col span="24">
                 <i-Form ref="formInline" :model="formInline" inline style="margin-left: 20px;" @submit.native.prevent>
-                    <Form-Item prop="name">
-                        <i-Input type="text" v-model="formInline.name" placeholder="请输入查找的名称" @on-enter="click_enter">
-                            <Icon type="ios-menu" slot="prepend"></Icon>
-                        </i-Input>
+                    <Form-Item prop="time">
+                        <Date-Picker type="datetimerange" v-model="formInline.time" format="yyyy-MM-dd"
+                                     placeholder="按照采购时间查询" transfer :editable="false" style="width: 230px"
+                                     @on-change="getTime"></Date-Picker>
+                    </Form-Item>
+                    <Form-Item prop="supplierId">
+                        <i-Select v-model="formInline.supplierId" placeholder="请选择供应商" clearable style="width: 200px">
+                            <i-Option v-for="item in supplierValue" v-model="item.id">{{item.name}}</i-Option>
+                        </i-Select>
+                    </Form-Item>
+
+                    <Form-Item prop="buyerId">
+                        <i-Select v-model="formInline.buyerId" placeholder="请选择采购员" clearable style="width: 200px">
+                            <i-Option v-for="item in buyerValue" v-model="item.id">{{item.username}}</i-Option>
+                        </i-Select>
+                    </Form-Item>
+
+                    <Form-Item prop="productypeId">
+                        <i-Select v-model="formInline.productypeId" placeholder="请选择商品类型" clearable style="width: 200px">
+                            <i-Option v-for="item in productypeIdValue" v-model="item.id">{{item.name}}</i-Option>
+                        </i-Select>
+                    </Form-Item>
+
+                    <Form-Item prop="status">
+                        <i-Select v-model="formInline.status" placeholder="请选择单据状态" clearable style="width: 200px">
+                            <i-Option value="0">待审核</i-Option>
+                            <i-Option value="1">已审核</i-Option>
+                            <i-Option value="2">已过期</i-Option>
+                        </i-Select>
                     </Form-Item>
 
                     <Form-Item>
@@ -44,50 +57,14 @@
 
         <Row justify="center" align="middle">
             <div style="margin-top:20px">
-                <i-Table :columns="columns" :data="PurchasebillitemData" border max-height="650"
-                         @on-selection-change="deleteRows"
-                         @on-row-dblclick="updateModelShow">
+                <i-Table :columns="columns" :data="PurchasebillitemData" border max-height="650">
+                    <template slot-scope="{ row, index }" slot="status">
+                        <Tag color="error" v-if="row.status==0" style="cursor: pointer">待审核</Tag>
+                        <Tag color="success" v-if="row.status==1" style="cursor: pointer">已审核</Tag>
+                        <Tag color="#938E93" v-if="row.status==2" style="cursor: pointer">已作废</Tag>
+                    </template>
                 </i-Table>
             </div>
-            <div style="margin: 10px;overflow: hidden">
-                <div style="float: right;">
-                    <Page :total="total" show-total :page-size="pageSize" :page-size-opts="[5,10,20]" :current="page"
-                          show-sizer transfer show-elevator
-                          @on-change="changePage" @on-page-size-change="sizeChange"
-                          class-name="page_class" style="margin-top: 10px;"></Page>
-                </div>
-            </div>
-            <Modal title="添加信息" v-model="updateModel" class-name="vertical-center-modal" footer-hide draggable>
-                <i-Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                    <Form-Item prop="id" v-show=false>
-                        <input type="text" v-model="formValidate.id"/>
-                    </Form-Item>
-                                        <Form-Item label="price" prop="price">
-                        <i-Input v-model="formValidate.price" placeholder="请输入相关值"></i-Input>
-                    </Form-Item>
-                                        <Form-Item label="num" prop="num">
-                        <i-Input v-model="formValidate.num" placeholder="请输入相关值"></i-Input>
-                    </Form-Item>
-                                        <Form-Item label="amount" prop="amount">
-                        <i-Input v-model="formValidate.amount" placeholder="请输入相关值"></i-Input>
-                    </Form-Item>
-                                        <Form-Item label="descs" prop="descs">
-                        <i-Input v-model="formValidate.descs" placeholder="请输入相关值"></i-Input>
-                    </Form-Item>
-                                        <Form-Item label="productId" prop="productId">
-                        <i-Input v-model="formValidate.productId" placeholder="请输入相关值"></i-Input>
-                    </Form-Item>
-                                        <Form-Item label="billId" prop="billId">
-                        <i-Input v-model="formValidate.billId" placeholder="请输入相关值"></i-Input>
-                    </Form-Item>
-                                        <Form-Item>
-                        <i-Button type="primary" @click="handleSubmitUpdate('formValidate')">确认</i-Button>
-                        <i-Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-Button>
-                    </Form-Item>
-                </i-Form>
-
-            </Modal>
-
         </Row>
 
     </Card>

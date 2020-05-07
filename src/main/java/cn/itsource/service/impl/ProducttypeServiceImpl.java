@@ -132,4 +132,28 @@ public class ProducttypeServiceImpl extends BaseServiceImpl<Producttype, Long> i
         producttypeRepository.save(producttype);
         return producttype.getId();
     }
+
+    /**
+     * 获得所有最后一级的商品类型
+     *
+     * @return
+     */
+    @Override
+    public List<Producttype> findAllLastProducttype() {
+        List<Producttype> producttypeItemList = new ArrayList<>();
+        List<Producttype> allProducttype = findAll();/*得到所有菜单的数据已经是有children的数据了*/
+        getLastProducttypeItem(allProducttype, producttypeItemList);
+        return producttypeItemList;
+    }
+
+    public void getLastProducttypeItem(List<Producttype> producttypeList, List<Producttype> producttypeItemList) {
+        for (Producttype producttype : producttypeList) {
+            if (producttype.getChildren().size() > 0) {
+                getLastProducttypeItem(producttype.getChildren(), producttypeItemList);
+            } else {
+                producttypeItemList.add(producttype);
+            }
+
+        }
+    }
 }

@@ -258,7 +258,13 @@ new Vue({
                 amount: 0.0,
                 desc: ''
             }
-            this.detaildata.push(newdata)
+            if (this.detaildata[this.detaildata.length - 1].product.id) {/*判断是否为空包括0,0也是空*/
+                this.detaildata.push(newdata)
+                this.handleEdit(newdata, this.detaildata.length - 1)/*调用一下handleEdit，打开最后一个*/
+            } else {
+                this.$Message.error('请先保存操作');
+            }
+
         },
         deletePurchasebillDetali(index) {/*删除列表中的*/
             this.detaildata.splice(index, 1);/*!*移除*!*/
@@ -344,63 +350,67 @@ new Vue({
 
         },
         handleSubmitUpdate: function (name) {//提交方法
-            var newvdate = '';
-            if (this.formValidate.vdate instanceof Date) {/*这个组件有问题，一会是date一会是字符串*/
-                newvdate = this.ChangeDateFormat(this.formValidate.vdate);/*必须处理一下的*/
-            } else {
-                newvdate = this.formValidate.vdate;
-            }
-            var refs = this.$refs;
-            refs[name].validate((valid) => {
-                if (valid) {
-                    var $page = this;
-                    var messagePage = this.$Message;
-                    var param = $.extend({}, this.formValidate)/*复制一份，因为要删除*/
-                    param['vdate'] = newvdate;
-                    if (param.supplierId) {
-                        param["supplier.id"] = param.supplierId
-                    }
-                    if (param.buyerId) {
-                        param["buyer.id"] = param.buyerId
-                    }
-                    for (var i = 0; i < this.detaildata.length; i++) {
-                        param["billitems[" + i + "].product.id"] = this.detaildata[i].product.id;
-                        param["billitems[" + i + "].price"] = this.detaildata[i].price;
-                        param["billitems[" + i + "].num"] = this.detaildata[i].num;
-                        param["billitems[" + i + "].descs"] = this.detaildata[i].descs;
-                    }
-                    delete param["supplierId"];
-                    delete param["buyerId"];
-                    var url;
-                    if (this.formValidate.id) {/*修改*/
-                        url = "Admin/Purchasebill/update"
-                        param.action = "update"/*传递这个参数是配合 @ModelAttribute注解使用的，只用于修改*/
-                    } else {/*添加*/
-                        var url = "Admin/Purchasebill/save";
-                        param.action = "save";
-                    }
-                    $.ajax({
-                        type: "POST",
-                        contentType: "application/x-www-form-urlencoded",
-                        url: url,
-                        data: param,
-                        dataType: "json",
-                        async: false,/*取消异步加载*/
-                        traditional: true,//防止深度序列化
-                        success: function (result) {
-                            if (result.msg) {/*操作失败，无权限*/
-                                messagePage.error(result.msg);
-                            } else {
-                                $page.$Message.success('操作数据成功');
-                                $page.updateModel = false;
-                                $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
-                            }
-                        }
-                    });
+            if (this.detaildata[this.detaildata.length - 1].product.id) {/*如果不为0或有值的话*/
+                var newvdate = '';
+                if (this.formValidate.vdate instanceof Date) {/*这个组件有问题，一会是date一会是字符串*/
+                    newvdate = this.ChangeDateFormat(this.formValidate.vdate);/*必须处理一下的*/
                 } else {
-                    this.$Message.error("请按照表单要求填写");
+                    newvdate = this.formValidate.vdate;
                 }
-            })
+                var refs = this.$refs;
+                refs[name].validate((valid) => {
+                    if (valid) {
+                        var $page = this;
+                        var messagePage = this.$Message;
+                        var param = $.extend({}, this.formValidate)/*复制一份，因为要删除*/
+                        param['vdate'] = newvdate;
+                        if (param.supplierId) {
+                            param["supplier.id"] = param.supplierId
+                        }
+                        if (param.buyerId) {
+                            param["buyer.id"] = param.buyerId
+                        }
+                        for (var i = 0; i < this.detaildata.length; i++) {
+                            param["billitems[" + i + "].product.id"] = this.detaildata[i].product.id;
+                            param["billitems[" + i + "].price"] = this.detaildata[i].price;
+                            param["billitems[" + i + "].num"] = this.detaildata[i].num;
+                            param["billitems[" + i + "].descs"] = this.detaildata[i].descs;
+                        }
+                        delete param["supplierId"];
+                        delete param["buyerId"];
+                        var url;
+                        if (this.formValidate.id) {/*修改*/
+                            url = "Admin/Purchasebill/update"
+                            param.action = "update"/*传递这个参数是配合 @ModelAttribute注解使用的，只用于修改*/
+                        } else {/*添加*/
+                            var url = "Admin/Purchasebill/save";
+                            param.action = "save";
+                        }
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/x-www-form-urlencoded",
+                            url: url,
+                            data: param,
+                            dataType: "json",
+                            async: false,/*取消异步加载*/
+                            traditional: true,//防止深度序列化
+                            success: function (result) {
+                                if (result.msg) {/*操作失败，无权限*/
+                                    messagePage.error(result.msg);
+                                } else {
+                                    $page.$Message.success('操作数据成功');
+                                    $page.updateModel = false;
+                                    $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
+                                }
+                            }
+                        });
+                    } else {
+                        this.$Message.error("请按照表单要求填写");
+                    }
+                })
+            } else {
+                this.$Message.error('请先保存数据，在提交表单');
+            }
         },
 
         handleReset: function (name) {//重置方法
@@ -497,8 +507,14 @@ new Vue({
         },
         scrollToBottom: function () {/*滚动条到底部的方法,出现滚动条之后下一次点击才会到底部*/
             this.$nextTick(() => {
-                var container = $(".details .ivu-table-body");/*滚动条在谁身上就找谁*/
-                container[0].scrollTop = container[0].scrollHeight
+                // 当滚动条从没有到有时，不加setTimeout滚动条将不会滚动到底部
+                setTimeout(() => {
+                    let overflowY = $(".details .ivu-table-body")[0];
+                    if (!overflowY) {
+                        return
+                    }
+                    overflowY.scrollTop = overflowY.scrollHeight + 34
+                }, 50)
             })
         },
     }

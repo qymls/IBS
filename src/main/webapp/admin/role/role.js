@@ -407,8 +407,14 @@ new Vue({
         },
         scrollToBottom: function () {/*滚动条到底部的方法,出现滚动条之后下一次点击才会到底部*/
             this.$nextTick(() => {
-                var container = $(".tragetTable .ivu-table-body");/*滚动条在谁身上就找谁*/
-                container[0].scrollTop = container[0].scrollHeight
+                // 当滚动条从没有到有时，不加setTimeout滚动条将不会滚动到底部
+                setTimeout(() => {
+                    let overflowY = $(".tragetTable .ivu-table-body")[0];
+                    if (!overflowY) {
+                        return
+                    }
+                    overflowY.scrollTop = overflowY.scrollHeight + 34
+                }, 50)
             })
         },
         /*权限菜单页面*/

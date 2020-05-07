@@ -19,4 +19,6 @@ public interface IProducttypeService extends IBaseService<Producttype, Long> {
 
     Long saveReturnParam(Producttype producttype);/*插入数据返回主键*/
 
+    List<Producttype> findAllLastProducttype();/*获取所有最后一级的商品类型*/
+
 }

@@ -97,8 +97,7 @@
                           class-name="page_class" style="margin-top: 10px;"></Page>
                 </div>
             </div>
-            <Modal v-model="updateModel" class-name="vertical-center-modal" width="1250" draggable
-            >
+            <Modal v-model="updateModel" class-name="vertical-center-modal" width="1250" draggable :scrollable="true">
                 <div slot="header">
                     <h2>
                         <Icon type="md-options"></Icon>
@@ -189,7 +188,7 @@
                                     <Icon type="ios-checkmark" size="32" style="cursor: pointer;color: #57d660" @click="handleSave(index)"/>
                                     </Tooltip>
                                     <Tooltip content="取消" transfer>
-                                        <Icon type="ios-close" size="28" style="cursor: pointer;color: red" @click="editIndex = -1"/>
+                                        <Icon type="ios-close" size="28" style="cursor: pointer;color: red" @click="editIndex = -1" v-if="row.product.id"/>
                                     </Tooltip>
                                 </div>
                                 <div v-else>
