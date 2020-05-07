@@ -258,7 +258,7 @@ new Vue({
                 amount: 0.0,
                 desc: ''
             }
-            if (this.detaildata[this.detaildata.length - 1].product.id) {/*判断是否为空包括0,0也是空*/
+            if (this.detaildata.length == 0 || this.detaildata[this.detaildata.length - 1].product.id) {/*判断是否为空包括0,0也是空*/
                 this.detaildata.push(newdata)
                 this.handleEdit(newdata, this.detaildata.length - 1)/*调用一下handleEdit，打开最后一个*/
             } else {
@@ -350,7 +350,7 @@ new Vue({
 
         },
         handleSubmitUpdate: function (name) {//提交方法
-            if (this.detaildata[this.detaildata.length - 1].product.id) {/*如果不为0或有值的话*/
+            if (this.detaildata.length == 0 || this.detaildata[this.detaildata.length - 1].product.id) {/*如果不为0或有值的话*/
                 var newvdate = '';
                 if (this.formValidate.vdate instanceof Date) {/*这个组件有问题，一会是date一会是字符串*/
                     newvdate = this.ChangeDateFormat(this.formValidate.vdate);/*必须处理一下的*/

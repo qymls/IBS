@@ -184,20 +184,20 @@
 
                             <template slot-scope="{ row, index }" slot="action">
                                 <div v-if="editIndex === index">
-                                    <Tooltip content="保存" transfer>
+                                    <Tooltip content="保存" transfer :delay="3000">
                                     <Icon type="ios-checkmark" size="32" style="cursor: pointer;color: #57d660" @click="handleSave(index)"/>
                                     </Tooltip>
-                                    <Tooltip content="取消" transfer>
+                                    <Tooltip content="取消" transfer :delay="3000">
                                         <Icon type="ios-close" size="28" style="cursor: pointer;color: red" @click="editIndex = -1" v-if="row.product.id"/>
                                     </Tooltip>
                                 </div>
                                 <div v-else>
-                                    <Tooltip content="操作" transfer>
+                                    <Tooltip content="操作" transfer :delay="3000">
                                         <Icon type="ios-hammer" size="15" style="cursor: pointer"
                                               @click="handleEdit(row, index)"/>
                                     </Tooltip>
 
-                                    <Tooltip content="删除" transfer style="margin-left: 12px;">
+                                    <Tooltip content="删除" transfer style="margin-left: 12px;" :delay="3000">
                                         <Icon type="ios-trash" size="15" style="cursor: pointer"
                                               @click="deletePurchasebillDetali(index)"/>
                                     </Tooltip>
