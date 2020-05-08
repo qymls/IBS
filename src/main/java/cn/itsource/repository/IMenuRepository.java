@@ -13,7 +13,7 @@ public interface IMenuRepository extends IBaseRepository<Menu, Long> {
     @Query(nativeQuery = true, value = "select * from menu where firstmenuid = 0")
     List<Menu> getStairMenu();
 
-    @Query("select distinct m from Employee e  join e.roleList r  join r.permissionList p  join p.menu m where e.id=?1")
+    @Query("select distinct m from Employee e  join e.roleList r  join r.permissionList p  join p.menu m where e.id=?1 order by m.id")
     List<Menu> findMenuByEmployeeId(Long id);
 
     @Query("select distinct m from Role r join r.permissionList p join p.menu m where r.id=?1")

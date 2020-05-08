@@ -18,6 +18,11 @@ public class AdminController {
         return "WEB-INF/admin/admin";
     }
 
+    @RequestMapping("/Index/index")
+    public String forwardindex() {
+        return "WEB-INF/index";
+    }
+
     /**
      * iframe对应的页面
      *

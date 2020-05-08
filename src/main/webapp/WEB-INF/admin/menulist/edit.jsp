@@ -243,6 +243,7 @@
 
         created() {
             var Data = [];
+            var $page = this;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
@@ -250,7 +251,15 @@
                 dataType: 'json',
                 async: false,/*取消异步加载*/
                 success: function (result) {
-                    Data = result;
+                    if (result.msg) {/*操作失败，无权限*/
+                        $page.$Notice.error({
+                            title: '通知提醒',
+                            desc: result.msg,
+                        });
+                    } else {
+                        Data = result;
+                    }
+
                 }
             });
             this.getlangData(Data)
@@ -395,9 +404,9 @@
                                     title: '通知提醒',
                                     desc: "删除成功",
                                 });
+                                const index = parent.children.indexOf(data);
+                                parent.children.splice(index, 1);
                             }
-                            const index = parent.children.indexOf(data);
-                            parent.children.splice(index, 1);
                         }
                     });
                 } else {

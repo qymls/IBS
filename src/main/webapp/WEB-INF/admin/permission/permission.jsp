@@ -79,7 +79,7 @@
                     </Form-Item>
                     <Form-Item label="menuId" prop="menuId">
                         <i-Select v-model="formValidate.menuId">
-                            <i-Option v-for="item in menuItem" v-if="item.name!='首页'" :value="item.id">{{item.name}}
+                            <i-Option v-for="item in menuItem"  :value="item.id">{{item.name}}
                             </i-Option>
                         </i-Select>
                     </Form-Item>

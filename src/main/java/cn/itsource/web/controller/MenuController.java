@@ -268,7 +268,11 @@ public class MenuController {
         Set<Permission> permissionsByMenu = permissionService.findPermissionsByMenu(id);
         for (Permission byMenu : permissionsByMenu) {
             String[] split = byMenu.getUrl().split("/");
-            permissonList.add(split[split.length - 1]);
+            String string = split[split.length - 1];
+            if (!string.equals("findAllMenu") && !string.equals("findAllByPage")) {/*特殊处理一下这两个，自己加的都要在这里来去除*/
+                permissonList.add(string);
+            }
+
         }
         return permissonList;
     }

@@ -105,7 +105,8 @@ new Vue({
             return parentValueList;
         },
         getParetnt() {/*查询出所有的类型而不是分页*/
-            var parentData;
+            var parentData = [];
+            var $page = this;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
@@ -114,7 +115,14 @@ new Vue({
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    parentData = result;
+                    if (result.msg) {/*操作失败，无权限*/
+                        $page.$Notice.error({
+                            title: '通知提醒',
+                            desc: result.msg,
+                        });
+                    } else {
+                        parentData = result;
+                    }
                 }
             });
             this.formatparentData(parentData);/*格式化数据*/

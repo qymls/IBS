@@ -33,6 +33,7 @@
         overflow: hidden;
         cursor: pointer;
     }
+
     .rolelook_style .ivu-modal-body {
         max-height: 390px;
         overflow: auto;
@@ -86,7 +87,7 @@
                          @on-row-dblclick="updateModelShow">
                     <template slot-scope="{ row, index }" slot="action">
                         <Tooltip content="权限配置" transfer placement="right" style="cursor: pointer;">
-                            <Icon type="md-cog" @click="addRole(row.id)"></Icon>
+                            <Icon type="md-cog" @click="addRole(row.id,index)"></Icon>
                         </Tooltip>
                     </template>
                     <template slot-scope="{ row, index }" slot="permission_list">

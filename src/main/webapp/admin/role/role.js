@@ -125,7 +125,9 @@ new Vue({
             authorityTree: [],
             authorityTreeShow: [],
             menuIds: [],
-            temp: []/*临时数组*/
+            temp: [],/*临时数组*/
+            tempindex: '',/*临时index用于记录当前点击的第几行*/
+            roleid: '',
 
         }
     },
@@ -258,7 +260,7 @@ new Vue({
             }
 
         },
-        updateModelShow(data) {
+        updateModelShow(data, index) {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
             this.TragetData = [];/*清空目标权限*/
             this.updateModel = true;
@@ -266,6 +268,7 @@ new Vue({
             this.TragetData = data.permissionList
             this.roleSettingPage = 1;/*默认的第一页*/
             this.getAllPermission(this.roleSettingPage, this.roleSettingPageSize);/*源权限的数据加载了在查询，为了勾选上权限框*/
+            this.tempindex = index;
         },
         close_modal() {/*modal框关闭触发*/
             this.$refs.selection.selectAll(false);/*全部设置成未选中的状态*/
@@ -306,6 +309,13 @@ new Vue({
                                 $page.$Message.success("操作数据成功");
                                 $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
                                 $page.$refs.selection.selectAll(false);/*全部设置成未选中的状态*/
+                                if (param.action == 'update') {
+                                    $page.RoleData[$page.tempindex] = $.extend({}, $page.RoleData[$page.tempindex], {_expanded: true})
+                                } else {/*保存就展开最后一个即可*/
+                                    //$page.RoleData[$page.RoleData.length-1] = $.extend({}, $page.RoleData[$page.RoleData.length-1], {_expanded: true})
+                                    console.log("新增数据不展开")
+                                }
+
                             }
                         }
                     });
@@ -418,12 +428,14 @@ new Vue({
             })
         },
         /*权限菜单页面*/
-        addRole(id) {
+        addRole(id,index) {
             this.temp = []/*执行一次就清空一次*/
             this.menuIds = [];
             this.getAllMenu();
             this.authority = true;
             this.initialData(id);
+            this.roleid = id;/*用于配置基础菜单权限*/
+            this.tempindex = index;
 
         },
         initialData(id) {
@@ -496,15 +508,18 @@ new Vue({
         },
         saveChang() {/*保存权限修改*/
             console.log(this.menuIds)
+            var $page = this;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
                 url: "Admin/Role/Menu/getLastMenuByRoleSave",
-                data: {"ids": this.menuIds.toString()},
+                data: {"ids": this.menuIds.toString(), "roleid": this.roleid},
                 dataType: 'json',
                 async: false,/*取消异步加载*/
                 success: function (result) {
-
+                    $page.authority = false;
+                    $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
+                    $page.RoleData[$page.tempindex] = $.extend({}, $page.RoleData[$page.tempindex], {_expanded: true})/*打开*/
                 }
             });
         },

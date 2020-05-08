@@ -8,7 +8,7 @@ new Vue({
                 buyerId: '',/*采购员*/
                 time: '',/*采购时间*/
                 status: '',/*单据状态*/
-                productypeId: '',/*商品类型*/
+                typesValue: [],/*商品类型*/
                 groupField: 'o.bill.supplier.name',/*分组字段，默认供应商*/
             },
             columns: [
@@ -72,6 +72,7 @@ new Vue({
             chartShow: false,
             ChartLeftShow: [],/*左边显示,*/
             ChartDate: [],/*图形数据*/
+            typesData: [],/*类别的级联选择框*/
 
         }
     },
@@ -84,6 +85,32 @@ new Vue({
     mounted() {/*在页面元素加载完成后在初始化*/
     },
     methods: {
+        getAllProductType() {/*查询出所有的类型而不是分页*/
+            var typesData;
+            $.ajax({
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "Admin/Purchasebillitem/producttype/findAllProducttype",
+                dataType: 'json',
+                traditional: true,//防止深度序列化
+                async: false,/*取消异步加载*/
+                success: function (result) {/*用了框架的*/
+                    typesData = result;
+                }
+            });
+            this.formattypesData(typesData);/*格式化数据*/
+            this.typesData = typesData;
+        },
+        formattypesData(data) {/*格式化数据*/
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].children && data[i].children.length > 0) {
+                    data[i] = $.extend({}, data[i], {value: data[i].id.toString(), label: data[i].name});
+                    this.formattypesData(data[i].children)
+                } else {
+                    data[i] = $.extend({}, data[i], {value: data[i].id.toString(), label: data[i].name});
+                }
+            }
+        },
         showDataPic() {// 展示图形数据
             this.chartShow = true
             this.getChartDate();
@@ -106,7 +133,7 @@ new Vue({
                     "buyerId": this.formInline.buyerId,
                     "status": this.formInline.status,
                     "time": this.formInline.time,
-                    "productypeId": this.formInline.productypeId,
+                    "productypeId": this.formInline.typesValue[this.formInline.typesValue.length - 1],
                     "groupField": this.formInline.groupField
                 },
                 traditional: true,//防止深度序列化
@@ -237,7 +264,7 @@ new Vue({
                     type: 'category',
                     data: dataAxis,
                     axisLabel: {
-                        interval:0
+                        interval: 0
                     }
                 },
                 yAxis: {
@@ -289,7 +316,7 @@ new Vue({
             };
             myChart.setOption(option);
         },
-        drawLine(){
+        drawLine() {
             var myChart = echarts.init(document.getElementById('myChartLine'));
             var option = {
                 title: {
@@ -441,20 +468,6 @@ new Vue({
                 }
             });
         },
-        getAllProductType() {/*所有供应商*/
-            var $page = this;
-            $.ajax({
-                type: "POST",
-                contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebillitem/producttype/findAllLastProducttype",
-                dataType: 'json',
-                traditional: true,//防止深度序列化
-                async: false,/*取消异步加载*/
-                success: function (result) {/*用了框架的*/
-                    $page.productypeIdValue = result;
-                }
-            });
-        },
         getTime(Date) {
             this.formInline.time = Date;
         },
@@ -476,7 +489,7 @@ new Vue({
                     "buyerId": this.formInline.buyerId,
                     "status": this.formInline.status,
                     "time": this.formInline.time,
-                    "productypeId": this.formInline.productypeId
+                    "productypeId": this.formInline.typesValue[this.formInline.typesValue.length - 1]
                 },
                 dataType: 'json',
                 traditional: true,//防止深度序列化

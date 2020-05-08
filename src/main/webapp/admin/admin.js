@@ -101,11 +101,13 @@ var vue = new Vue({
     },
     created() {//create方法比mounted方法先执行，但是都要执行
         /*ajax调用，获取菜单信息*/
+        /*findMenuByEmployeeId通过用户查询用户所属菜单的
+        * findAll查询所有菜单不管是否有权限的*/
         var $page = this;
         $.ajax({
             type: "POST",
             contentType: "application/x-www-form-urlencoded",
-            url: "Admin/Menu/findAll",
+            url: "Admin/Menu/findMenuByEmployeeId",
             dataType: 'json',
             async: false,/*取消异步加载*/
             success: function (result) {

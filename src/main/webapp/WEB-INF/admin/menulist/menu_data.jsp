@@ -124,33 +124,33 @@
                         <Checkbox-Group v-model="formValidate.permission">
                             <template v-if="!formValidate.url||permissionDsiable.children.length>0">
                                 <Checkbox label="index" disabled>
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="md-apps"></Icon>
                                     <span>页面权限</span>
                                 </Checkbox>
                                 <Checkbox label="findAll" disabled>
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="md-list"></Icon>
                                     <span>列表权限</span>
                                 </Checkbox>
                                 <Checkbox label="save" disabled>
-                                    <Icon type="md-add" disabled></Icon>
+                                    <Icon type="md-add"></Icon>
                                     <span>新增权限</span>
                                 </Checkbox>
                                 <Checkbox label="update" disabled>
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="ios-hammer"></Icon>
                                     <span>修改权限</span>
                                 </Checkbox>
                                 <Checkbox label="delete" disabled>
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="ios-trash"></Icon>
                                     <span>删除权限</span>
                                 </Checkbox>
                             </template>
                             <template v-else>
                                 <Checkbox label="index">
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="md-apps"></Icon>
                                     <span>页面权限</span>
                                 </Checkbox>
                                 <Checkbox label="findAll">
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="md-list"></Icon>
                                     <span>列表权限</span>
                                 </Checkbox>
                                 <Checkbox label="save">
@@ -158,11 +158,11 @@
                                     <span>新增权限</span>
                                 </Checkbox>
                                 <Checkbox label="update">
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="ios-hammer"></Icon>
                                     <span>修改权限</span>
                                 </Checkbox>
                                 <Checkbox label="delete">
-                                    <Icon type="md-add"></Icon>
+                                    <Icon type="ios-trash"></Icon>
                                     <span>删除权限</span>
                                 </Checkbox>
                             </template>
@@ -475,7 +475,7 @@
                     async: false,/*取消异步加载*/
                     success: function (result) {
                         if (result.msg) {/*操作失败，无权限*/
-                            this.$Notice.notice.error({
+                            $page.$Notice.error({
                                 title: '通知提醒',
                                 desc: result.msg,
                             });

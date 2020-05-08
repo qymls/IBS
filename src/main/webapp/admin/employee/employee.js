@@ -33,8 +33,8 @@ new Vue({
                 headImage: '',
                 department: {
                     id: ''
-                }
-
+                },
+                roleListSave: []
             },
             ruleValidate: {
                 username: [
@@ -161,13 +161,28 @@ new Vue({
                 showProgress: false,
                 percentage: 0,
                 defaultshow: true,
-            }/*上传的文件属性*/
+            },/*上传的文件属性*/
+            roleValue: [],/*所有角色*/
+            tempindex: ''/*临时index用于记录当前点击的第几行*/
         }
     },
     created() {
         this.getFirstMenuData(this.page, this.pageSize);
     },
     methods: {
+        getaLLRoleList() {/*获取所有角色*/
+            var $page = this;
+            $.ajax({
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "Admin/Employee/role/findAll",
+                dataType: 'json',
+                async: false,/*取消异步加载*/
+                success: function (result) {
+                    $page.roleValue = result;
+                }
+            });
+        },
         getRoleName(row) {/*基础列表回显权限*/
             var roleMsg = '';
             if (row.roleList.length > 0) {
@@ -222,10 +237,11 @@ new Vue({
              });
              return data;*/
         },
-        updateModelShow(data) {
+        updateModelShow(data,index) {
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
             this.updateModel = true;
             this.getAllDepartment();
+            this.getaLLRoleList()
             if (!data.department) {/*如果没有这个属性就添加一个*/
                 data["department"] = {id: ''};
             }
@@ -236,6 +252,12 @@ new Vue({
                 data["headImage"] = "";
             }
             this.formValidate = data;
+            var editList = [];
+            for (let i = 0; i < data.roleList.length; i++) {
+                editList.push(data.roleList[i].id)
+            }
+            this.formValidate.roleListSave = editList
+            this.tempindex = index;
 
         },
         handleSubmitUpdate: function (name) {//提交方法
@@ -254,6 +276,10 @@ new Vue({
                         var url = "Admin/Employee/save";
                         param.action = "save";
                     }
+                    var saveList = this.formValidate.roleListSave;
+                    for (let i = 0; i <saveList.length; i++) {
+                        param["roleList[" + i + "].id"] = saveList[i];
+                    }
                     delete param["department"]/*这里要department.id不能有department*/
                     delete param["roleList"]
                     $.ajax({
@@ -271,6 +297,12 @@ new Vue({
                                 $page.$Message.success('操作数据成功');
                                 $page.updateModel = false;
                                 $page.getFirstMenuData($page.page, $page.pageSize);/*修改完成后,刷新数据*/
+                                if (param.action=='update'){
+                                    $page.EmployeeData[$page.tempindex] = $.extend({}, $page.EmployeeData[$page.tempindex], {_expanded: true})
+                                }else {/*保存就展开最后一个即可*/
+                                    //$page.EmployeeData[$page.EmployeeData.length-1] = $.extend({}, $page.EmployeeData[$page.EmployeeData.length-1], {_expanded: true})
+                                    console.log("新增数据不展开")
+                                }
                             }
 
                             //delete param["department.id"]/*必须清空*/
@@ -335,6 +367,7 @@ new Vue({
             this.$refs['formValidate'].resetFields();/*清除model的表单数据,打开model就清空*/
             this.updateModel = true;
             this.getAllDepartment();/*获取所有部门*/
+            this.getaLLRoleList()
         },
         deleteRows: function (selection) {
             this.rows = [];

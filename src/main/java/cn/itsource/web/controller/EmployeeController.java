@@ -5,9 +5,11 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.itsource.domain.Department;
 import cn.itsource.domain.Employee;
+import cn.itsource.domain.Role;
 import cn.itsource.query.EmployeeQuery;
 import cn.itsource.service.IDepartmentService;
 import cn.itsource.service.IEmployeeService;
+import cn.itsource.service.IRoleService;
 import cn.itsource.service.picture.IPictureService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class EmployeeController {
     private IEmployeeService employeeService;
     private IDepartmentService departmentService;
     private IPictureService pictureService;
+    private IRoleService roleService;
 
     @Autowired
     public void setEmployeeService(IEmployeeService employeeService) {
@@ -44,6 +47,11 @@ public class EmployeeController {
     @Autowired
     public void setPictureService(IPictureService pictureService) {
         this.pictureService = pictureService;
+    }
+
+    @Autowired
+    public void setRoleService(IRoleService roleService) {
+        this.roleService = roleService;
     }
 
     /**
@@ -70,6 +78,11 @@ public class EmployeeController {
         return departmentService.findAll();
     }
 
+    @RequestMapping("/role/findAll")
+    @ResponseBody
+    public List<Role> rolefindAll() {
+        return roleService.findAll();
+    }
 
     @RequestMapping("/delete")
     @ResponseBody
@@ -103,6 +116,7 @@ public class EmployeeController {
         if ("update".equalsIgnoreCase(action)) {
             employee = employeeService.findOne(id);
             employee.setDepartment(null);/*department 脱离持久化状态*/
+            employee.getRoleList().clear();/*脱离*/
         }
         return employee;
     }

@@ -79,10 +79,15 @@ public class PurchasebillitemController {
         return employeeService.findEmployeeByDepartmenttName(deptName);
     }
 
-    @RequestMapping("/producttype/findAllLastProducttype")
+    /**
+     * 获得所有的产品类型处理过的
+     *
+     * @return
+     */
+    @RequestMapping("/producttype/findAllProducttype")
     @ResponseBody
     public List<Producttype> findAllLastProducttype() {
-        return producttypeService.findAllLastProducttype();
+        return producttypeService.findAll();
     }
 
     @RequestMapping("/findChartsPie")

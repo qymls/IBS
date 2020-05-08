@@ -5,6 +5,9 @@
     .page_class .ivu-icon {
         line-height: unset;
     }
+    ::-webkit-scrollbar { /*不要滚动条*/
+        width: 0;
+    }
 </style>
 <div id="app">
 
@@ -34,11 +37,9 @@
                         </i-Select>
                     </Form-Item>
 
-                    <Form-Item prop="productypeId">
-                        <i-Select v-model="formInline.productypeId" placeholder="请选择商品类型" clearable
-                                  style="width: 200px">
-                            <i-Option v-for="item in productypeIdValue" v-model="item.id">{{item.name}}</i-Option>
-                        </i-Select>
+                    <Form-Item prop="typesValue">
+                        <Cascader ref="cascader" :data="typesData" v-model="formInline.typesValue" filterable transfer
+                                  placeholder="请选择商品类型"></Cascader>
                     </Form-Item>
 
                     <Form-Item prop="status">

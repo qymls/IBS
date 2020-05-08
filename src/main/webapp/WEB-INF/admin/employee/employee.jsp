@@ -4,6 +4,7 @@
     .page_class .ivu-icon {
         line-height: unset;
     }
+
     .roleTable_style .ivu-table-cell-expand .ivu-icon {
         line-height: unset;
     }
@@ -179,22 +180,32 @@
                         <i-Input v-model="formValidate.age" placeholder="请输入年龄"></i-Input>
                     </Form-Item>
                     <Form-Item label="部门" prop="department.id">
-                        <i-Select v-model="formValidate.department.id">
+                        <i-Select v-model="formValidate.department.id" clearable>
                             <template v-for="item in departmentAll">
                                 <i-Option v-model="item.id">{{item.name}}</i-Option>
                             </template>
                         </i-Select>
                     </Form-Item>
+
+                    <Form-Item label="所属角色" prop="roleListSave">
+                        <i-Select v-model="formValidate.roleListSave" multiple>
+                            <i-Option v-for="item in roleValue" v-model="item.id" :key="item.id">{{ item.name }}
+                            </i-Option>
+                        </i-Select>
+                    </Form-Item>
+
                     <Form-Item prop="headImage" v-show="false">
                         <i-input type="text" v-model="formValidate.headImage"/>
                     </Form-Item>
+
                     <Form-Item label="头像">
                         <div class="demo-upload-list"
                              v-if="formValidate.headImage||uploadfile.status==='start'||uploadfile.status==='finished'">
                             <template v-if="uploadfile.status === 'finished'||uploadfile.defaultshow">
                                 <img :src="formValidate.headImage">
                                 <div class="demo-upload-list-cover">
-                                    <Icon type="ios-eye-outline" @click.native="handleView(formValidate.headImage)"></Icon>
+                                    <Icon type="ios-eye-outline"
+                                          @click.native="handleView(formValidate.headImage)"></Icon>
                                     <Icon type="ios-trash-outline"
                                           @click.native="handleRemove(formValidate.headImage)"></Icon>
                                 </div>
