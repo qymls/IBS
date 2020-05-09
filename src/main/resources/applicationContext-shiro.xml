@@ -37,7 +37,7 @@
         <property name="successUrl" value="/s/main.jsp"/>
         <!-- 没有权限时跳转到这个位置 -->
         <!--当你访问需要授权才能访问的资源时，但是shiro检测到你未被授权，会重定向到unauthorizedUrl这个地址-->
-        <property name="unauthorizedUrl" value="/s/unauthorized.jsp"/>
+        <property name="unauthorizedUrl" value="/admin/public/403.jsp"/>
         <!--
             配置哪些资源被保护，哪些资源需要权限
             anon：不需要登录也可以访问相应的权限

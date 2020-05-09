@@ -26,13 +26,13 @@
                                      @on-change="getTime"></Date-Picker>
                     </Form-Item>
                     <Form-Item prop="supplierId">
-                        <i-Select v-model="formInline.supplierId" placeholder="请选择供应商" clearable style="width: 200px">
+                        <i-Select v-model="formInline.supplierId" placeholder="请选择供应商" clearable style="width: 200px" transfer>
                             <i-Option v-for="item in supplierValue" v-model="item.id">{{item.name}}</i-Option>
                         </i-Select>
                     </Form-Item>
 
                     <Form-Item prop="buyerId">
-                        <i-Select v-model="formInline.buyerId" placeholder="请选择采购员" clearable style="width: 200px">
+                        <i-Select v-model="formInline.buyerId" placeholder="请选择采购员" clearable style="width: 200px" transfer>
                             <i-Option v-for="item in buyerValue" v-model="item.id">{{item.username}}</i-Option>
                         </i-Select>
                     </Form-Item>
@@ -43,14 +43,14 @@
                     </Form-Item>
 
                     <Form-Item prop="status">
-                        <i-Select v-model="formInline.status" placeholder="请选择单据状态" clearable style="width: 200px">
+                        <i-Select v-model="formInline.status" placeholder="请选择单据状态" clearable style="width: 200px" transfer>
                             <i-Option value="0">待审核</i-Option>
                             <i-Option value="1">已审核</i-Option>
                             <i-Option value="2">已过期</i-Option>
                         </i-Select>
                     </Form-Item>
                     <Form-Item prop="groupField">
-                        <i-Select v-model="formInline.groupField" placeholder="请选择分组状态" style="width: 200px">
+                        <i-Select v-model="formInline.groupField" placeholder="请选择分组状态" style="width: 200px" transfer>
                             <i-option value="o.bill.supplier.name">供应商</i-option>
                             <i-option value="o.bill.buyer.username">采购员</i-option>
                             <i-option value="o.product.name">商品名称</i-option>
