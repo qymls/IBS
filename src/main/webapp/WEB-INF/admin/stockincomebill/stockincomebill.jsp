@@ -25,7 +25,7 @@
                         placement="right"
                         transfer
                         title="您确认删除这些信息吗?"
-                        @on-ok="deletePurchasebill">
+                        @on-ok="deleteStockincomebill">
                     <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
                 </Poptip>
             </i-col>
@@ -43,9 +43,15 @@
                         </i-Select>
                     </Form-Item>
 
-                    <Form-Item prop="buyerId">
-                        <i-Select v-model="formInline.buyerId" placeholder="请选择采购员" clearable style="width: 200px">
-                            <i-Option v-for="item in buyerValue" v-model="item.id">{{item.username}}</i-Option>
+                    <Form-Item prop="keeperId">
+                        <i-Select v-model="formInline.keeperId" placeholder="请选择库管员" clearable style="width: 200px">
+                            <i-Option v-for="item in keeperValue" v-model="item.id">{{item.username}}</i-Option>
+                        </i-Select>
+                    </Form-Item>
+
+                    <Form-Item prop="depotId">
+                        <i-Select v-model="formInline.depotId" placeholder="请选择仓库" clearable style="width: 200px">
+                            <i-Option v-for="item in depotValue" v-model="item.id">{{item.name}}</i-Option>
                         </i-Select>
                     </Form-Item>
 
@@ -67,11 +73,11 @@
 
         <Row justify="center" align="middle">
             <div style="margin-top:20px">
-                <i-Table :columns="columns" :data="PurchasebillData" border max-height="650"
+                <i-Table :columns="columns" :data="StockincomebillData" border max-height="650"
                          @on-selection-change="deleteRows"
                          @on-row-dblclick="updateModelShow">
-                    <template slot-scope="{ row, index }" slot="buyer" v-if="row.buyer">
-                        {{row.buyer.username}}
+                    <template slot-scope="{ row, index }" slot="keeper" v-if="row.keeper">
+                        {{row.keeper.username}}
                     </template>
                     <template slot-scope="{ row, index }" slot="supplier" v-if="row.supplier">
                         {{row.supplier.name}}
@@ -82,13 +88,16 @@
                     <template slot-scope="{ row, index }" slot="auditor" v-if="row.auditor">
                         {{row.auditor.username}}
                     </template>
+                    <template slot-scope="{ row, index }" slot="depot" v-if="row.depot">
+                        {{row.depot.name}}
+                    </template>
                     <template slot-scope="{ row, index }" slot="status">
                         <Tag color="error" v-if="row.status==0" style="cursor: pointer">待审核</Tag>
                         <Tag color="success" v-if="row.status==1" style="cursor: pointer">已审核</Tag>
                         <Tag color="#938E93" v-if="row.status==2" style="cursor: pointer">已作废</Tag>
                     </template>
                     <template slot-scope="{ row, index }" slot="audit">
-                        <Tooltip content="审核采购" transfer placement="left">
+                        <Tooltip content="审核入库" transfer placement="left">
                             <Icon type="md-contacts" size="24" style="cursor: pointer" v-if="row.status == 0"
                                   @click="showaudit(row)"/>
                         </Tooltip>
@@ -125,9 +134,14 @@
                         </i-Select>
                     </Form-Item>
 
-                    <Form-Item label="采购员" prop="buyerId">
-                        <i-Select v-model="formValidate.buyerId" placeholder="请选择采购员" clearable style="width: 200px">
-                            <i-Option v-for="item in buyerValue" v-model="item.id">{{item.username}}</i-Option>
+                    <Form-Item label="库管员" prop="keeperId">
+                        <i-Select v-model="formValidate.keeperId" placeholder="请选择库管员" clearable style="width: 200px">
+                            <i-Option v-for="item in keeperValue" v-model="item.id">{{item.username}}</i-Option>
+                        </i-Select>
+                    </Form-Item>
+                    <Form-Item label="仓库" prop="depotId">
+                        <i-Select v-model="formValidate.depotId" placeholder="请选择仓库" clearable style="width: 200px">
+                            <i-Option v-for="item in depotValue" v-model="item.id">{{item.name}}</i-Option>
                         </i-Select>
                     </Form-Item>
                 </i-Form>
@@ -210,7 +224,7 @@
 
                                     <Tooltip content="删除" transfer style="margin-left: 12px;" :delay="3000">
                                         <Icon type="ios-trash" size="15" style="cursor: pointer"
-                                              @click="deletePurchasebillDetali(index)"/>
+                                              @click="deleteStockincomebillDetali(index)"/>
                                     </Tooltip>
                                 </div>
                             </template>
@@ -224,7 +238,7 @@
                     <i-Button @click="handleReset('formValidate')" style="margin-left: 8px" v-if="primarybuttonshow">
                         重置
                     </i-Button>
-                    <i-Button type="info" v-if="quditbuttonshow" @click="auditsave">审核采购</i-Button>
+                    <i-Button type="info" v-if="quditbuttonshow" @click="auditsave">审核入库</i-Button>
                 </div>
 
             </Modal>
@@ -232,5 +246,5 @@
         </Row>
 
     </Card>
-    <script src="admin/purchasebill/purchasebill.js" type="module"></script>
+    <script src="admin/stockincomebill/stockincomebill.js" type="module"></script>
 </div>

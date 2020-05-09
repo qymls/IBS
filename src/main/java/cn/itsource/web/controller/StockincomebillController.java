@@ -1,12 +1,8 @@
 package cn.itsource.web.controller;
 
 import cn.itsource.domain.*;
-import cn.itsource.query.PurchasebillQuery;
-import cn.itsource.query.SupplierQuery;
-import cn.itsource.service.IEmployeeService;
-import cn.itsource.service.IProductService;
-import cn.itsource.service.IPurchasebillService;
-import cn.itsource.service.ISupplierService;
+import cn.itsource.query.StockincomebillQuery;
+import cn.itsource.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,22 +17,23 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * (Purchasebill)表Controller
+ * (Stockincomebill)表Controller
  *
  * @author 申林
- * @since 2020-05-06 10:28:40
+ * @since 2020-05-09 14:21:59
  */
 @Controller
-@RequestMapping("Admin/Purchasebill")
-public class PurchasebillController {
-    private IPurchasebillService purchasebillService;
+@RequestMapping("Admin/Stockincomebill")
+public class StockincomebillController {
+    private IStockincomebillService stockincomebillService;
     private ISupplierService supplierService;
     private IEmployeeService employeeService;
     private IProductService productService;
+    private IDepotService depotService;
 
     @Autowired
-    public void setPurchasebillService(IPurchasebillService purchasebillService) {
-        this.purchasebillService = purchasebillService;
+    public void setStockincomebillService(IStockincomebillService stockincomebillService) {
+        this.stockincomebillService = stockincomebillService;
     }
 
     @Autowired
@@ -54,6 +51,11 @@ public class PurchasebillController {
         this.productService = productService;
     }
 
+    @Autowired
+    public void setDepotService(IDepotService depotService) {
+        this.depotService = depotService;
+    }
+
     /**
      * 菜单跳转
      *
@@ -61,13 +63,13 @@ public class PurchasebillController {
      */
     @RequestMapping("/index")
     public String index() {
-        return "WEB-INF/admin/purchasebill/purchasebill";
+        return "WEB-INF/admin/stockincomebill/stockincomebill";
     }
 
     @RequestMapping("/findAll")
     @ResponseBody
-    public Page<Purchasebill> findAll(PurchasebillQuery purchasebillQuery) {
-        Page<Purchasebill> pageUtil = purchasebillService.findPageByQuery(purchasebillQuery);
+    public Page<Stockincomebill> findAll(StockincomebillQuery stockincomebillQuery) {
+        Page<Stockincomebill> pageUtil = stockincomebillService.findPageByQuery(stockincomebillQuery);
         return pageUtil;
     }
 
@@ -77,7 +79,7 @@ public class PurchasebillController {
         HashMap<Object, Object> map = null;
         if (ids.length > 0) {
             for (long id : ids) {
-                purchasebillService.delete(id);
+                stockincomebillService.delete(id);
             }
             map = new HashMap<>();
             map.put("success", true);
@@ -87,16 +89,16 @@ public class PurchasebillController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public HashMap<Object, Object> save(Purchasebill purchasebill) {
+    public HashMap<Object, Object> save(Stockincomebill stockincomebill) {
         Employee employee = (Employee) SecurityUtils.getSubject().getPrincipal();
-        purchasebill.setInputUser(employee);
-        purchasebill.setInputtime(new Date());
+        stockincomebill.setInputUser(employee);
+        stockincomebill.setInputtime(new Date());
         //定义两个变量用来统计总金额和总数量
         BigDecimal totalAmount = new BigDecimal(0);
         BigDecimal totalNum = new BigDecimal(0);
-        for (Purchasebillitem item : purchasebill.getBillitems()) {
+        for (Stockincomebillitem item : stockincomebill.getBillitems()) {
             //多方数据也必须能够找到一方
-            item.setBill(purchasebill);
+            item.setBill(stockincomebill);
             //计算小计金额 BigDecimal做加减乘除运算都必须调用方法来完成
             item.setAmount(item.getPrice().multiply(item.getNum()));
             //总金额和总数量 累加
@@ -104,44 +106,46 @@ public class PurchasebillController {
             totalNum = totalNum.add(item.getNum());
         }
         //循环完毕后设置采购单的总金额和总数量
-        purchasebill.setTotalamount(totalAmount);
-        purchasebill.setTotalnum(totalNum);
-        purchasebillService.save(purchasebill);
+        stockincomebill.setTotalamount(totalAmount);
+        stockincomebill.setTotalnum(totalNum);
+        stockincomebillService.save(stockincomebill);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         return map;
     }
 
     @ModelAttribute("update")/*所有方法执行前都要执行*/
-    public Purchasebill findOneBeforeUpdate(String action, Long id) {
-        Purchasebill purchasebill = null;
+    public Stockincomebill findOneBeforeUpdate(String action, Long id) {
+        Stockincomebill stockincomebill = null;
         if ("update".equalsIgnoreCase(action)) {
-            purchasebill = purchasebillService.findOne(id);
-            purchasebill.setSupplier(null);
-            purchasebill.setBuyer(null);
-            purchasebill.getBillitems().clear();
+            stockincomebill = stockincomebillService.findOne(id);
+            stockincomebill.setSupplier(null);
+            stockincomebill.setKeeper(null);
+            stockincomebill.getBillitems().clear();
+            stockincomebill.setDepot(null);
+            //stockincomebill.setDepartment(null);/*department 脱离持久化状态*/
         }
-        return purchasebill;
+        return stockincomebill;
     }
 
     /**
      * 修改前先查询一次，然后与传递的对比，合并新数据
      *
-     * @param purchasebill
+     * @param stockincomebill
      * @return
      */
     @RequestMapping("/update")
     @ResponseBody
-    public HashMap<Object, Object> update(@ModelAttribute("update") Purchasebill purchasebill) {
+    public HashMap<Object, Object> update(@ModelAttribute("update") Stockincomebill stockincomebill) {
         Employee employee = (Employee) SecurityUtils.getSubject().getPrincipal();
-        purchasebill.setInputUser(employee);
-        purchasebill.setInputtime(new Date());
+        stockincomebill.setInputUser(employee);
+        stockincomebill.setInputtime(new Date());
         //定义两个变量用来统计总金额和总数量
         BigDecimal totalAmount = new BigDecimal(0);
         BigDecimal totalNum = new BigDecimal(0);
-        for (Purchasebillitem item : purchasebill.getBillitems()) {
+        for (Stockincomebillitem item : stockincomebill.getBillitems()) {
             //多方数据也必须能够找到一方
-            item.setBill(purchasebill);
+            item.setBill(stockincomebill);
             //计算小计金额 BigDecimal做加减乘除运算都必须调用方法来完成
             item.setAmount(item.getPrice().multiply(item.getNum()));
             //总金额和总数量 累加
@@ -149,10 +153,9 @@ public class PurchasebillController {
             totalNum = totalNum.add(item.getNum());
         }
         //循环完毕后设置采购单的总金额和总数量
-        purchasebill.setTotalamount(totalAmount);
-        purchasebill.setTotalnum(totalNum);
-
-        purchasebillService.update(purchasebill);
+        stockincomebill.setTotalamount(totalAmount);
+        stockincomebill.setTotalnum(totalNum);
+        stockincomebillService.save(stockincomebill);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("success", true);
         return map;
@@ -160,35 +163,35 @@ public class PurchasebillController {
 
     @ResponseBody
     @RequestMapping("/audit")
-    public HashMap<Object, Object> audit(@ModelAttribute("update") Purchasebill purchasebill) {
+    public HashMap<Object, Object> audit(@ModelAttribute("update") Stockincomebill stockincomebill) {
         HashMap<Object, Object> map = new HashMap<>();
         try {
             //入库单不存在，就不允许审核
-            if (purchasebill == null) {
+            if (stockincomebill == null) {
                 map.put("faile", "审核失败：该入库单不存在！");
                 return map;
             }
             //入库单只有待审状态才能被审核
-            if (purchasebill.getStatus() != 0) {
+            if (stockincomebill.getStatus() != 0) {
                 map.put("faile", "审核失败：只有待审的入库单才能被审核！");
                 return map;
             }
-            if (purchasebill.getBillitems().size() == 0) {
-                map.put("faile", "无采购产品明细无需采购");
+            if (stockincomebill.getBillitems().size() == 0) {
+                map.put("faile", "无入库产品明细无需入库");
                 return map;
             }
 
             //获取当前登录用户
             Employee employee = (Employee) SecurityUtils.getSubject().getPrincipal();
-            purchasebill.setInputUser(employee);
-            purchasebill.setInputtime(new Date());
+            stockincomebill.setInputUser(employee);
+            stockincomebill.setInputtime(new Date());
 
             //定义两个变量用来统计总金额和总数量
             BigDecimal totalAmount = new BigDecimal(0);
             BigDecimal totalNum = new BigDecimal(0);
-            for (Purchasebillitem item : purchasebill.getBillitems()) {
+            for (Stockincomebillitem item : stockincomebill.getBillitems()) {
                 //多方数据也必须能够找到一方
-                item.setBill(purchasebill);
+                item.setBill(stockincomebill);
                 //计算小计金额 BigDecimal做加减乘除运算都必须调用方法来完成
                 item.setAmount(item.getPrice().multiply(item.getNum()));
                 //总金额和总数量 累加
@@ -196,13 +199,18 @@ public class PurchasebillController {
                 totalNum = totalNum.add(item.getNum());
             }
             //循环完毕后设置采购单的总金额和总数量
-            purchasebill.setTotalamount(totalAmount);
-            purchasebill.setTotalnum(totalNum);
+            stockincomebill.setTotalamount(totalAmount);
+            stockincomebill.setTotalnum(totalNum);
+
+            //调用审核业务
+            stockincomebillService.audit(stockincomebill);
+
             //修改入库的状态为已审核，并且填入审核人和审核时间
-            purchasebill.setStatus(1);
-            purchasebill.setAuditor(employee);
-            purchasebill.setAuditortime(new Date());
-            purchasebillService.update(purchasebill);
+            stockincomebill.setStatus(1);
+            stockincomebill.setAuditor(employee);
+            stockincomebill.setAuditortime(new Date());
+
+            stockincomebillService.update(stockincomebill);
             map.put("success", "审核成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -211,16 +219,23 @@ public class PurchasebillController {
         return map;
     }
 
+
     @RequestMapping("/supplier/findAll")
     @ResponseBody
     public List<Supplier> findAll() {
         return supplierService.findAll();
     }
 
-    @RequestMapping("/buyer/findAll")
+    @RequestMapping("/keeper/findAll")
     @ResponseBody
     public List<Employee> findEmployeeByDepartmenttName(String deptName) {
         return employeeService.findEmployeeByDepartmenttName(deptName);
+    }
+
+    @RequestMapping("/depot/findAll")
+    @ResponseBody
+    public List<Depot> findAllDepot() {
+        return depotService.findAll();
     }
 
     /**
@@ -245,4 +260,5 @@ public class PurchasebillController {
     public Product findOneProduct(Long id) {
         return productService.findOne(id);
     }
+
 }

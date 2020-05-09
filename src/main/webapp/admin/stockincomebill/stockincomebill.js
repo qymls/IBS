@@ -15,11 +15,18 @@ new Vue({
                 callback(new Error("供应商不能为空"));
             }
         };
-        const buyerPlates = (rule, value, callback) => {
+        const keeperPlates = (rule, value, callback) => {
             if (value) {
                 callback();
             } else {
-                callback(new Error("采购员不能为空"));
+                callback(new Error("库管员不能为空"));
+            }
+        };
+        const depotPlates = (rule, value, callback) => {
+            if (value) {
+                callback();
+            } else {
+                callback(new Error("仓库不能为空"));
             }
         };
         return {
@@ -30,7 +37,8 @@ new Vue({
                 id: '',
                 vdate: '',
                 supplierId: '',
-                buyerId: '',
+                keeperId: '',
+                depotId: '',
             },
             ruleValidate: {
                 vdate: [
@@ -39,15 +47,19 @@ new Vue({
                 supplierId: [
                     {required: true, validator: supplierPlates, trigger: 'change'}
                 ],
-                buyerId: [
-                    {required: true, validator: buyerPlates, trigger: 'change'}
+                keeperId: [
+                    {required: true, validator: keeperPlates, trigger: 'change'}
+                ],
+                depotId: [
+                    {required: true, validator: depotPlates, trigger: 'change'}
                 ],
             },
             formInline: {
                 supplierId: '',/*供应商*/
-                buyerId: '',/*采购员*/
+                keeperId: '',/*库管员*/
                 time: '',/*采购时间*/
-                status: ''/*单据状态*/
+                status: '',/*单据状态*/
+                depotId: ''/*仓库*/
             },
             columns: [
                 {
@@ -62,8 +74,8 @@ new Vue({
                     align: 'center',
                 },
                 {
-                    title: '采购员',
-                    slot: 'buyer',
+                    title: '库管员',
+                    slot: 'keeper',
                 },
                 {
                     title: '采购时间',
@@ -99,6 +111,10 @@ new Vue({
                     key: 'auditortime',
                 },
                 {
+                    title: '仓库',
+                    slot: 'depot',
+                },
+                {
                     title: '单据状态',
                     slot: 'status',
                     align: 'center',
@@ -109,13 +125,14 @@ new Vue({
                     align: 'center',
                 },
             ],
-            PurchasebillData: [],
+            StockincomebillData: [],
             total: 0,
             page: 1,/*当前页默认为1*/
             pageSize: 5,/* 默认5条*/
             supplierValue: [],/*所有供应商*/
-            buyerValue: [],/*所有采购员*/
+            keeperValue: [],/*所有库管员*/
             statusValue: [],/*审核状态，如使用字典类型再用*/
+            depotValue: [],
             detailscolumns: [
                 {
                     title: '序号',
@@ -184,7 +201,8 @@ new Vue({
     created() {
         this.getFirstMenuData(this.page, this.pageSize);
         this.getAllSupplier();/*所有供应商*/
-        this.getAllBuyer()/*所有采购部的人员*/
+        this.getAllBuyer();/*所有采购部的人员*/
+        this.getAllDepot();
     },
     methods: {
         auditsave() {/*审核方法*/
@@ -213,7 +231,7 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebill/product/findOne",
+                url: "Admin/Stockincomebill/product/findOne",
                 dataType: 'json',
                 data: {"id": this.detaileformSave.id},
                 traditional: true,//防止深度序列化
@@ -229,7 +247,7 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebill/product/findOne",
+                url: "Admin/Stockincomebill/product/findOne",
                 dataType: 'json',
                 data: {"id": id},
                 traditional: true,//防止深度序列化
@@ -252,7 +270,7 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebill/product/findAll",
+                url: "Admin/Stockincomebill/product/findAll",
                 dataType: 'json',
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
@@ -278,7 +296,7 @@ new Vue({
             }
 
         },
-        deletePurchasebillDetali(index) {/*删除列表中的*/
+        deleteStockincomebillDetali(index) {/*删除列表中的*/
             this.detaildata.splice(index, 1);/*!*移除*!*/
         },
         handleEdit(row, index) {
@@ -311,7 +329,7 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebill/supplier/findAll",
+                url: "Admin/Stockincomebill/supplier/findAll",
                 dataType: 'json',
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
@@ -320,18 +338,32 @@ new Vue({
                 }
             });
         },
-        getAllBuyer() {/*所有采购员*/
+        getAllDepot() {/*所有供应商*/
             var $page = this;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebill/buyer/findAll",
+                url: "Admin/Stockincomebill/depot/findAll",
                 dataType: 'json',
-                data: {"deptName": "采购部"},
                 traditional: true,//防止深度序列化
                 async: false,/*取消异步加载*/
                 success: function (result) {/*用了框架的*/
-                    $page.buyerValue = result;
+                    $page.depotValue = result;
+                }
+            });
+        },
+        getAllBuyer() {/*所有库管员*/
+            var $page = this;
+            $.ajax({
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "Admin/Stockincomebill/keeper/findAll",
+                dataType: 'json',
+                data: {"deptName": "仓管部"},
+                traditional: true,//防止深度序列化
+                async: false,/*取消异步加载*/
+                success: function (result) {/*用了框架的*/
+                    $page.keeperValue = result;
                 }
             });
         },
@@ -359,7 +391,8 @@ new Vue({
             this.formValidate.id = data.id;
             this.formValidate.vdate = data.vdate;
             this.formValidate.supplierId = data.supplier.id
-            this.formValidate.buyerId = data.buyer.id
+            this.formValidate.keeperId = data.keeper.id
+            this.formValidate.depotId = data.depot.id
             this.detaildata = $.extend([], data.billitems)/*采购单明细赋值*/
 
         },
@@ -381,8 +414,11 @@ new Vue({
                         if (param.supplierId) {
                             param["supplier.id"] = param.supplierId
                         }
-                        if (param.buyerId) {
-                            param["buyer.id"] = param.buyerId
+                        if (param.keeperId) {
+                            param["keeper.id"] = param.keeperId
+                        }
+                        if (param.depotId) {
+                            param["depot.id"] = param.depotId
                         }
                         for (var i = 0; i < this.detaildata.length; i++) {
                             param["billitems[" + i + "].product.id"] = this.detaildata[i].product.id;
@@ -391,17 +427,18 @@ new Vue({
                             param["billitems[" + i + "].descs"] = this.detaildata[i].descs;
                         }
                         delete param["supplierId"];
-                        delete param["buyerId"];
+                        delete param["keeperId"];
+                        delete param["depotId"];
                         var url;
                         if (this.formValidate.id) {/*修改*/
                             if (this.primarybuttonshow) {/*判断是审核按钮还是普通修改*/
-                                url = "Admin/Purchasebill/update"
+                                url = "Admin/Stockincomebill/update"
                             } else {
-                                url = "Admin/Purchasebill/audit"/*入库操作*/
+                                url = "Admin/Stockincomebill/audit"/*入库操作*/
                             }
                             param.action = "update"/*传递这个参数是配合 @ModelAttribute注解使用的，只用于修改*/
                         } else {/*添加*/
-                            var url = "Admin/Purchasebill/save";
+                            var url = "Admin/Stockincomebill/save";
                             param.action = "save";
                         }
                         $.ajax({
@@ -459,12 +496,13 @@ new Vue({
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebill/findAll",
+                url: "Admin/Stockincomebill/findAll",
                 data: {
                     "supplierId": this.formInline.supplierId,
-                    "buyerId": this.formInline.buyerId,
+                    "keeperId": this.formInline.keeperId,
                     "status": this.formInline.status,
                     "time": this.formInline.time,
+                    "depotId": this.formInline.depotId,
                     "currentPage": page,
                     "pageSize": pageSize
                 },
@@ -478,7 +516,7 @@ new Vue({
                             desc: result.msg,
                         });
                     } else {
-                        $page.PurchasebillData = result.content;
+                        $page.StockincomebillData = result.content;
                         $page.total = result.totalElements;
                         $page.page = result.number + 1/*处理一个小bug*/
                     }
@@ -501,13 +539,13 @@ new Vue({
             }
         },
 
-        deletePurchasebill() {
+        deleteStockincomebill() {
             var $page = this;
             var notice = this.$Notice;
             $.ajax({
                 type: "POST",
                 contentType: "application/x-www-form-urlencoded",
-                url: "Admin/Purchasebill/delete",
+                url: "Admin/Stockincomebill/delete",
                 data: {"ids": this.rows.toString()},
                 dataType: 'json',
                 traditional: true,//防止深度序列化
