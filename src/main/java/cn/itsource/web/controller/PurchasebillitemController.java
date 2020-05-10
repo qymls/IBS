@@ -96,4 +96,10 @@ public class PurchasebillitemController {
         return purchasebillitemService.findChartsPie(purchasebillitemQuery);
     }
 
+    @RequestMapping("/findChartsLine")
+    @ResponseBody
+    public Map<String, List> findChartsLine(PurchasebillitemQuery purchasebillitemQuery) {
+        return purchasebillitemService.findChartsLine(purchasebillitemQuery);
+    }
+
 }

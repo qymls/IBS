@@ -86,7 +86,7 @@
         </Row>
 
     </Card>
-    <Modal v-model="chartShow" draggable scrollable title="数据图表" width="900" footer-hide>
+    <Modal v-model="chartShow" draggable scrollable title="数据图表" width="950" footer-hide>
         <Tabs>
             <Tab-Pane label="数据饼图" icon="ios-pie-outline">
                 <div id="myChart" style="width: 900px;height:400px;"></div>

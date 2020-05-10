@@ -7,9 +7,11 @@ import cn.itsource.domain.vo.SeriesLine;
 import cn.itsource.query.PurchasebillitemQuery;
 import cn.itsource.repository.IPurchasebillitemRepository;
 import cn.itsource.service.IPurchasebillitemService;
+import javassist.bytecode.SourceFileAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.DocFlavor;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -72,8 +74,10 @@ public class PurchasebillitemServiceImpl extends BaseServiceImpl<Purchasebillite
     }
 
     @Override
-    public List<SeriesLine> findChartsLine(PurchasebillitemQuery purchasebillitemQuery) {
+    public Map<String,List> findChartsLine(PurchasebillitemQuery purchasebillitemQuery) {
         List<SeriesLine> lineData = new ArrayList<>();
+        List<String> mouthList;
+        ArrayList<String> namelist = new ArrayList<>();
         String jpql = "select " + "date_format(o.bill.vdate,'%Y年%m月')" + ",sum(o.amount),sum(o.num) as totalnum,o.product.name" + purchasebillitemQuery.getJpql()
                 + " group by date_format(o.bill.vdate,'%Y年%m月'),o.product.name ORDER BY date_format(o.bill.vdate,'%Y年%m月')";
         List<Object[]> listobj = purchasebillitemRepository.findByJpql(jpql, purchasebillitemQuery.getParams().toArray());
@@ -90,17 +94,58 @@ public class PurchasebillitemServiceImpl extends BaseServiceImpl<Purchasebillite
         for (EchartsLine echartsLine : list) {
             productName.add(echartsLine.getProductname());
         }
+        Set<String> time = new HashSet<>();
+        for (EchartsLine echartsLine : list) {
+            time.add(echartsLine.getVateformat());
+        }
         for (String s : productName) {
             SeriesLine seriesLine = new SeriesLine();
             seriesLine.setName(s);
             for (EchartsLine line : list) {
                 if (line.getProductname().equals(s)) {
-                    seriesLine.getData().add(line.getTotalprice());
-                    seriesLine.getDate().add(line.getVateformat());
+                    HashMap<String, BigDecimal> map = new HashMap<>();
+                    map.put(line.getVateformat(), line.getTotalprice());
+                    seriesLine.getTempdata().add(map);
                 }
             }
+            loop:
+            for (String s1 : time) {
+                HashMap<String, BigDecimal> map = new HashMap<>();
+                for (Map<String, BigDecimal> datum : seriesLine.getTempdata()) {
+                    if (datum.keySet().contains(s1)) {/*如果有了就不用管*/
+                        continue loop;
+                    }
+                }
+                map.put(s1, new BigDecimal(0));
+                seriesLine.getTempdata().add(map);
+            }
+            Collections.sort(seriesLine.getTempdata(), (o1, o2) -> {
+                String o1key = null;
+                String o2key = null;
+                for (String s1 : o1.keySet()) {
+                    o1key = s1;
+                }
+                for (String s1 : o2.keySet()) {
+                    o2key = s1;
+                }
+
+                return o1key.compareTo(o2key);
+            });/*list排序*/
+            for (Map<String, BigDecimal> datum : seriesLine.getTempdata()) {
+                for (String s1 : datum.keySet()) {
+                    seriesLine.getLineMonth().add(s1);
+                    seriesLine.getData().add(datum.get(s1));
+                }
+            }
+            namelist.add(s);
             lineData.add(seriesLine);
         }
-        return lineData;
+        mouthList = lineData.get(0).getLineMonth();/*取第一个对象的日期即可*/
+        HashMap<String, List> map = new HashMap<>();
+        map.put("mouth",mouthList);
+        map.put("lindate",lineData);
+        map.put("nameList",namelist);
+
+        return map;
     }
 }

@@ -72,6 +72,9 @@ new Vue({
             chartShow: false,
             ChartLeftShow: [],/*左边显示,*/
             ChartDate: [],/*图形数据*/
+            ChartLeftShowLine: [],/*则线图*/
+            ChartDateLine: [],
+            ChartDateLineNameList: [],
             typesData: [],/*类别的级联选择框*/
 
         }
@@ -114,6 +117,7 @@ new Vue({
         showDataPic() {// 展示图形数据
             this.chartShow = true
             this.getChartDate();
+            this.getChartDateLine();
             this.$nextTick(() => {
                 this.drawPie();
                 this.drawGraph();
@@ -143,6 +147,26 @@ new Vue({
                     for (let i = 0; i < result.length; i++) {
                         $page.ChartLeftShow.push(result[i].name);
                     }
+                }
+            });
+        },
+        getChartDateLine() {/*则线图*/
+            this.ChartLeftShowLine = []/*必须清空*/
+            var $page = this;
+            $.ajax({/*查询图形数据*/
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "Admin/Purchasebillitem/findChartsLine",
+                dataType: 'json',
+                traditional: true,//防止深度序列化
+                async: false,/*取消异步加载*/
+                success: function (result) {/*用了框架的*/
+                    for (let i = 0; i < result.lindate.length; i++) {
+                        result.lindate[i].areaStyle = {}/*添加一个样式*/
+                    }
+                    $page.ChartDateLine = result.lindate;
+                    $page.ChartLeftShowLine = result.mouth;
+                    $page.ChartDateLineNameList = result.nameList;
                 }
             });
         },
@@ -320,7 +344,7 @@ new Vue({
             var myChart = echarts.init(document.getElementById('myChartLine'));
             var option = {
                 title: {
-                    text: '堆叠区域图'
+                    text: '采购数量折线图'
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -332,7 +356,7 @@ new Vue({
                     }
                 },
                 legend: {
-                    data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+                    data: this.ChartDateLineNameList
                 },
                 toolbox: {
                     feature: {
@@ -349,7 +373,7 @@ new Vue({
                     {
                         type: 'category',
                         boundaryGap: false,
-                        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                        data: this.ChartLeftShowLine,
                     }
                 ],
                 yAxis: [
@@ -357,49 +381,7 @@ new Vue({
                         type: 'value'
                     }
                 ],
-                series: [
-                    {
-                        name: '邮件营销',
-                        type: 'line',
-                        stack: '总量',
-                        areaStyle: {},
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: '联盟广告',
-                        type: 'line',
-                        stack: '总量',
-                        areaStyle: {},
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: '视频广告',
-                        type: 'line',
-                        stack: '总量',
-                        areaStyle: {},
-                        data: [150, 232, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name: '直接访问',
-                        type: 'line',
-                        stack: '总量',
-                        areaStyle: {},
-                        data: [320, 332, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name: '搜索引擎',
-                        type: 'line',
-                        stack: '总量',
-                        label: {
-                            normal: {
-                                show: true,
-                                position: 'top'
-                            }
-                        },
-                        areaStyle: {},
-                        data: [820, 932, 901, 934, 1290, 1330, 1320]
-                    }
-                ]
+                series: this.ChartDateLine
             };
             myChart.setOption(option);
         },

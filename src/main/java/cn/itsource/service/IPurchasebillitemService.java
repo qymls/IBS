@@ -19,6 +19,6 @@ public interface IPurchasebillitemService extends IBaseService<Purchasebillitem,
 
     List<Map<String,Object>> findChartsPie(PurchasebillitemQuery purchasebillitemQuery);
 
-    List<SeriesLine> findChartsLine(PurchasebillitemQuery purchasebillitemQuery);
+    Map<String,List> findChartsLine(PurchasebillitemQuery purchasebillitemQuery);
 
 }
