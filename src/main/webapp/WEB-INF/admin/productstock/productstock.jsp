@@ -15,14 +15,14 @@
 
         <Row>
             <i-col span="3">
-                <i-button type="primary" icon="md-add" @click="newAdd">添加</i-button>
+                <i-button type="primary" icon="md-add" @click="newAdd" v-show="false">添加</i-button>
                 <Poptip
                         confirm
                         placement="right"
                         transfer
                         title="您确认删除这些信息吗?"
                         @on-ok="deleteProductstock">
-                    <i-button v-if="rows.length>0" type="error" icon="ios-trash">删除</i-button>
+                    <i-button v-if="rows.length>0" type="error" icon="ios-trash" v-show="false">删除</i-button>
                 </Poptip>
             </i-col>
 
@@ -72,10 +72,10 @@
                         <input type="text" v-model="formValidate.id"/>
                     </Form-Item>
                     <Form-Item label="数量" prop="num">
-                        <i-Input v-model="formValidate.num" placeholder="请输入相关值"></i-Input>
+                        <i-Input v-model="formValidate.num" placeholder="请输入相关值" disabled></i-Input>
                     </Form-Item>
                     <Form-Item label="价格" prop="price">
-                        <i-Input v-model="formValidate.price" placeholder="请输入相关值"></i-Input>
+                        <i-Input v-model="formValidate.price" placeholder="请输入相关值" disabled></i-Input>
                     </Form-Item>
                     <Form-Item label="最大库存" prop="topnum">
                         <i-Input v-model="formValidate.topnum" placeholder="请输入相关值"></i-Input>
@@ -84,18 +84,24 @@
                         <i-Input v-model="formValidate.bottomnum" placeholder="请输入相关值"></i-Input>
                     </Form-Item>
                     <Form-Item label="库存警告" prop="warning">
-                        <i-select v-model="formValidate.warning" placeholder="是否开启库存警告">
-                            <i-option value="true">开启警告</i-option>
-                            <i-option value="false">关闭警告</i-option>
-                        </i-select>
+                        <Radio-Group v-model="formValidate.warning">
+                            <Radio label="true">
+                                <Icon type="logo-apple"></Icon>
+                                <span>开启警告</span>
+                            </Radio>
+                            <Radio label="false">
+                                <Icon type="logo-android"></Icon>
+                                <span>关闭警告</span>
+                            </Radio>
+                        </Radio-Group>
                     </Form-Item>
                     <Form-Item label="商品名称" prop="productId">
-                        <i-Select v-model="formValidate.productId" placeholder="请选择产品">
+                        <i-Select v-model="formValidate.productId" placeholder="请选择产品" disabled>
                             <i-Option v-for="item in productValue" v-model="item.id">{{item.name}}</i-Option>
                         </i-Select>
                     </Form-Item>
                     <Form-Item label="仓库名称" prop="depotId">
-                        <i-Select v-model="formValidate.depotId" placeholder="请选择仓库" >
+                        <i-Select v-model="formValidate.depotId" placeholder="请选择仓库" disabled>
                             <i-Option v-for="item in depotValue" v-model="item.id">{{item.name}}</i-Option>
                         </i-Select>
                     </Form-Item>

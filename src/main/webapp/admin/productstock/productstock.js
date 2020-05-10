@@ -72,11 +72,11 @@ new Vue({
                 depotId: ''/*仓库*/
             },
             columns: [
-                {
-                    type: 'selection',
-                    width: 60,
-                    align: 'center'
-                },
+                /* {
+                     type: 'selection',
+                     width: 60,
+                     align: 'center',
+                 },*/
                 {
                     title: '序号',
                     type: 'index',
@@ -84,13 +84,13 @@ new Vue({
                     align: 'center',
                 },
                 {
-                    title: '产品名称',
-                    slot: 'product',
+                    title: '仓库名称',
+                    slot: 'depot',
                     align: "center"
                 },
                 {
-                    title: '仓库名称',
-                    slot: 'depot',
+                    title: '产品名称',
+                    slot: 'product',
                     align: "center"
                 },
                 {
@@ -99,7 +99,7 @@ new Vue({
                     align: "center"
                 },
                 {
-                    title: '数量',
+                    title: '当前库存',
                     key: 'num',
                     align: "center"
                 },
