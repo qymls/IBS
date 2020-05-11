@@ -17,6 +17,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: absolute;
+            right: 20px;
         }
 
         #app {
@@ -27,10 +29,18 @@
             margin-bottom: 25px;
             text-align: center;
             font-size: 24px;
+            color: #ebece8;
         }
 
         form {
             width: 300px;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            background:url(<%=basePath%>iview/images/login.jpg) no-repeat;/*不添加ideal会报错，但不影响运行的，无关紧要*/
+            background-size: cover;
         }
     </style>
 </head>

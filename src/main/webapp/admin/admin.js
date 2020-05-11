@@ -107,7 +107,7 @@ var vue = new Vue({
         $.ajax({
             type: "POST",
             contentType: "application/x-www-form-urlencoded",
-            url: "Admin/Menu/findAll",
+            url: "Admin/Menu/findMenuByEmployeeId",
             dataType: 'json',
             async: false,/*取消异步加载*/
             success: function (result) {
